@@ -1,0 +1,49 @@
+{
+	"main-id":"main",
+	"maps":[
+		{
+			"name":"Главная карта",
+			"id":"main",
+			"file":"map.png",
+			"attrs":{
+				"type":"outdoor",
+				"entity":"notifications"
+			},
+			"tiles":[
+				{
+				"name":"Локатор ОРЛ-А",
+				"file":"orl-a-icon.png",
+				"x":926, "y":1205,
+				"link-id":"orla"
+				},
+			]
+		},
+		{
+			"name":"ОРЛ-А",
+			"id":"orla",
+			"file":"orl_a_map.png",
+			"attrs":{
+				"type":"outdoor",
+				"entity":"notifications"
+			}
+		},
+		{
+			"name":"Здание",
+			"id":"orla-build1",
+			"file":"plan.png",
+			"attrs":{
+				"type":"indoor",
+				"entity":"notifications"
+			}
+		},
+		{
+			"name":"Щиток электрический",
+			"id":"orla-build1-dev1",
+			"file":"device_00.png",
+			"attrs":{
+				"type":"device",
+				"entity":"notifications"
+			}
+		}
+	]
+}

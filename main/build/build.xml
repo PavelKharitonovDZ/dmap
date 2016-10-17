@@ -20,14 +20,19 @@
 		<mkdir dir="externalLibs" />
 	
 		<copy todir="externalLibs">
-			<fileset dir="C:\Users\dz\workspace\DZ_VitaSoft_2D\lib">
+			<fileset dir="C:\Users\dz\dmap\main\lib">
 				<filename name="json-20160810.jar"/>
 			</fileset>
 		</copy>
 	
 		<mkdir dir="project" />
 		<copy todir="project">
-			<fileset dir="C:\Users\dz\workspace\DZ_VitaSoft_2D">
+			<fileset dir="C:\Users\dz\dmap\main">
+				<include name="resources/**" />
+			</fileset>
+		</copy>
+		<copy todir="project">
+			<fileset dir="C:\Users\dz\dmap\main">
 				<include name="src/**" />
 			</fileset>
 		</copy>
@@ -55,6 +60,11 @@
 				<include name="**/*"/>
 			</fileset>
 		</copy>
+		<copy todir="build/src">
+			<fileset dir="project/resources">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
 	
 		<javac includeantruntime="false" source="1.8" target="1.8" srcdir="build/src" destdir="build/classes" encoding="Cp1251">
 			<classpath>
@@ -67,6 +77,9 @@
 		<!-- Copy over none Java-Files -->
 		<copy todir="build/classes">
 		<fileset dir="project/src">
+			<exclude name="**/*.java"/>
+		</fileset>
+		<fileset dir="project/resources">
 			<exclude name="**/*.java"/>
 		</fileset>
 		</copy>

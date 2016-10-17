@@ -26,7 +26,7 @@ public interface IMapData
 	 */
 	String getTitle();
 	
-	void addOverlay(String iconUrl, int x, int y, IMapData hyperlink );
+	void addOverlay(MapTileDefinition mtd, IMapData hyperlink );
 	public Image putOverlays( Image in );
 
 	MapOverlay getOverlayByRectangle(double x, double y);

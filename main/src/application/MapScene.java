@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -40,7 +41,7 @@ public class MapScene {
 	// --------------------------------------------------
 	// To kill
 	// --------------------------------------------------
-	
+/*	
 	OutoorMapData bigMapData = new OutoorMapData("map.png", "Карта объекта");
 	OutoorMapData mainMapData = new OutoorMapData("orl_a_map.png", "Карта ОРЛ-А");
 	IndoorMapData mainPlanData = new IndoorMapData("plan.png", "План здания");
@@ -49,7 +50,7 @@ public class MapScene {
 	{
 		bigMapData.addOverlay( "orl-a-icon.png", 926, 1205, mainMapData );
 	}
-
+*/
 	// --------------------------------------------------
 	
 	
@@ -61,11 +62,15 @@ public class MapScene {
 	private Main main;
 
 	private Scene scene;
-
-	private IMapData mData = bigMapData;
+	
+	private Pane info; // Right pane - must be filled with info on current object
+	
+	private IMapData mData; // = bigMapData;
 	
 	private ImageView imageView;
-	private double width, height; 
+	private double width, height;
+
+	private MapOverlay currentOverlay; 
 	
 	
 	public MapScene( Stage primaryStage, Main main ) {
@@ -109,7 +114,7 @@ public class MapScene {
 
 		Button full = new Button("Обзор");
 		full.setOnAction(e -> setOverviewScale());
-
+/*
 		Button m0 = new Button("Общая карта");
 		m0.setOnAction(e -> setMapData(bigMapData));        
 
@@ -124,9 +129,7 @@ public class MapScene {
 
 		Button mroot = new Button("Map list test");
 		mroot.setOnAction(e -> setMapData(main.ml.getRootMap()) );
-
-		//Button s1 = new Button("Beep");
-		//s1.setOnAction(e -> { new AudioClip(getResource("click.wav").toString()).play(); } );
+*/
 
 		Button r1 = new Button("Means test");
 		r1.setOnAction(e -> {
@@ -151,7 +154,8 @@ public class MapScene {
 
 
 
-		HBox buttons = new HBox(10, reset, full, m0, m1, m2, m3, r1, mroot);
+		//HBox buttons = new HBox(10, reset, full, m0, m1, m2, m3, r1, mroot);
+		HBox buttons = new HBox(10, reset, full, r1 );
 		buttons.setAlignment(Pos.CENTER);
 		buttons.setPadding(new Insets(10));
 		return buttons;
@@ -191,7 +195,8 @@ public class MapScene {
 		Menu navMenu = new Menu("Навигация");
 
 		MenuItem navHomeMap = new MenuItem("На общую карту");
-		navHomeMap.setOnAction(actionEvent -> setMapData(bigMapData));
+		//navHomeMap.setOnAction(actionEvent -> setMapData(bigMapData));
+		navHomeMap.setOnAction(actionEvent -> setMapData(main.ml.getRootMap()));
 
 		Menu navMaps = new Menu("Карты");
 		//navMaps.setOnAction(actionEvent -> setMapData(bigMapData));
@@ -289,13 +294,11 @@ public class MapScene {
 		imageView.setPreserveRatio(true);
 		//reset(imageView, width / 2, height / 2);
 		reset(imageView, width, height);
-		/*
-    	if( scene != null )
-    		scene.getRoot().requestLayout(); // hope it will repaint us?
-		 */
+		
+		currentOverlay = null;
+		
 		restart();
 	}
-	
 	
 	private void restart() {
 
@@ -370,13 +373,32 @@ public class MapScene {
 			}
 		});
 
+		imageView.setOnMouseMoved(e -> {
 
+			Point2D mouseClick = imageViewToImage(imageView, new Point2D(e.getX(), e.getY()));
+
+			MapOverlay overlay = mData.getOverlayByRectangle( mouseClick.getX(), mouseClick.getY() );
+			if( overlay != null )
+			{
+				currentOverlay = overlay;
+				fillInfo();
+			}
+		});
+
+		
+		
 		HBox buttons = createButtons(width, height, imageView);
 		Tooltip tooltip = new Tooltip("Scroll to zoom, drag to pan");
 		Tooltip.install(buttons, tooltip);
 
 		Pane container = new Pane(imageView);
 		container.setPrefSize(800, 600);
+
+		info = new Pane();
+		info.setPrefSize(400, 600);
+		fillInfo();
+
+		HBox mapAndInfo = new HBox(10, container, info);
 
 		imageView.fitWidthProperty().bind(container.widthProperty());
 		imageView.fitHeightProperty().bind(container.heightProperty());
@@ -389,7 +411,7 @@ public class MapScene {
 		//HBox links = createLinks();
 
 		//VBox root = new VBox(menuBar, links, container, buttons);
-		VBox root = new VBox(menuBar, container, buttons);
+		VBox root = new VBox(menuBar, mapAndInfo, buttons);
 		root.setFillWidth(true);
 		VBox.setVgrow(container, Priority.ALWAYS);
 
@@ -425,6 +447,32 @@ public class MapScene {
 	
 	
 	
+	private void fillInfo() {
+		VBox vb = new VBox(10);
+		info.getChildren().add(vb);
+		
+		vb.getChildren().clear();
+		
+		vb.getChildren().add( new Label("Карта: "+mData.getTitle()) );
+		
+		if( currentOverlay != null )
+		{
+			vb.getChildren().add( new Label("Объект: "+currentOverlay.getTitle() ) );
+			
+			vb.getChildren().add( new ImageView( currentOverlay.getImage() ) );
+		}
+		
+	}
+
+
+
+
+
+
+
+
+
+
 	// shift the viewport of the imageView by the specified delta, clamping so
 	// the viewport does not move off the actual image:
 	private static void shift(ImageView imageView, Point2D delta) {

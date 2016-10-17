@@ -18,12 +18,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import ru.dz.vita2d.data.RestCaller;
 
 public class LoginScene {
 	TextField loginField;
 	TextField passwdField;
 
-	private static VBox root;
+	//private static VBox root;
 	private RestCaller rc;
 	private Scene me;
 	private Main main;

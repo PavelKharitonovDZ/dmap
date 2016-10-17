@@ -3,6 +3,7 @@ package ru.dz.vita2d.maps;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import application.Defs;
 import application.MapScene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -36,12 +38,19 @@ public class MapList
 
 		//URL mapsFile = new URL("") 
 
-		File file = new File("maps.json");
+		//URL mapsFile = getClass().getResource("/maps.json");
+		
+		//File file = new File("maps.json");
 
 
 		try {
 
-			JSONTokener loader = new JSONTokener(new FileInputStream( file));
+			//InputStream inputStream  = getClass().getClassLoader().getResourceAsStream("/maps.json");
+			InputStream inputStream  = getClass().getResourceAsStream(Defs.MAP_JSON_URL);
+			
+			JSONTokener loader = new JSONTokener(inputStream);
+			//JSONTokener loader = new JSONTokener(new FileInputStream( mapsFile.getFile() ));
+			//JSONTokener loader = new JSONTokener(new FileInputStream( file));
 			JSONObject top = new JSONObject(loader);
 
 			//RestCaller.dumpJson(top);
@@ -51,9 +60,10 @@ public class MapList
 			JSONArray list = top.getJSONArray("maps");
 			list.forEach( map -> loadMap(map) );
 
-		} catch (FileNotFoundException e) {
+		} catch ( Throwable e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return;
 		}
 
 		for( MapDefinition md : mapDefs.values() )

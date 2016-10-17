@@ -1,4 +1,4 @@
-package application;
+package ru.dz.vita2d.maps;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

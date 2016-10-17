@@ -1,4 +1,4 @@
-package application;
+package ru.dz.vita2d.data;
 
 import java.io.BufferedReader;
 import java.io.IOException;

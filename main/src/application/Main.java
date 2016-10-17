@@ -38,6 +38,13 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import media.Player;
+import ru.dz.vita2d.data.RestCaller;
+import ru.dz.vita2d.data.ServerCache;
+import ru.dz.vita2d.maps.IMapData;
+import ru.dz.vita2d.maps.IndoorMapData;
+import ru.dz.vita2d.maps.MapList;
+import ru.dz.vita2d.maps.MapOverlay;
+import ru.dz.vita2d.maps.OutoorMapData;
 
 
 public class Main extends Application {
@@ -65,7 +72,8 @@ public class Main extends Application {
 
 	private RestCaller rc;
 	private ServerCache sc;
-
+	private MapList ml;
+	
 	@Override
 	public void init() throws Exception {
 		super.init();
@@ -73,6 +81,10 @@ public class Main extends Application {
 		//rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-test");
 		rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-release");
 		sc = new ServerCache(rc);
+	
+		// Load data from local file with list of map
+		ml = new MapList();
+
 	}
 
 	@Override
@@ -333,6 +345,9 @@ public class Main extends Application {
 		Button m3 = new Button("ўиток");
 		m3.setOnAction(e -> setMapData(deviceData) );
 
+		Button mroot = new Button("Map list test");
+		mroot.setOnAction(e -> setMapData(ml.getRootMap()) );
+
 		//Button s1 = new Button("Beep");
 		//s1.setOnAction(e -> { new AudioClip(getResource("click.wav").toString()).play(); } );
 
@@ -359,7 +374,7 @@ public class Main extends Application {
 
 
 
-		HBox buttons = new HBox(10, reset, full, m0, m1, m2, m3, r1);
+		HBox buttons = new HBox(10, reset, full, m0, m1, m2, m3, r1, mroot);
 		buttons.setAlignment(Pos.CENTER);
 		buttons.setPadding(new Insets(10));
 		return buttons;

@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import ru.dz.vita2d.data.ServerCache;
 
 public class JsonAsFlowDialog 
 {

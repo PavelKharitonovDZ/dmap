@@ -1,4 +1,4 @@
-package application;
+package ru.dz.vita2d.data;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -57,7 +57,9 @@ public class RestCaller {
 
 	private void checkResponceCode(HttpURLConnection conn) throws IOException {
 		if (conn.getResponseCode() != 200) {
-			throw new ProtocolException("HTTP responce code: " + conn.getResponseCode());
+			String errText = loadString(conn.getErrorStream());
+			URL errUrl = conn.getURL();
+			throw new ProtocolException("Url: "+errUrl+" HTTP responce code: " + conn.getResponseCode() + " text = '"+errText+"'");
 		}
 	}
 
@@ -130,6 +132,12 @@ public class RestCaller {
 
 
 
+	/**
+	 * Logs us in. Must be called first.
+	 * @param login
+	 * @param password
+	 * @throws IOException
+	 */
 	public void login( String login, String password ) throws IOException 
 	{
 		JSONObject jo = new JSONObject();
@@ -156,7 +164,7 @@ public class RestCaller {
 	}
 
 
-	
+	@Deprecated
 	public JSONObject getMeansRecord( int meanId ) throws IOException
 	{
 
@@ -164,8 +172,8 @@ public class RestCaller {
 		return data;
 	}
 
-
 	// http://sv-web-15.vtsft.ru/orvd-release/resources/models/means-form.js
+	@Deprecated
 	public JSONObject getMeansDataModel() throws IOException
 	{
 
@@ -192,6 +200,96 @@ public class RestCaller {
 	}
 
 
+	
+	
+	
+	
+	
+	
+	
+	static final public String UNIT_TYPE_OBJECTS = "objs";
+	static final public String UNIT_TYPE_MEANS = "means";
+	static final public String UNIT_TYPE_JOBS = "jobs";
+	static final public String UNIT_TYPE_EVENTS = "events";
+	
+	static final String LIST_REST_PATH = "rest/%s/list/";
+	
+	/**
+	 * Get list of objects of given type. 
+	 * @param unitType See UNIT_TYPE_* constants for types.
+	 * @return JSON with data
+	 * @throws IOException
+	 */
+	
+	JSONObject loadList(String unitType) throws IOException
+	{
+		String path = String.format(LIST_REST_PATH, unitType);
+		
+		JSONObject jo = new JSONObject();
+		jo.put("sort", "id" );
+		jo.put("order", "asc" );
+		jo.put("size", 1000 );
+		jo.put("page", 1 );
+		jo.put("_", "000" );
+		
+		System.out.println(jo.toString());
+		
+		JSONObject out = post(path, jo.toString());
+
+		//JSONObject out = getJSON(path);
+		
+		return out;
+	}
+	
+
+	/**
+	 * Get object of given type. 
+	 * @param unitType See UNIT_TYPE_* constants for types.
+	 * @param id object id
+	 * @return JSON with data
+	 * @throws IOException
+	 */
+	
+	public JSONObject getDataRecord( String unitType, int id ) throws IOException
+	{
+		JSONObject data = post( String.format( "rest/%s/view/%d/", unitType, id ), "" );
+		return data;
+	}
+	
+	
+	/**
+	 * Get data model (field names, types, etc) for given type.
+	 * @param unitType See UNIT_TYPE_* constants for types.
+	 * @return JSON with model
+	 * @throws IOException
+	 */
+	public JSONObject getDataModel(String unitType) throws IOException
+	{
+		String data = getString( String.format( "resources/models/%s-form.js", unitType ) );
+		
+		// This page gives out not a clean JSON but JavaScript assignment 
+		//data = data.replaceAll("^\\$v\\.models\\[\\'means-form\\'\\]=", "" );
+
+		int eqpos = data.indexOf("=");
+		if( eqpos < 0)
+		{
+			System.out.println("no '=' sign in means data model "+data);
+			return null;
+		}
+		
+		data = data.substring(eqpos+1); // skip all up to and incl '=' sign
+		
+		JSONObject out = new JSONObject(data);		
+		return out;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	public static void main(String[] args) 
 	{	
 		//RestCaller rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-test");
@@ -203,11 +301,21 @@ public class RestCaller {
 			rc.login("show","show");
 			//rc.getIcon("248");
 			
+			/*
 			JSONObject mr = rc.getMeansRecord( 2441372 );
 			System.out.println("Mean = "+mr.toString());
 
 			JSONObject mdm = rc.getMeansDataModel();
 			System.out.println("Mean Data Model = "+mdm.toString());
+			*/
+			
+			
+			JSONObject objList = rc.loadList(UNIT_TYPE_OBJECTS);
+			dumpJson(objList);
+			
+			
+			JSONObject obj = rc.getDataRecord(UNIT_TYPE_OBJECTS, 740316);
+			dumpJson(obj);
 			
 		} catch (MalformedURLException e) {
 
@@ -235,7 +343,7 @@ public class RestCaller {
 
 
 	
-	static void dumpJson( JSONObject jo )
+	static public void dumpJson( JSONObject jo )
 	{
 	    for( String key : jo.keySet() )
 	    {
@@ -243,5 +351,6 @@ public class RestCaller {
 	    }
 	}
 
+	
 
 }

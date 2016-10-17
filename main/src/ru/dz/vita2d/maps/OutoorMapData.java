@@ -1,5 +1,4 @@
-package application;
-
+package ru.dz.vita2d.maps;
 
 public class OutoorMapData extends AbstractMapData 
 {

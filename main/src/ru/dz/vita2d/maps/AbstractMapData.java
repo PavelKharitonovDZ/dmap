@@ -1,4 +1,4 @@
-package application;
+package ru.dz.vita2d.maps;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -193,10 +193,14 @@ public class MapScene {
 		MenuItem navHomeMap = new MenuItem("На общую карту");
 		navHomeMap.setOnAction(actionEvent -> setMapData(bigMapData));
 
+		Menu navMaps = new Menu("Карты");
+		//navMaps.setOnAction(actionEvent -> setMapData(bigMapData));
+		main.ml.fillMapsMenu( navMaps, this );
+
 		MenuItem navOverview = new MenuItem("Обзор");
 		navOverview.setOnAction(actionEvent -> setOverviewScale());
 
-		navMenu.getItems().addAll( navHomeMap, new SeparatorMenuItem(), navOverview );
+		navMenu.getItems().addAll( navHomeMap, navMaps, new SeparatorMenuItem(), navOverview );
 
 		/*
 	    Menu webMenu = new Menu("Web");

@@ -14,6 +14,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import application.MapScene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import ru.dz.vita2d.data.RestCaller;
 
 /**
@@ -128,6 +131,20 @@ public class MapList
 
 	public IMapData getRootMap() {
 		return rootMap.getMapData();
+	}
+
+	public void fillMapsMenu(Menu navMaps, MapScene mapScene) 
+	{
+		for( MapDefinition md : mapDefs.values() )
+		{
+			IMapData mdata = md.getMapData();
+			String name = md.getName();
+			
+			MenuItem mi = new MenuItem(name);
+			mi.setOnAction(actionEvent -> mapScene.setMapData(mdata));
+
+			navMaps.getItems().add(mi);
+		}
 	}
 
 

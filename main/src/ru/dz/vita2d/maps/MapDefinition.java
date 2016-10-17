@@ -77,4 +77,8 @@ public class MapDefinition {
 	public IMapData getMapData() {
 		return mapData;
 	}
+
+	public String getName() {
+		return name;		
+	}
 }

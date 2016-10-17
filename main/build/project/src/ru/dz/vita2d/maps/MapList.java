@@ -15,6 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import application.Defs;
 import application.MapScene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -45,7 +46,7 @@ public class MapList
 		try {
 
 			//InputStream inputStream  = getClass().getClassLoader().getResourceAsStream("/maps.json");
-			InputStream inputStream  = getClass().getResourceAsStream("/maps.json");
+			InputStream inputStream  = getClass().getResourceAsStream(Defs.MAP_JSON_URL);
 			
 			JSONTokener loader = new JSONTokener(inputStream);
 			//JSONTokener loader = new JSONTokener(new FileInputStream( mapsFile.getFile() ));

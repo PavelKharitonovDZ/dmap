@@ -48,6 +48,8 @@ public class Main extends Application
 		// Resets Scene 
 		MapScene ms = new MapScene( primaryStage, this );
 		ms.setMapData( ml.getRootMap() );//bigMapData);
+		primaryStage.centerOnScreen();
+		//primaryStage.setMaximized(true);
 		Player.bell();
 	}
 

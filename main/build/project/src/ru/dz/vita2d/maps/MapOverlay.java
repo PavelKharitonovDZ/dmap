@@ -16,9 +16,11 @@ public class MapOverlay
 	private int yPos;
 	private IMapData hyperlink;
 
+	private Image image;
 	private ImageView iv;
 	private final double xSize;
 	private final double ySize;
+	private MapTileDefinition mtd;
 
 	
 	public MapOverlay(String iconUrl, int x, int y, IMapData hyperlink ) {
@@ -27,7 +29,7 @@ public class MapOverlay
 		this.yPos = y;
 		this.hyperlink = hyperlink;
 		
-		Image image = new Image(iconUrl);
+		image = new Image(iconUrl);
 		iv = new ImageView( image );	
 		
 		iv.setX(x);
@@ -43,6 +45,15 @@ public class MapOverlay
 	public int getY() {		return yPos;	}
 	public IMapData getHyperlink() {		return hyperlink;	}
 
+	/**
+	 * <p>Returns cached instance of imageview for us - must be used once, just in 
+	 * main map draw.</p>
+	 * <p>If you need more instances, use getImage()</p>
+	 * 
+	 * @return Cached imageview.
+	 * 
+	 * @see MapOverlay.getImage()
+	 */
 	public ImageView getImageView() {		return iv;	}
 
 	public boolean isInside(double x, double y) 
@@ -55,6 +66,19 @@ public class MapOverlay
 			return false;
 		
 		return true;
+	}
+
+	public void setTileDefinition( MapTileDefinition mtd )
+	{
+		this.mtd = mtd;		
+	}
+	
+	public String getTitle() {		
+		return mtd == null ? "?" : mtd.getName();
+	}
+
+	public Image getImage() {
+		return image;		
 	}
 	
 	

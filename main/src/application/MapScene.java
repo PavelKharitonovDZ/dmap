@@ -448,10 +448,12 @@ public class MapScene {
 	
 	
 	private void fillInfo() {
+		info.getChildren().clear();
+		
 		VBox vb = new VBox(10);
 		info.getChildren().add(vb);
 		
-		vb.getChildren().clear();
+		//vb.getChildren().clear();
 		
 		vb.getChildren().add( new Label("Карта: "+mData.getTitle()) );
 		

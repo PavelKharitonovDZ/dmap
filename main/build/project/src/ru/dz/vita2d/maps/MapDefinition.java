@@ -69,7 +69,7 @@ public class MapDefinition {
 		for( MapTileDefinition mtd : tileDefs )
 		{
 			MapDefinition linkedMap = mtd.getLinkedMap();
-			mapData.addOverlay(mtd.getFile(), mtd.getX(), mtd.getY(), linkedMap.getMapData() );		
+			mapData.addOverlay( mtd, linkedMap.getMapData() );		
 		}
 		
 	}

@@ -213,23 +213,19 @@ public class RestCaller
 	
 	
 	
-	static final public String UNIT_TYPE_OBJECTS = "objs";
-	static final public String UNIT_TYPE_MEANS = "means";
-	static final public String UNIT_TYPE_JOBS = "jobs";
-	static final public String UNIT_TYPE_EVENTS = "events";
 	
 	static final String LIST_REST_PATH = "rest/%s/list/";
 	
 	/**
 	 * Get list of objects of given type. 
-	 * @param unitType See UNIT_TYPE_* constants for types.
+	 * @param type See ServerUnitType constants for types.
 	 * @return JSON with data
 	 * @throws IOException
 	 */
 	
-	JSONObject loadList(String unitType) throws IOException
+	JSONObject loadList(ServerUnitType type) throws IOException
 	{
-		String path = String.format(LIST_REST_PATH, unitType);
+		String path = String.format(LIST_REST_PATH, type);
 		
 		JSONObject jo = new JSONObject();
 		jo.put("sort", "id" );
@@ -250,26 +246,26 @@ public class RestCaller
 
 	/**
 	 * Get object of given type. 
-	 * @param unitType See UNIT_TYPE_* constants for types.
+	 * @param type See ServerUnitType constants for types.
 	 * @param id object id
 	 * @return JSON with data
 	 * @throws IOException
 	 */
 	
-	public JSONObject getDataRecord( String unitType, int id ) throws IOException
+	public JSONObject getDataRecord( ServerUnitType type, int id ) throws IOException
 	{
-		JSONObject data = post( String.format( "rest/%s/view/%d/", unitType, id ), "" );
+		JSONObject data = post( String.format( "rest/%s/view/%d/", type, id ), "" );
 		return data;
 	}
 	
 	
 	/**
 	 * Get data model (field names, types, etc) for given type.
-	 * @param unitType See UNIT_TYPE_* constants for types.
+	 * @param unitType See ServerUnitType constants for types.
 	 * @return JSON with model
 	 * @throws IOException
 	 */
-	public JSONObject getDataModel(String unitType) throws IOException
+	public JSONObject getDataModel(ServerUnitType unitType) throws IOException
 	{
 		String data = getString( String.format( "resources/models/%s-form.js", unitType ) );
 		
@@ -316,11 +312,11 @@ public class RestCaller
 			*/
 			
 			
-			JSONObject objList = rc.loadList(UNIT_TYPE_OBJECTS);
+			JSONObject objList = rc.loadList(ServerUnitType.OBJECTS);
 			dumpJson(objList);
 			
 			
-			JSONObject obj = rc.getDataRecord(UNIT_TYPE_OBJECTS, 740316);
+			JSONObject obj = rc.getDataRecord(ServerUnitType.OBJECTS, 740316);
 			dumpJson(obj);
 			
 		} catch (MalformedURLException e) {

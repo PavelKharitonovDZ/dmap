@@ -2,6 +2,12 @@ package ru.dz.vita2d.maps;
 
 import org.json.JSONObject;
 
+/**
+ * Tile (Overlay) definition as loaded from JSON file. 
+ * TODO name is not too good - there possibly will be tiles to combine map itself from. 
+ * @author dz
+ *
+ */
 public class MapTileDefinition {
 
 		private String linkId;

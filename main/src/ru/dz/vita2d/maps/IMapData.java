@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 /**
  * @author dz
  *
- * Data for map screen.
+ * Data for map screen. Interface.
  *
  */
 public interface IMapData 

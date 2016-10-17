@@ -3,6 +3,11 @@ package ru.dz.vita2d.maps;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+/**
+ * Overlay (icon, on top image) to be put on map. Displayed and clickable.
+ * @author dz
+ *
+ */
 public class MapOverlay 
 {
 

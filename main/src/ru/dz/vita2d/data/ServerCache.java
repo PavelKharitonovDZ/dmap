@@ -8,7 +8,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ServerCache {
+/**
+ * Place to keep cached data from server.
+ * @author dz
+ *
+ */
+public class ServerCache 
+{
 	private RestCaller rc;
 
 	private Map <String,String> fieldNamesMap;

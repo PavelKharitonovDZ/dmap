@@ -9,6 +9,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 
+/**
+ * Abstract implementation of map data - class that keeps internal representation
+ * of a map - picture to display to user with active zones to navigate to other maps or data screens.
+ * @author dz
+ *
+ */
 public abstract class AbstractMapData implements IMapData 
 {
 

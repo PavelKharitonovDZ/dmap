@@ -1,5 +1,5 @@
 /**
- * Map image manipulations 
+ * Map image manipulations.
  */
 /**
  * @author dz

@@ -17,7 +17,7 @@ import org.json.JSONTokener;
 import ru.dz.vita2d.data.RestCaller;
 
 /**
- * List of all maps - load from JSON file
+ * List of all maps - loaded from JSON file
  * @author dz
  *
  */

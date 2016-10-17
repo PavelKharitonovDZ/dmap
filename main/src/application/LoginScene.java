@@ -24,7 +24,7 @@ public class LoginScene {
 	TextField loginField;
 	TextField passwdField;
 
-	private static VBox root;
+	//private static VBox root;
 	private RestCaller rc;
 	private Scene me;
 	private Main main;

@@ -3,6 +3,11 @@ package ru.dz.vita2d.maps;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Map definition as loaded from json file
+ * @author dz
+ *
+ */
 public class MapDefinition {
 
 	private String id;

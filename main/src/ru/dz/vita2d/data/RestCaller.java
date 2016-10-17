@@ -17,7 +17,13 @@ import org.json.JSONTokener;
 
 // "http://sv-web-15.vtsft.ru/orvd-test/rest/login"
 
-public class RestCaller {
+/**
+ * Here we access all the server data.
+ * @author dz
+ *
+ */
+public class RestCaller 
+{
 
 	private final String baseUrl;
 	private String loggedInUser;

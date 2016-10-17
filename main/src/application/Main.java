@@ -37,25 +37,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import media.Player;
 
-/*
- * 
- * mediaPlayer = new MediaPlayer(hit);
-
-
-            mediaPlayer.setOnPlaying(() -> {
-
-                FillTransition ft = new FillTransition(Duration.millis(seconds * 1000), rect, Color.TRANSPARENT, Color.GREEN);
-                ft.setCycleCount(2);
-                ft.setAutoReverse(true);
-
-                ft.play();
-            });
-
-            mediaPlayer.play();
-
- * 
- */
 
 public class Main extends Application {
 
@@ -106,6 +89,7 @@ public class Main extends Application {
 	public void afterLogin() {
 		// Resets Scene too
 		setMapData(bigMapData);
+		Player.bell();
 	}
 
 	private void restart() {

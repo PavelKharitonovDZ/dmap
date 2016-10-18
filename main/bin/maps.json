@@ -1,0 +1,67 @@
+{
+	"main-id":"main",
+	"maps":[
+		{
+			"name":"Главная карта",
+			"id":"main",
+			"file":"map.png",
+			"attrs":{
+				"type":"outdoor",
+				"entity":"notifications"
+			},
+			"tiles":[
+				{
+				"name":"Локатор ОРЛ-А",
+				"file":"orl-a-icon.png",
+				"x":926, "y":1205,
+				"link-id":"orla"
+				},
+				{
+				"name":"������� ���-�",
+				"file":"orl-t-icon.png",
+				"x":1143, "y":1050,
+				"link-id":"orla"
+				},
+				{
+				"name":"����� ����",
+				"file":"akdp-icon.png",
+				"x":995, "y":499,
+				"link-id":"orla"
+				},
+				{
+				"name":"����28�",
+				"file":"dprm28l-icon.png",
+				"x":1572, "y":874,
+				"link-id":"orla"
+				},
+			]
+		},
+		{
+			"name":"ОРЛ-А",
+			"id":"orla",
+			"file":"orl_a_map.png",
+			"attrs":{
+				"type":"outdoor",
+				"entity":"notifications"
+			}
+		},
+		{
+			"name":"Здание",
+			"id":"orla-build1",
+			"file":"plan.png",
+			"attrs":{
+				"type":"indoor",
+				"entity":"notifications"
+			}
+		},
+		{
+			"name":"Щиток электрический",
+			"id":"orla-build1-dev1",
+			"file":"device_00.png",
+			"attrs":{
+				"type":"device",
+				"entity":"notifications"
+			}
+		}
+	]
+}

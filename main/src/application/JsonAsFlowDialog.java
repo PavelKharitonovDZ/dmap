@@ -18,6 +18,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import ru.dz.vita2d.data.ServerCache;
+import ru.dz.vita2d.data.ServerUnitType;
 
 public class JsonAsFlowDialog 
 {
@@ -25,10 +26,12 @@ public class JsonAsFlowDialog
 	//private Map<String, String> dm = null; 	// Data model (field names)
 	private Dialog<ButtonType> dialog;
 	private ServerCache sc;
+	private ServerUnitType type;
 
-	public JsonAsFlowDialog(JSONObject jo) 
+	public JsonAsFlowDialog(ServerUnitType type, JSONObject jo) 
 	{
-		this.jo = jo;		
+		this.jo = jo;
+		this.type = type;		
 	}
 /*	
 	void setDataModel(Map<String, String> fieldNamesMap )
@@ -45,7 +48,7 @@ public class JsonAsFlowDialog
 		//String fn = dm.get(id);
 		//if( fn == null )			fn = id;
 		//return fn;
-		return sc.getFieldName(id);
+		return sc.getFieldName(type,id);
 	}
 
 	private String getFieldType( String id )
@@ -53,7 +56,7 @@ public class JsonAsFlowDialog
 		//String fn = dm.get(id);
 		//if( fn == null )			fn = id;
 		//return fn;
-		return sc.getFieldType(id);
+		return sc.getFieldType(type,id);
 	}
 	
 	

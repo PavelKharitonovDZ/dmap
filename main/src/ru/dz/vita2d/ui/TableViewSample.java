@@ -56,7 +56,7 @@ public class TableViewSample extends Application {
 		table_view.getSelectionModel().setCellSelectionEnabled(true);
 		table_view.setMinWidth(600);
 
-		
+
 		fieldNames.forEach(fName -> {
 			String readableName = tp.getFieldName(fName);
 			if( readableName == null )
@@ -118,27 +118,28 @@ public class TableViewSample extends Application {
 					Object data = odata.get(fName);
 					if(
 							(data instanceof String)
-							 || (data instanceof Integer)
-							// || (data instanceof Boolean)
+							|| (data instanceof Integer)
+							|| (data instanceof Boolean)
 							) 
 					{
 						dataRow.put(fName, data.toString()); 
 						fieldNames.add(fName); 
 					}
+					else if (data instanceof JSONObject) 
+					{
+						JSONObject sub = (JSONObject) data;
+						if( sub.has("name") )
+						{
+
+							dataRow.put(fName, sub.getString("name")); 
+							fieldNames.add(fName); 
+						}
+					}
 					else
 					{
-						if (data instanceof JSONObject) {
-							JSONObject sub = (JSONObject) data;
-							if( sub.has("name") )
-							{
-								
-								dataRow.put(fName, sub.getString("name")); 
-								fieldNames.add(fName); 
-							}
-						}
-						else
-							System.out.println("class = "+ data.getClass()+" "+fName+"="+data );
+						System.out.println("class = "+ data.getClass()+" "+fName+"="+data );
 					}
+
 				} );
 
 				allData.add(dataRow);
@@ -164,5 +165,11 @@ public class TableViewSample extends Application {
         }
 		 */
 		return allData;
+	}
+
+	@Override
+	public void init() throws Exception {
+		// TODO Auto-generated method stub
+		super.init();
 	}
 }

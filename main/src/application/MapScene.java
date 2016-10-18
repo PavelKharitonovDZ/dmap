@@ -29,6 +29,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import ru.dz.vita2d.data.ServerUnitType;
 import ru.dz.vita2d.maps.DeviceMapData;
 import ru.dz.vita2d.maps.IMapData;
 import ru.dz.vita2d.maps.IndoorMapData;
@@ -140,7 +141,7 @@ public class MapScene {
 
 				JSONObject entity = mr.getJSONObject("entity");
 
-				JsonAsFlowDialog jd = new JsonAsFlowDialog( entity );
+				JsonAsFlowDialog jd = new JsonAsFlowDialog( ServerUnitType.MEANS, entity );
 				//jd.setDataModel(sc.getFieldNamesMap());
 				jd.setServerCache( main.sc );
 				jd.show();

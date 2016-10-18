@@ -17,14 +17,52 @@ public class ServerCache
 {
 	private RestCaller rc;
 
-	private Map <String,String> fieldNamesMap;
-	private Map <String,String> fieldTypesMap;
+	//private Map <String,String> fieldNamesMap;
+	//private Map <String,String> fieldTypesMap;
 
-	public ServerCache(RestCaller rc) {
+	private Map<ServerUnitType,PerTypeCache> caches = new HashMap<>(); 
+	
+	public ServerCache(RestCaller rc) 
+	{
 		this.rc = rc;
+		
+		ServerUnitType.forEach( t -> caches.put(t, new PerTypeCache(t, rc)));
+		
 	}
 
+
+	public PerTypeCache getTypeCache(ServerUnitType type) { return caches.get(type); }
 	
+	/**
+	 * <p>Get field human readable name by internal name. <b>Slow!</b></p>
+	 * <p>Get type specific cache with getTypeCache and call it directly for speed.</p>
+	 * 
+	 * @param type Server unit type
+	 * @param name Field name (id)
+	 * 
+	 * @return Human readable name.
+	 */
+	public String getFieldName(ServerUnitType type, String name)
+	{
+		return caches.get(type).getFieldName(name);
+	}
+	
+	/**
+	 * <p>Get field type (domain) by internal name. <b>Slow!</b></p>
+	 * <p>Get type specific cache with getTypeCache and call it directly for speed.</p>
+	 * 
+	 * @param type Server unit type
+	 * @param name Field name (id)
+	 * 
+	 * @return Data type (domain).
+	 */
+	public String getFieldType(ServerUnitType type, String name)
+	{
+		return caches.get(type).getFieldType(name);
+	}
+	
+	
+	/*
 	
 	public String getFieldName(String name)
 	{
@@ -167,5 +205,5 @@ public class ServerCache
 		}
 
 	}
-
+	*/
 }

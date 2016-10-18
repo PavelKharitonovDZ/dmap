@@ -112,6 +112,8 @@ public class RestCaller
 	{
 		HttpURLConnection conn = mkConn(urlTail);
 		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/json");
+		
 		if(postData != null)
 		{
 			conn.setDoOutput(true);
@@ -259,7 +261,7 @@ public class RestCaller
 	
 	public JSONObject getDataRecord( ServerUnitType type, int id ) throws IOException
 	{
-		JSONObject data = post( String.format( "rest/%s/view/%d/", type, id ), "" );
+		JSONObject data = getJSON( String.format( "rest/%s/view/%d/", type, id ) );
 		return data;
 	}
 	

@@ -1,8 +1,8 @@
-{
+п»ї{
 	"main-id":"main",
 	"maps":[
 		{
-			"name":"Главная карта",
+			"name":"Р“Р»Р°РІРЅР°СЏ РєР°СЂС‚Р°",
 			"id":"main",
 			"file":"map.png",
 			"attrs":{
@@ -11,7 +11,7 @@
 			},
 			"tiles":[
 				{
-				"name":"Локатор ОРЛ-А",
+				"name":"Р›РѕРєР°С‚РѕСЂ РћР Р›-Рђ",
 				"file":"orl-a-icon.png",
 				"x":926, "y":1205,
 				"link-id":"orla"
@@ -19,7 +19,7 @@
 			]
 		},
 		{
-			"name":"ОРЛ-А",
+			"name":"РћР Р›-Рђ",
 			"id":"orla",
 			"file":"orl_a_map.png",
 			"attrs":{
@@ -28,7 +28,7 @@
 			}
 		},
 		{
-			"name":"Здание",
+			"name":"Р—РґР°РЅРёРµ",
 			"id":"orla-build1",
 			"file":"plan.png",
 			"attrs":{
@@ -37,7 +37,7 @@
 			}
 		},
 		{
-			"name":"Щиток электрический",
+			"name":"Р©РёС‚РѕРє СЌР»РµРєС‚СЂРёС‡РµСЃРєРёР№",
 			"id":"orla-build1-dev1",
 			"file":"device_00.png",
 			"attrs":{

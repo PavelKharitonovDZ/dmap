@@ -24,6 +24,7 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import ru.dz.vita2d.data.DataConvertor;
 import ru.dz.vita2d.data.PerTypeCache;
 import ru.dz.vita2d.data.RestCaller;
 import ru.dz.vita2d.data.ServerUnitType;
@@ -118,14 +119,18 @@ public class TableViewSample extends Application {
 					Object data = odata.get(fName);
 					if(
 							(data instanceof String)
-							|| (data instanceof Integer)
-							|| (data instanceof Boolean)
+							|| (data instanceof Integer) 
 							) 
 					{
 						dataRow.put(fName, data.toString()); 
 						fieldNames.add(fName); 
 					}
-					else if (data instanceof JSONObject) 
+					else if(data instanceof Boolean)
+					{
+						dataRow.put(fName, DataConvertor.booleanReadableValue(data.toString())); 
+						fieldNames.add(fName); 
+					}
+					else if(data instanceof JSONObject) 
 					{
 						JSONObject sub = (JSONObject) data;
 						if( sub.has("name") )

@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import ru.dz.vita2d.data.DataConvertor;
 import ru.dz.vita2d.data.ServerCache;
 import ru.dz.vita2d.data.ServerUnitType;
 
@@ -163,7 +164,6 @@ public class JsonAsFlowDialog
 		String name;
 		String value;
 		String type;
-		boolean isBool = false;
 
 		public ViewItem(String id, String name, String _value) {
 			this.name = name;
@@ -173,17 +173,8 @@ public class JsonAsFlowDialog
 			
 			if( type == null )
 				type = "string";
-			
-			if( type.equalsIgnoreCase("bool")) 
-				isBool = true;
-			
-			if(isBool)
-			{
-				if( value.equalsIgnoreCase("true") )
-					value = "Да";
-				else
-					value = "Нет";
-			}
+
+			value = DataConvertor.readableValue(type, value);
 		}
 		
 		@Override

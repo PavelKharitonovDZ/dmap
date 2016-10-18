@@ -12,6 +12,10 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -269,6 +273,8 @@ public class RestCaller
 	{
 		String data = getString( String.format( "resources/models/%s-form.js", unitType ) );
 		
+		//jsEval(data);
+		
 		// This page gives out not a clean JSON but JavaScript assignment 
 		//data = data.replaceAll("^\\$v\\.models\\[\\'means-form\\'\\]=", "" );
 
@@ -285,9 +291,38 @@ public class RestCaller
 		return out;
 	}
 	
+	/*
+	private ScriptEngineManager engineManager = new ScriptEngineManager();
 	
-	
-	
+	private String jsEval(String jsCode)
+	{
+		ScriptEngine engine = engineManager.getEngineByName("nashorn");
+
+		try {
+			System.out.println(jsCode);
+			
+			String ret = "";
+			
+			engine.put("ret", ret);
+			
+			
+			engine.eval("var $v; $v = new Object(); $v.models = new Object();");
+			engine.eval(jsCode+";");
+			engine.eval("ret = \"\" + $v.models['means-form'] ;");
+			//String ret = (String) engine.getContext().getAttribute("$v.models['means-form']");
+
+			ret = (String) engine.get("ret");
+			
+			System.out.println(ret);
+			return ret;
+		} catch (ScriptException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "";
+	}
+*/	
 	
 	
 	
@@ -303,22 +338,22 @@ public class RestCaller
 			rc.login("show","show");
 			//rc.getIcon("248");
 			
-			/*
+			
 			JSONObject mr = rc.getMeansRecord( 2441372 );
 			System.out.println("Mean = "+mr.toString());
 
-			JSONObject mdm = rc.getMeansDataModel();
+			JSONObject mdm = rc.getDataModel(ServerUnitType.MEANS);//rc.getMeansDataModel();
 			System.out.println("Mean Data Model = "+mdm.toString());
-			*/
 			
 			
+			/*
 			JSONObject objList = rc.loadList(ServerUnitType.OBJECTS);
 			dumpJson(objList);
 			
 			
 			JSONObject obj = rc.getDataRecord(ServerUnitType.OBJECTS, 740316);
 			dumpJson(obj);
-			
+			*/
 		} catch (MalformedURLException e) {
 
 			e.printStackTrace();

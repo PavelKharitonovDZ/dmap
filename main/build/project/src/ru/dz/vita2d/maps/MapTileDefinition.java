@@ -29,8 +29,12 @@ public class MapTileDefinition {
 		
 		public MapTileDefinition(JSONObject tile) 
 		{
+			if( tile.has("link-id") )
+				linkId = tile.getString("link-id");
+			else
+				linkId = "";
+			
 			name = tile.getString("name");
-			linkId = tile.getString("link-id");
 			file = tile.getString("file");
 			
 			x = tile.getInt("x");

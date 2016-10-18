@@ -16,6 +16,24 @@
 				"x":926, "y":1205,
 				"link-id":"orla"
 				},
+				{
+				"name":"Локатор ОРЛ-Т",
+				"file":"orl-t-icon.png",
+				"x":1143, "y":1050,
+				"link-id":"orla"
+				},
+				{
+				"name":"Вышка АКДП",
+				"file":"akdp-icon.png",
+				"x":995, "y":499,
+				"link-id":"orla"
+				},
+				{
+				"name":"ДПРМ28Л",
+				"file":"dprm28l-icon.png",
+				"x":1572, "y":874,
+				"link-id":"orla"
+				},
 			]
 		},
 		{

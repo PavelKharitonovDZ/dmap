@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -48,7 +49,10 @@ public class MapList
 			//InputStream inputStream  = getClass().getClassLoader().getResourceAsStream("/maps.json");
 			InputStream inputStream  = getClass().getResourceAsStream(Defs.MAP_JSON_URL);
 			
-			JSONTokener loader = new JSONTokener(inputStream);
+			InputStreamReader rdr = new InputStreamReader(inputStream,"UTF-8");
+			JSONTokener loader = new JSONTokener(rdr);
+			//JSONTokener loader = new JSONTokener(inputStream);
+			
 			//JSONTokener loader = new JSONTokener(new FileInputStream( mapsFile.getFile() ));
 			//JSONTokener loader = new JSONTokener(new FileInputStream( file));
 			JSONObject top = new JSONObject(loader);

@@ -240,8 +240,8 @@ public class RestCaller
 */		
 		System.out.println(jo.toString());
 		
-		//JSONObject out = post(path, jo.toString());
-		JSONObject out = post(path, null);
+		JSONObject out = post(path, jo.toString());
+		//JSONObject out = post(path, null);
 
 		//JSONObject out = getJSON(path);
 		

@@ -230,11 +230,12 @@ public class RestCaller
 	 * @throws IOException
 	 */
 	
-	JSONObject loadList(ServerUnitType type) throws IOException
+	public JSONObject loadList(ServerUnitType type) throws IOException
 	{
 		String path = String.format(LIST_REST_PATH, type);
 		
-		path += "/?size=20&page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
+		//path += "/?size=20&page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
+		path += "/?page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
 		
 		JSONObject jo = new JSONObject();
 /*		
@@ -345,22 +346,23 @@ public class RestCaller
 			rc.login("show","show");
 			//rc.getIcon("248");
 			
-			
+/*			
 			JSONObject mr = rc.getMeansRecord( 2441372 );
 			System.out.println("Mean = "+mr.toString());
 
 			JSONObject mdm = rc.getDataModel(ServerUnitType.MEANS);//rc.getMeansDataModel();
 			System.out.println("Mean Data Model = "+mdm.toString());
+*/			
 			
 			
-			/*
 			JSONObject objList = rc.loadList(ServerUnitType.OBJECTS);
-			dumpJson(objList);
-			
+			//dumpJson(objList);
+			System.out.println("List = "+objList.toString());
 			
 			JSONObject obj = rc.getDataRecord(ServerUnitType.OBJECTS, 740316);
-			dumpJson(obj);
-			*/
+			//dumpJson(obj);
+			System.out.println("Obj = "+obj.toString());
+			
 		} catch (MalformedURLException e) {
 
 			e.printStackTrace();

@@ -7,30 +7,39 @@ package ru.dz.vita2d.data;
  */
 public class ServerUnitType 
 {
-	/*
-	static final public String UNIT_TYPE_OBJECTS = "objs";
-	static final public String UNIT_TYPE_MEANS = "means";
-	static final public String UNIT_TYPE_JOBS = "jobs";
-	static final public String UNIT_TYPE_EVENTS = "events";
-	*/
-
-	static final public ServerUnitType OBJECTS = new ServerUnitType("objs");
-	static final public ServerUnitType MEANS = new ServerUnitType("means");
-	static final public ServerUnitType JOBS = new ServerUnitType("jobs");
-	static final public ServerUnitType EVENTS = new ServerUnitType("events");
+	static final public ServerUnitType OBJECTS = new ServerUnitType("obj","объект");
+	static final public ServerUnitType MEANS = new ServerUnitType("mean","средство");
+	static final public ServerUnitType JOBS = new ServerUnitType("job","работа");
+	static final public ServerUnitType EVENTS = new ServerUnitType("event","событие");
 	
 	
-	private final String type;
+	private final String plural;
+	private final String single;
+	private final String displayName;
 	
-	private ServerUnitType(String name) {
-		type = name;
+	private ServerUnitType(String name, String displayName) {
+		this.displayName = displayName;
+		plural = name+"s";
+		single = name;
 	}
 	
-	public String getTypeName() { return type; }
+	/**
+	 * Single form.
+	 * @return type name as in JSON data.
+	 */
+	public String getObjectTypeName() { return single; }
 	
+	/**
+	 * Plural form.
+	 * @return type name as in requests.
+	 */
+	public String getPluralTypeName() { return plural; }
+	
+	public String getDisplayName() {		return displayName;	}
+
 	@Override
 	public String toString() {
-		return type;
+		return plural;
 	}
 	
 }

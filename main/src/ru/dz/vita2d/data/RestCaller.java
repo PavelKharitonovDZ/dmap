@@ -111,14 +111,15 @@ public class RestCaller
 	private JSONObject post(String urlTail, String postData) throws IOException
 	{
 		HttpURLConnection conn = mkConn(urlTail);
-		conn.setRequestMethod("GET");
-
-		conn.setDoOutput(true);
-		OutputStream os = conn.getOutputStream();
-		os.write(postData.getBytes());
-		os.flush();
-		os.close();
-
+		conn.setRequestMethod("POST");
+		if(postData != null)
+		{
+			conn.setDoOutput(true);
+			OutputStream os = conn.getOutputStream();
+			os.write(postData.getBytes());
+			os.flush();
+			os.close();
+		}
 		checkResponceCode(conn);
 
 		InputStream is = conn.getInputStream();
@@ -214,7 +215,7 @@ public class RestCaller
 	
 	
 	
-	static final String LIST_REST_PATH = "rest/%s/list/";
+	static final String LIST_REST_PATH = "rest/units/%s/list/";
 	
 	/**
 	 * Get list of objects of given type. 
@@ -227,16 +228,20 @@ public class RestCaller
 	{
 		String path = String.format(LIST_REST_PATH, type);
 		
+		path += "/?size=20&page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
+		
 		JSONObject jo = new JSONObject();
+/*		
 		jo.put("sort", "id" );
 		jo.put("order", "asc" );
 		jo.put("size", 1000 );
 		jo.put("page", 1 );
 		jo.put("_", "000" );
-		
+*/		
 		System.out.println(jo.toString());
 		
-		JSONObject out = post(path, jo.toString());
+		//JSONObject out = post(path, jo.toString());
+		JSONObject out = post(path, null);
 
 		//JSONObject out = getJSON(path);
 		

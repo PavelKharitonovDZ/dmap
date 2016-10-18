@@ -17,9 +17,9 @@ public class DataConvertor {
 
 	public static String booleanReadableValue(String value) {
 		if( value.equalsIgnoreCase("true") )
-			value = "Да";
+			value = "Р”Р°";
 		else
-			value = "Нет";
+			value = "РќРµС‚";
 		return value;
 	}
 	

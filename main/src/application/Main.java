@@ -28,7 +28,7 @@ public class Main extends Application
 		rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-release");
 		sc = new ServerCache(rc);
 	
-		// Load data from local file with list of map
+		// Load data from local file with list of maps
 		ml = new MapList();
 
 	}

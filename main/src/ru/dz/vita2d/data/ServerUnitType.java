@@ -16,10 +16,10 @@ public class ServerUnitType
 		all = new HashSet<>();
 	}
 
-	static final public ServerUnitType OBJECTS = new ServerUnitType("obj","объект");
-	static final public ServerUnitType MEANS = new ServerUnitType("mean","средство");
-	static final public ServerUnitType JOBS = new ServerUnitType("job","работа");
-	static final public ServerUnitType EVENTS = new ServerUnitType("event","событие");
+	static final public ServerUnitType OBJECTS = new ServerUnitType("obj","РѕР±СЉРµРєС‚");
+	static final public ServerUnitType MEANS = new ServerUnitType("mean","СЃСЂРµРґСЃС‚РІРѕ");
+	static final public ServerUnitType JOBS = new ServerUnitType("job","СЂР°Р±РѕС‚Р°");
+	static final public ServerUnitType EVENTS = new ServerUnitType("event","СЃРѕР±С‹С‚РёРµ");
 	
 	private final String plural;
 	private final String single;
@@ -33,7 +33,7 @@ public class ServerUnitType
 		all.add(this);
 	}
 	
-	static void forEach(Consumer<? super ServerUnitType> action)
+	static public void forEach(Consumer<? super ServerUnitType> action)
 	{
 		all.forEach(action);
 	}

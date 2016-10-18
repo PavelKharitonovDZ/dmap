@@ -65,7 +65,7 @@ public class JsonAsFlowDialog
 	{
 		//Dialog<ButtonType> 
 		dialog = new Dialog<>();
-	    dialog.setTitle("Средство"); // TODO hardcode
+	    dialog.setTitle("РЎСЂРµРґСЃС‚РІРѕ"); // TODO hardcode
 
 	    final DialogPane dialogPane = dialog.getDialogPane();
 	    dialogPane.setContentText("Means:"); // TODO hardcode
@@ -111,7 +111,7 @@ public class JsonAsFlowDialog
 			//Label value = new Label(object.toString());
 
 	    	if( "shortName".equalsIgnoreCase(key))
-	    		dialog.setTitle("Средство '"+object+"'");
+	    		dialog.setTitle("РЎСЂРµРґСЃС‚РІРѕ '"+object+"'");
 	    	
 			String fieldName = getFieldName(key);
 			

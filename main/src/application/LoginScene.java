@@ -12,7 +12,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -68,16 +67,16 @@ public class LoginScene {
 	    });
 		
 		primaryStage.setScene(me);
-        primaryStage.setTitle( "ОРВД: Вход в систему"  );
+        primaryStage.setTitle( "РћР Р’Р”: Р’С…РѕРґ РІ СЃРёСЃС‚РµРјСѓ"  );
         primaryStage.show();
 
 	}
 
 	private HBox createButtons() {
-        Button m1 = new Button("Войти");
+        Button m1 = new Button("Р’РѕР№С‚Рё");
         m1.setOnAction(e -> doLogin(loginField.getText(),passwdField.getText()) );
         
-        Button m2 = new Button("Демо [ESC]");
+        Button m2 = new Button("Р”РµРјРѕ [ESC]");
         m2.setOnAction(e -> doDemoLogin() );
         
         
@@ -100,9 +99,9 @@ public class LoginScene {
 			main.afterLogin();
 		} catch (java.net.ProtocolException e) {
 			// Login failed
-			message.setText("Неверный логин или пароль");
+			message.setText("РќРµРІРµСЂРЅС‹Р№ Р»РѕРіРёРЅ РёР»Рё РїР°СЂРѕР»СЊ");
 		} catch (IOException e) {
-			message.setText("Нет связи");
+			message.setText("РќРµС‚ СЃРІСЏР·Рё");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

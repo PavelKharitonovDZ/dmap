@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.MapValueFactory;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import ru.dz.vita2d.data.DataConvertor;
@@ -44,9 +45,9 @@ public class EntityListView {
 	
 	
 	
-	public Group create()	
+	public Pane create()	
 	{
-		Group root = new Group();
+		//Group root = new Group();
 
 		final Label label = new Label(type.getDisplayName());
 		label.setFont(new Font("Arial", 20));
@@ -77,9 +78,9 @@ public class EntityListView {
 		vbox.getChildren().addAll(label, table_view);
 
 		//((Group) scene.getRoot()).getChildren().addAll(vbox);
-		root.getChildren().addAll(vbox);
+		//root.getChildren().addAll(vbox);
 		
-		return root;
+		return vbox;
 	}
 	
 	private ObservableList<Map> generateDataInMap() {

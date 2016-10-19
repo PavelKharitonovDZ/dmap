@@ -35,26 +35,7 @@ import ru.dz.vita2d.maps.MapOverlay;
 import ru.dz.vita2d.ui.EntityListWindow;
 
 public class MapScene {
-
-	
-	// --------------------------------------------------
-	// To kill
-	// --------------------------------------------------
-/*	
-	OutoorMapData bigMapData = new OutoorMapData("map.png", "Карта объекта");
-	OutoorMapData mainMapData = new OutoorMapData("orl_a_map.png", "Карта ОРЛ-А");
-	IndoorMapData mainPlanData = new IndoorMapData("plan.png", "План здания");
-	DeviceMapData deviceData = new DeviceMapData("device_00.png", "Щиток"); 
-
-	{
-		bigMapData.addOverlay( "orl-a-icon.png", 926, 1205, mainMapData );
-	}
-*/
-	// --------------------------------------------------
-	
-	
-	
-	
+		
 	private static final int MIN_PIXELS = 10;
 
 	private Stage primaryStage;
@@ -113,22 +94,6 @@ public class MapScene {
 
 		Button full = new Button("Обзор");
 		full.setOnAction(e -> setOverviewScale());
-/*
-		Button m0 = new Button("Общая карта");
-		m0.setOnAction(e -> setMapData(bigMapData));        
-
-		Button m1 = new Button("Карта объекта");
-		m1.setOnAction(e -> setMapData(mainMapData));
-
-		Button m2 = new Button("Строение");
-		m2.setOnAction(e -> setMapData(mainPlanData) );
-
-		Button m3 = new Button("Щиток");
-		m3.setOnAction(e -> setMapData(deviceData) );
-
-		Button mroot = new Button("Map list test");
-		mroot.setOnAction(e -> setMapData(main.ml.getRootMap()) );
-*/
 
 		Button r1 = new Button("Means test");
 		r1.setOnAction(e -> {
@@ -141,7 +106,7 @@ public class MapScene {
 
 				JsonAsFlowDialog jd = new JsonAsFlowDialog( ServerUnitType.MEANS, entity );
 				//jd.setDataModel(sc.getFieldNamesMap());
-				jd.setServerCache( main.sc );
+				jd.setCache( main.sc.getTypeCache(ServerUnitType.MEANS) );
 				jd.show();
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block

@@ -162,7 +162,7 @@ public class RestCaller
 		
 		loggedInUser = login;
 		
-		System.out.println("Logged in\n");
+		//System.out.println("Logged in\n");
 
 	}
 
@@ -198,7 +198,7 @@ public class RestCaller
 		int eqpos = data.indexOf("=");
 		if( eqpos < 0)
 		{
-			System.out.println("no '=' sign in means data model "+data);
+			System.out.println("no '=' sign in means data model "+data); // TODO logging
 			return null;
 		}
 		
@@ -245,7 +245,7 @@ public class RestCaller
 		jo.put("page", 1 );
 		jo.put("_", "000" );
 */		
-		System.out.println(jo.toString());
+		//System.out.println(jo.toString());
 		
 		JSONObject out = post(path, jo.toString());
 		//JSONObject out = post(path, null);
@@ -289,7 +289,7 @@ public class RestCaller
 		int eqpos = data.indexOf("=");
 		if( eqpos < 0)
 		{
-			System.out.println("no '=' sign in means data model "+data);
+			System.out.println("no '=' sign in means data model "+data); // TODO logging
 			return null;
 		}
 		

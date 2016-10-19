@@ -40,7 +40,7 @@ public class MapList
 		//URL mapsFile = new URL("") 
 
 		//URL mapsFile = getClass().getResource("/maps.json");
-		
+
 		//File file = new File("maps.json");
 
 
@@ -48,11 +48,11 @@ public class MapList
 
 			//InputStream inputStream  = getClass().getClassLoader().getResourceAsStream("/maps.json");
 			InputStream inputStream  = getClass().getResourceAsStream(Defs.MAP_JSON_URL);
-			
+
 			InputStreamReader rdr = new InputStreamReader(inputStream,"UTF-8");
 			JSONTokener loader = new JSONTokener(rdr);
 			//JSONTokener loader = new JSONTokener(inputStream);
-			
+
 			//JSONTokener loader = new JSONTokener(new FileInputStream( mapsFile.getFile() ));
 			//JSONTokener loader = new JSONTokener(new FileInputStream( file));
 			JSONObject top = new JSONObject(loader);
@@ -104,12 +104,16 @@ public class MapList
 				MapDefinition md = new MapDefinition(id, name, file);
 
 				try {
-					JSONArray tiles = map.getJSONArray("tiles");
-					//loadTiles( md, tiles );
-					tiles.forEach( tile -> loadTile((JSONObject)tile, md) );		
+					if( map.has("tiles") )
+					{
+						JSONArray tiles = map.getJSONArray("tiles");
+						//loadTiles( md, tiles );
+						tiles.forEach( tile -> loadTile((JSONObject)tile, md) );
+					}
 				}
 				catch(JSONException je)
 				{
+					// TODO log
 					System.out.println("(ignored) JSON exception loading map tiles: "+je);
 				}
 
@@ -117,10 +121,12 @@ public class MapList
 			}
 			catch(Throwable e)
 			{
+				// TODO log
 				System.out.println("(ignored) JSON exception loading map: "+omap+"\nException: "+e);
 			}
 			return null;
 		}
+		// TODO log
 		System.out.println("unknown type "+omap.getClass());
 		return null;
 	}
@@ -153,7 +159,7 @@ public class MapList
 		{
 			IMapData mdata = md.getMapData();
 			String name = md.getName();
-			
+
 			MenuItem mi = new MenuItem(name);
 			mi.setOnAction(actionEvent -> mapScene.setMapData(mdata));
 

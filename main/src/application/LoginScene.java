@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -38,11 +39,24 @@ public class LoginScene {
 		passwdField = new TextField();		
 		message = new Label();
 		message.setMinWidth(300);
-		
-        VBox container = new VBox( loginField, passwdField, message );
+				
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        //grid.setPadding(new Insets(10));
+        
+        grid.add(loginField, 1, 0);
+        grid.add(passwdField, 1, 1);
+        //grid.add(message, 0, 2);
+        
+        grid.add(new Label("Имя"), 0, 0);
+        grid.add(new Label("Пароль"), 0, 1);
+        
+        VBox container = new VBox( grid, message );
         container.setPadding(new Insets(10));
         container.setSpacing(10);
-		
+        
+        
         Image logo = new Image("logo.png");
         ImageView logoView = new ImageView(logo);
 
@@ -60,7 +74,7 @@ public class LoginScene {
 
 	        public void handle(KeyEvent ke) {
 	            if (ke.getCode() == KeyCode.ESCAPE) {
-	                System.out.println("Key Pressed: " + ke.getCode());
+	                //System.out.println("Key Pressed: " + ke.getCode());
 	                doDemoLogin();
 	            }
 	        }

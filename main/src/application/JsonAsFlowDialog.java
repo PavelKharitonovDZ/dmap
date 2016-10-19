@@ -18,6 +18,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import ru.dz.vita2d.data.DataConvertor;
+import ru.dz.vita2d.data.PerTypeCache;
 import ru.dz.vita2d.data.ServerCache;
 import ru.dz.vita2d.data.ServerUnitType;
 
@@ -26,8 +27,9 @@ public class JsonAsFlowDialog
 	private JSONObject jo;			// Data
 	//private Map<String, String> dm = null; 	// Data model (field names)
 	private Dialog<ButtonType> dialog;
-	private ServerCache sc;
+	//private ServerCache sc;
 	private ServerUnitType type;
+	private PerTypeCache tc;
 
 	public JsonAsFlowDialog(ServerUnitType type, JSONObject jo) 
 	{
@@ -40,6 +42,10 @@ public class JsonAsFlowDialog
 		this.dm = fieldNamesMap;		
 	}
 */
+	public void setCache(PerTypeCache tc) {
+		this.tc = tc;
+	}
+/*
 	public void setServerCache(ServerCache sc) {
 		this.sc = sc;
 	}
@@ -59,7 +65,7 @@ public class JsonAsFlowDialog
 		//return fn;
 		return sc.getFieldType(type,id);
 	}
-	
+*/	
 	
 	public void show()
 	{
@@ -113,7 +119,7 @@ public class JsonAsFlowDialog
 	    	if( "shortName".equalsIgnoreCase(key))
 	    		dialog.setTitle("Средство '"+object+"'");
 	    	
-			String fieldName = getFieldName(key);
+			String fieldName = tc.getFieldName(key);
 			
 			if(fieldName == null)
 				continue;
@@ -169,7 +175,7 @@ public class JsonAsFlowDialog
 			this.name = name;
 			this.value = _value;
 			
-			type = getFieldType(id);
+			type = tc.getFieldType(id);
 			
 			if( type == null )
 				type = "string";

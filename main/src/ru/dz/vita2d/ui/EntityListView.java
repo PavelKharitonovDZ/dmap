@@ -9,12 +9,14 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import application.JsonAsFlowDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.layout.Pane;
@@ -33,18 +35,18 @@ public class EntityListView {
 
 	private Set<String> fieldNames = new HashSet<>();
 
-	
+
 	public EntityListView(ServerUnitType type, RestCaller rc) {
 		super();
-		
+
 		this.type = type;
 		this.rc = rc;
-		
+
 		tp = new PerTypeCache(type, rc);
 	}
-	
-	
-	
+
+
+
 	public Pane create()	
 	{
 		//Group root = new Group();
@@ -53,11 +55,11 @@ public class EntityListView {
 		label.setFont(new Font("Arial", 20));
 
 
-		TableView<Map> table_view = new TableView<>(generateDataInMap());
+		TableView<Map> table = new TableView<>(generateDataInMap());
 
-		table_view.setEditable(true);
-		table_view.getSelectionModel().setCellSelectionEnabled(true);
-		table_view.setMinWidth(600);
+		table.setEditable(true);
+		table.getSelectionModel().setCellSelectionEnabled(true);
+		table.setMinWidth(600);
 
 
 		fieldNames.forEach(fName -> {
@@ -68,21 +70,57 @@ public class EntityListView {
 			TableColumn<Map, String> col = new TableColumn<>(readableName); // TODO Must be human readable name
 			col.setCellValueFactory(new MapValueFactory(fName));
 
-			table_view.getColumns().add(col);
+			table.getColumns().add(col);
 		});
+
+		table.setRowFactory( tv -> {
+			TableRow<Map> row = new TableRow<>();
+			row.setOnMouseClicked(event -> {
+				if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+					Map<String,String> rowData = row.getItem();
+					//System.out.println(rowData);
+					String sid = rowData.get("id");
+					if( sid == null )
+					{
+						// TODO log error
+						return;
+					}
+					int id = Integer.parseInt(sid); 
+					//System.out.println(id);
+
+					try {
+						JSONObject record = rc.getDataRecord(type, id);
+						//System.out.println(record);
+						JSONObject entity = record.getJSONObject("entity");
+
+						JsonAsFlowDialog jd = new JsonAsFlowDialog( ServerUnitType.MEANS, entity );
+						//jd.setDataModel(sc.getFieldNamesMap());
+						jd.setCache( tp );
+						jd.show();
+
+
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			});
+			return row ;
+		});
+
 
 		final VBox vbox = new VBox();
 
 		vbox.setSpacing(5);
 		vbox.setPadding(new Insets(10, 0, 0, 10));
-		vbox.getChildren().addAll(label, table_view);
+		vbox.getChildren().addAll(label, table);
 
 		//((Group) scene.getRoot()).getChildren().addAll(vbox);
 		//root.getChildren().addAll(vbox);
-		
+
 		return vbox;
 	}
-	
+
 	private ObservableList<Map> generateDataInMap() {
 		//int max = 10;
 		ObservableList<Map> allData = FXCollections.observableArrayList();
@@ -98,52 +136,43 @@ public class EntityListView {
 			JSONArray a = objList.getJSONArray("list");
 			//RestCaller.dumpJson(objList);
 			//System.out.println("List = "+a);
+			//System.out.println();
 
 			a.forEach( li -> { 
 				//System.out.println("li = "+li); 
 				JSONObject lio = (JSONObject) li;
 
-				//JSONObject odata = lio.getJSONObject(type.getObjectTypeName());
-				JSONObject odata = lio.getJSONObject("obj");
+				if(type == ServerUnitType.OBJECTS)
+				{
+					JSONObject odata = lio.getJSONObject("obj");
 
-				//System.out.println("data = "+odata);
+					//System.out.println("data = "+odata);
 
-				Map<String, String> dataRow = new HashMap<>();
+					Map<String, String> dataRow = new HashMap<>();
 
-				odata.keySet().forEach(fName -> 
-				{ 
-					Object data = odata.get(fName);
-					if(
-							(data instanceof String)
-							|| (data instanceof Integer) 
-							) 
-					{
-						dataRow.put(fName, data.toString()); 
-						fieldNames.add(fName); 
-					}
-					else if(data instanceof Boolean)
-					{
-						dataRow.put(fName, DataConvertor.booleanReadableValue(data.toString())); 
-						fieldNames.add(fName); 
-					}
-					else if(data instanceof JSONObject) 
-					{
-						JSONObject sub = (JSONObject) data;
-						if( sub.has("name") )
-						{
+					loadEntity(odata, dataRow);
+					allData.add(dataRow);
 
-							dataRow.put(fName, sub.getString("name")); 
-							fieldNames.add(fName); 
-						}
-					}
-					else
-					{
-						System.out.println("class = "+ data.getClass()+" "+fName+"="+data );
-					}
+				}
+				else
+				{
 
-				} );
 
-				allData.add(dataRow);
+					JSONArray ja = lio.getJSONArray(type.getPluralTypeName());
+
+					ja.forEach(jae -> {
+
+						JSONObject odata = (JSONObject) jae; //lio.getJSONObject(type.getPluralTypeName());
+						//JSONObject odata = lio.getJSONObject("obj");
+
+						//System.out.println("data = "+odata);
+
+						Map<String, String> dataRow = new HashMap<>();
+
+						loadEntity(odata, dataRow);
+						allData.add(dataRow);
+					} );
+				}
 
 			});
 
@@ -154,5 +183,42 @@ public class EntityListView {
 
 		return allData;
 	}
-	
+
+
+
+	private void loadEntity(JSONObject odata, Map<String, String> dataRow) {
+		odata.keySet().forEach(fName -> 
+		{ 
+			Object data = odata.get(fName);
+			if(
+					(data instanceof String)
+					|| (data instanceof Integer) 
+					) 
+			{
+				dataRow.put(fName, data.toString()); 
+				fieldNames.add(fName); 
+			}
+			else if(data instanceof Boolean)
+			{
+				dataRow.put(fName, DataConvertor.booleanReadableValue(data.toString())); 
+				fieldNames.add(fName); 
+			}
+			else if(data instanceof JSONObject) 
+			{
+				JSONObject sub = (JSONObject) data;
+				if( sub.has("name") )
+				{
+
+					dataRow.put(fName, sub.getString("name")); 
+					fieldNames.add(fName); 
+				}
+			}
+			else
+			{
+				//System.out.println("class = "+ data.getClass()+" "+fName+"="+data );
+			}
+
+		} );
+	}
+
 }

@@ -43,7 +43,17 @@
 			"attrs":{
 				"type":"outdoor",
 				"entity":"notifications"
-			}
+			},
+			"tiles":[
+				{
+				"name":"Локатор ОРЛ-А",
+				"file":"orl-a-icon.png",
+				"x":725, "y":190,
+				"link-id":"orla",
+				"anim-file-base":"orl-anim/locator_%05d.png",
+				"anim-file-count":16
+				}
+			]
 		},
 		{
 			"name":"Локатор ОРЛ-А, главное здание",

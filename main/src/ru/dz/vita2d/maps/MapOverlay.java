@@ -2,6 +2,7 @@ package ru.dz.vita2d.maps;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import ru.dz.vita2d.ui.anim.SpriteAnimation;
 
 /**
  * Overlay (icon, on top image) to be put on map. Displayed and clickable.
@@ -40,6 +41,12 @@ public class MapOverlay
 		
 	}
 
+	public void setAnimation(SpriteAnimation sa)
+	{
+		sa.connect(iv);
+        sa.play();
+	}
+	
 	public String getIconUrl() { 		return iconUrl;	}
 	public int getX() {		return xPos;	}
 	public int getY() {		return yPos;	}

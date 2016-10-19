@@ -29,9 +29,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import ru.dz.vita2d.data.EntityRef;
 import ru.dz.vita2d.data.ServerUnitType;
 import ru.dz.vita2d.maps.IMapData;
 import ru.dz.vita2d.maps.MapOverlay;
+import ru.dz.vita2d.ui.EntityFormView;
 import ru.dz.vita2d.ui.EntityListWindow;
 
 public class MapScene {
@@ -177,7 +179,7 @@ public class MapScene {
 
 		ServerUnitType.forEach(t -> {
 			MenuItem dataItem = new MenuItem(t.getDisplayName());
-			dataItem.setOnAction(actionEvent -> new EntityListWindow(t, main.rc));
+			dataItem.setOnAction(actionEvent -> new EntityListWindow(t, main.rc, main.sc));
 
 			dataMenu.getItems().add(dataItem);			
 		});
@@ -438,6 +440,20 @@ public class MapScene {
 			vb.getChildren().add( new Label("Объект: "+currentOverlay.getTitle() ) );
 			
 			vb.getChildren().add( new ImageView( currentOverlay.getImage() ) );
+			
+			EntityRef ref = currentOverlay.getReference();
+			if( ref != null )
+			{
+				ServerUnitType type = ref.getType();
+				try {
+					EntityFormView view = new EntityFormView(type, main.rc, main.sc.getTypeCache(type), ref.getId() );
+					vb.getChildren().add( view.create() );
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
 		}
 		
 	}

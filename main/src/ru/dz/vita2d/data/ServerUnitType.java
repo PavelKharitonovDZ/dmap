@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import javafx.util.Pair;
+
 /**
  * This is actually a string with a server unitType name
  * @author dz
@@ -56,5 +58,23 @@ public class ServerUnitType
 	public String toString() {
 		return plural;
 	}
+
+	static class sutptr {
+		ServerUnitType t = null;
+	}
 	
+	public static ServerUnitType fromString(String unitType )
+	{
+		sutptr p = new sutptr();
+		
+		all.forEach( t -> { if( t.plural.equalsIgnoreCase(unitType) ) p.t = t; });
+		
+		if(p.t == null)
+			all.forEach( t -> { if( t.single.equalsIgnoreCase(unitType) ) p.t = t; });
+		
+		if(p.t == null)
+			System.out.println("Unknown Unit Type +"+unitType); // TODO log
+		
+		return p.t;
+	}
 }

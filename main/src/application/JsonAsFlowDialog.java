@@ -22,6 +22,7 @@ import ru.dz.vita2d.data.PerTypeCache;
 import ru.dz.vita2d.data.ServerCache;
 import ru.dz.vita2d.data.ServerUnitType;
 
+@Deprecated
 public class JsonAsFlowDialog 
 {
 	private JSONObject jo;			// Data

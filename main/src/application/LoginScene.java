@@ -107,8 +107,8 @@ public class LoginScene {
 	private void doLogin(String login, String pw) {
 		try {
 			rc.login(login,pw);
-			
-			System.out.println("login successful, user is "+login);
+			// TODO log
+			//System.out.println("login successful, user is "+login);
 
 			main.afterLogin();
 		} catch (java.net.ProtocolException e) {

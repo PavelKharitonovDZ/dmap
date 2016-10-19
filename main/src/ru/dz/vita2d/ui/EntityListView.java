@@ -25,24 +25,31 @@ import javafx.scene.text.Font;
 import ru.dz.vita2d.data.DataConvertor;
 import ru.dz.vita2d.data.PerTypeCache;
 import ru.dz.vita2d.data.RestCaller;
+import ru.dz.vita2d.data.ServerCache;
 import ru.dz.vita2d.data.ServerUnitType;
-
+/**
+ * </p>Display list of entities.</p>
+ * 
+ * @author dz
+ *
+ */
 public class EntityListView {
 
 	private ServerUnitType type;
 	private RestCaller rc;
-	private PerTypeCache tp;
+	private PerTypeCache tc;
 
 	private Set<String> fieldNames = new HashSet<>();
+	private String title = "";
 
 
-	public EntityListView(ServerUnitType type, RestCaller rc) {
+	public EntityListView(ServerUnitType type, RestCaller rc, ServerCache sc) {
 		super();
 
 		this.type = type;
 		this.rc = rc;
-
-		tp = new PerTypeCache(type, rc);
+		title = "Список: "+type.getDisplayName();
+		tc = sc.getTypeCache(type); //new PerTypeCache(type, rc);
 	}
 
 
@@ -61,16 +68,11 @@ public class EntityListView {
 		table.getSelectionModel().setCellSelectionEnabled(true);
 		table.setMinWidth(600);
 
+		placeFirst(table, "shortName");
+		//placeFirst(table, "unitName"); // no shortName in 
 
 		fieldNames.forEach(fName -> {
-			String readableName = tp.getFieldName(fName);
-			if( readableName == null )
-				return;
-
-			TableColumn<Map, String> col = new TableColumn<>(readableName); // TODO Must be human readable name
-			col.setCellValueFactory(new MapValueFactory(fName));
-
-			table.getColumns().add(col);
+			addColumn(table, fName);
 		});
 
 		table.setRowFactory( tv -> {
@@ -89,15 +91,18 @@ public class EntityListView {
 					//System.out.println(id);
 
 					try {
+						/*
 						JSONObject record = rc.getDataRecord(type, id);
 						//System.out.println(record);
 						JSONObject entity = record.getJSONObject("entity");
 
-						JsonAsFlowDialog jd = new JsonAsFlowDialog( ServerUnitType.MEANS, entity );
+						//JsonAsFlowDialog jd = new JsonAsFlowDialog( ServerUnitType.MEANS, entity );
+						JsonAsFlowDialog jd = new JsonAsFlowDialog( type, entity );
 						//jd.setDataModel(sc.getFieldNamesMap());
-						jd.setCache( tp );
+						jd.setCache( tc );
 						jd.show();
-
+						*/
+						EntityFormWindow fw = new EntityFormWindow(type, rc, tc, id);
 
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -121,12 +126,35 @@ public class EntityListView {
 		return vbox;
 	}
 
+
+
+	private void placeFirst(TableView<Map> table, String exception) {
+		if(fieldNames.contains(exception))
+		{
+			fieldNames.remove(exception);
+			addColumn(table, exception);
+		}
+	}
+
+
+
+	private void addColumn(TableView<Map> table, String fName) {
+		String readableName = tc.getFieldName(fName);
+		if( readableName == null )
+			return;
+
+		TableColumn<Map, String> col = new TableColumn<>(readableName);
+		col.setCellValueFactory(new MapValueFactory(fName));
+
+		table.getColumns().add(col);
+	}
+
 	private ObservableList<Map> generateDataInMap() {
 		//int max = 10;
 		ObservableList<Map> allData = FXCollections.observableArrayList();
 
 		try {
-			rc.login("show","show");
+			//rc.login("show","show");
 
 			JSONObject objList = rc.loadList(type);
 			//JSONObject objList = rc.loadList(ServerUnitType.JOBS);
@@ -190,12 +218,13 @@ public class EntityListView {
 		odata.keySet().forEach(fName -> 
 		{ 
 			Object data = odata.get(fName);
+			String type = tc.getFieldType(fName);
 			if(
 					(data instanceof String)
 					|| (data instanceof Integer) 
 					) 
 			{
-				dataRow.put(fName, data.toString()); 
+				dataRow.put(fName, DataConvertor.readableValue( type, data.toString() )); 
 				fieldNames.add(fName); 
 			}
 			else if(data instanceof Boolean)
@@ -219,6 +248,12 @@ public class EntityListView {
 			}
 
 		} );
+	}
+
+
+
+	public String getTitle() {
+		return title;
 	}
 
 }

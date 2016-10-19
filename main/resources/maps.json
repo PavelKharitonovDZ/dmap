@@ -32,7 +32,8 @@
 				"name":"ДПРМ28Л",
 				"file":"dprm28l-icon.png",
 				"x":1572, "y":874,
-				"link-id":"orla"
+				"link-id":"orla",
+				"ref-unit-type":"obj", "ref-unit-id":2047461
 				},
 			]
 		},

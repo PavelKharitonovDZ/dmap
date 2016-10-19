@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import ru.dz.vita2d.data.RestCaller;
+import ru.dz.vita2d.data.ServerCache;
 import ru.dz.vita2d.data.ServerUnitType;
 
 public class TableViewSample extends Application {
@@ -11,7 +12,7 @@ public class TableViewSample extends Application {
 	//ServerUnitType type = ServerUnitType.OBJECTS;
 	ServerUnitType type = ServerUnitType.OBJECTS;
 	RestCaller rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-release");
-	//PerTypeCache tp = new PerTypeCache(type, rc);
+	ServerCache sc = new ServerCache(rc);
 
 	private EntityListView view;
 	
@@ -22,7 +23,7 @@ public class TableViewSample extends Application {
 	@Override
 	public void start(Stage stage) 
 	{
-		view = new EntityListView(type, rc);
+		view = new EntityListView(type, rc, sc);
 		
 		Scene scene = new Scene(view.create());
 		

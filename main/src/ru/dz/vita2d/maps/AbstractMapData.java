@@ -41,8 +41,9 @@ public abstract class AbstractMapData implements IMapData
 	List<MapOverlay> overlays = new LinkedList<MapOverlay>();
 	
 	public void addOverlay(MapTileDefinition mtd, IMapData hyperlink ) {
-		MapOverlay mo = new MapOverlay(mtd.getFile(), mtd.getX(), mtd.getY(), hyperlink);
-		mo.setTileDefinition( mtd );
+		//MapOverlay mo = new MapOverlay(mtd.getFile(), mtd.getX(), mtd.getY(), hyperlink);
+		//mo.setTileDefinition( mtd );
+		MapOverlay mo = new MapOverlay(mtd, hyperlink);
 		
 		SpriteAnimation sa = mtd.getSpriteAnimation();
 		if( sa != null) mo.setAnimation(sa);

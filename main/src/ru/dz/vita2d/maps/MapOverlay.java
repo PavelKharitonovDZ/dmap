@@ -2,6 +2,7 @@ package ru.dz.vita2d.maps;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import ru.dz.vita2d.data.EntityRef;
 import ru.dz.vita2d.ui.anim.SpriteAnimation;
 
 /**
@@ -19,8 +20,8 @@ public class MapOverlay
 
 	private Image image;
 	private ImageView iv;
-	private final double xSize;
-	private final double ySize;
+	private double xSize;
+	private double ySize;
 	private MapTileDefinition mtd;
 
 	
@@ -30,15 +31,30 @@ public class MapOverlay
 		this.yPos = y;
 		this.hyperlink = hyperlink;
 		
+		load();
+		
+	}
+
+	public MapOverlay(MapTileDefinition mtd, IMapData hyperlink) {
+		this.mtd = mtd;		
+
+		this.iconUrl = mtd.getFile();
+		this.xPos = mtd.getX();
+		this.yPos = mtd.getY();
+		this.hyperlink = hyperlink;
+		
+		load();
+	}
+
+	private void load() {
 		image = new Image(iconUrl);
 		iv = new ImageView( image );	
 		
-		iv.setX(x);
-		iv.setY(y);
+		iv.setX(xPos);
+		iv.setY(yPos);
 		
 		xSize = image.getWidth();
 		ySize = image.getHeight();
-		
 	}
 
 	public void setAnimation(SpriteAnimation sa)
@@ -87,7 +103,15 @@ public class MapOverlay
 	public Image getImage() {
 		return image;		
 	}
-	
+
+	/**
+	 * If tile refers to some data entity, return reference.
+	 * @return
+	 */
+	public EntityRef getReference()
+	{
+		return mtd == null ? null : mtd.getReference();
+	}
 	
 	
 }

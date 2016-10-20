@@ -40,12 +40,12 @@ public class EntityFormView {
 	private PerTypeCache tc;
 
 	private JSONObject jo;			// Data
-	
+
 	private Label shortNameLabel = new Label("");
 	private int entityId;
-	
+
 	private String title = "";
-	
+
 	/**
 	 * Display entity data.
 	 * 
@@ -55,7 +55,7 @@ public class EntityFormView {
 	 * @param entityId - id of object to display (will request from server)
 	 * @throws IOException 
 	 */
-	
+
 	public EntityFormView(ServerUnitType type, RestCaller rc, PerTypeCache tc, int entityId) throws IOException 
 	{
 		super();
@@ -64,19 +64,19 @@ public class EntityFormView {
 		this.rc = rc;
 		this.tc = tc;
 		this.entityId = entityId;
-		
+
 		JSONObject record;
 
 		//record = rc.getDataRecord(type, entityId);
 		record = tc.getServerCache().getDataRecord(type, entityId);
-		
+
 		//System.out.println(record);
 		JSONObject entity = record.getJSONObject("entity");
 
 		jo = entity;
 	}
 
-	
+
 	public Pane create()	
 	{
 		shortNameLabel.setFont(new Font("Arial", 20));
@@ -109,7 +109,7 @@ public class EntityFormView {
 			});
 			return row ;
 		});
-		*/
+		 */
 
 		final VBox vbox = new VBox();
 
@@ -120,47 +120,64 @@ public class EntityFormView {
 		return vbox;
 	}
 
-	
+
 	private ObservableList<Map> generateDataInMap() {
 		//int max = 10;
 		ObservableList<Map> allData = FXCollections.observableArrayList();
 
 		for( String key : jo.keySet() )
-	    {
-	    	Object object = jo.get(key);
-	    	
+		{
+			Object object = jo.get(key);
+
+			/*
 	    	// Skip complex ones yet
 	    	if (object instanceof JSONObject) {
 				//JSONObject new_name = (JSONObject) object;
 				continue;
 			}
+			 */
 
-	    	
-	    	if( "shortName".equalsIgnoreCase(key))
-	    	{
-	    		//dialog.setTitle("Средство '"+object+"'");
-	    		title = type.getDisplayName()+": "+object.toString();
-	    		shortNameLabel.setText(title);
-	    	}
-	    	
+			if( "shortName".equalsIgnoreCase(key))
+			{
+				//dialog.setTitle("Средство '"+object+"'");
+				title = type.getDisplayName()+": "+object.toString();
+				shortNameLabel.setText(title);
+			}
+
+			/*
 			String fieldName = tc.getFieldName(key);
 			String fieldType = tc.getFieldType(key);
-			
+
 			if(fieldName == null)
 				continue;
-			
 			String val = DataConvertor.readableValue( fieldType, object.toString() );
-			
+
 			Map<String, String> dataRow = new HashMap<>();
 
 			dataRow.put("fn", fieldName );
 			dataRow.put("fv", val );
-			
+
 			allData.add(dataRow);
-			
-	    }	    
-		
-		
+			 */
+			DataConvertor.parseAnything(key, object, (fName,fieldVal) -> {
+				String fieldName = tc.getFieldName(key);
+				String fieldType = tc.getFieldType(fName);
+				if( fieldName != null )
+				{
+					String val = DataConvertor.readableValue( fieldType, fieldVal ); 
+
+					Map<String, String> dataRow = new HashMap<>();
+
+					dataRow.put("fn", fieldName );
+					dataRow.put("fv", val );
+
+					allData.add(dataRow);
+				}
+			});
+
+		}	    
+
+
 
 		return allData;
 	}
@@ -169,6 +186,6 @@ public class EntityFormView {
 	public String getTitle() {
 		return title;
 	}
-	
+
 
 }

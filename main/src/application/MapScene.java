@@ -442,7 +442,7 @@ public class MapScene {
 		
 		//vb.getChildren().clear();
 		
-		vb.getChildren().add( new Label("Карта: "+mData.getTitle()) );
+		//vb.getChildren().add( new Label("Карта: "+mData.getTitle()) );
 		
 		if( currentOverlay != null )
 		{

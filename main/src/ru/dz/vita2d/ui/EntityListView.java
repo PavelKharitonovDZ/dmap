@@ -215,7 +215,16 @@ public class EntityListView {
 		odata.keySet().forEach(fName -> 
 		{ 
 			Object data = odata.get(fName);
-			String type = tc.getFieldType(fName);
+			//String type = tc.getFieldType(fName);
+			
+			DataConvertor.parseAnything(fName, data, (fieldName,fieldVal) -> {
+				String fieldType = tc.getFieldType(fName);
+				dataRow.put(fieldName, DataConvertor.readableValue( fieldType, fieldVal )); 
+				fieldNames.add(fieldName); 
+				
+			});
+			
+			/*
 			if(
 					(data instanceof String)
 					|| (data instanceof Integer) 
@@ -243,7 +252,7 @@ public class EntityListView {
 			{
 				//System.out.println("class = "+ data.getClass()+" "+fName+"="+data );
 			}
-
+			*/
 		} );
 	}
 

@@ -1,6 +1,8 @@
 package ru.dz.vita2d.data;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -176,7 +178,7 @@ public class RestCaller
 		System.out.println("Icon = "+data.toString());
 	}
 
-
+/*
 	@Deprecated
 	public JSONObject getMeansRecord( int meanId ) throws IOException
 	{
@@ -211,7 +213,7 @@ public class RestCaller
 
 		return out;
 	}
-
+*/
 
 
 
@@ -238,19 +240,7 @@ public class RestCaller
 		path += "/?page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
 
 		JSONObject jo = new JSONObject();
-		/*		
-		jo.put("sort", "id" );
-		jo.put("order", "asc" );
-		jo.put("size", 1000 );
-		jo.put("page", 1 );
-		jo.put("_", "000" );
-		 */		
-		//System.out.println(jo.toString());
-
 		JSONObject out = post(path, jo.toString());
-		//JSONObject out = post(path, null);
-
-		//JSONObject out = getJSON(path);
 
 		return out;
 	}
@@ -412,6 +402,21 @@ public class RestCaller
 		return baseUrl;
 	}
 
+	
+	
+	public static void saveToFile( String name, String data )
+	{
+		try {
+			FileOutputStream os = new FileOutputStream("c:/tmp/"+name);
+			os.write(data.getBytes());
+			os.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
 	public static void main(String[] args) 
 	{	
 		//RestCaller rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-test");
@@ -428,19 +433,37 @@ public class RestCaller
 			/*			
 			JSONObject mr = rc.getMeansRecord( 2441372 );
 			System.out.println("Mean = "+mr.toString());
-
-			JSONObject mdm = rc.getDataModel(ServerUnitType.MEANS);//rc.getMeansDataModel();
-			System.out.println("Mean Data Model = "+mdm.toString());
 			 */			
 
+			JSONObject mdm = rc.getDataModel(ServerUnitType.MEANS);//rc.getMeansDataModel();
+			//System.out.println("Mean Data Model = "+mdm.toString());
+			saveToFile( "means_model", mdm.toString() );
+
+			JSONObject odm = rc.getDataModel(ServerUnitType.OBJECTS);//rc.getMeansDataModel();
+			saveToFile( "objs_model", odm.toString() );
+
+			
+			JSONObject meanList = rc.loadList(ServerUnitType.MEANS);
+			//dumpJson(objList);
+			//System.out.println("List = "+objList.toString());
+			saveToFile( "means_list", meanList.toString() );
 
 			JSONObject objList = rc.loadList(ServerUnitType.OBJECTS);
 			//dumpJson(objList);
-			System.out.println("List = "+objList.toString());
+			//System.out.println("List = "+objList.toString());
+			saveToFile( "objs_list", objList.toString() );
 
+			
+			
 			JSONObject obj = rc.getDataRecord(ServerUnitType.OBJECTS, 740316);
 			//dumpJson(obj);
-			System.out.println("Obj = "+obj.toString());
+			//System.out.println("Obj = "+obj.toString());
+			saveToFile( "obj_one", obj.toString() );
+			
+			JSONObject mean = rc.getDataRecord(ServerUnitType.MEANS, 740316);
+			saveToFile( "mean_one", mean.toString() );
+			
+			
 
 		} catch (MalformedURLException e) {
 

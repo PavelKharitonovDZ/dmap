@@ -145,7 +145,7 @@ public class MapScene {
 		loginMenuItem.setOnAction(actionEvent -> main.logout());
 
 		MenuItem exitMenuItem = new MenuItem("Выход (выключить планшет)");
-		exitMenuItem.setOnAction(actionEvent -> Platform.exit());
+		exitMenuItem.setOnAction(actionEvent -> main.requestShutdown());
 		exitMenuItem.setAccelerator(KeyCombination.keyCombination("Alt+F4"));
 
 
@@ -215,22 +215,7 @@ public class MapScene {
 		Menu aboutMenu = new Menu("О системе");
 
 		MenuItem version = new MenuItem("Версия");
-		version.setOnAction(actionEvent -> {
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Версия системы");
-			alert.setHeaderText("ОРВД Планшет Инженера");
-
-			String s =
-					"Версия фронтального приложения: 0.1\n"+
-							"Версия сервера: "+main.rc.getServerVersion()+"\n"+
-							"Точка запуска: "+main.getHostServices().getCodeBase()+"\n"+
-							"Базовая ссылка: "+main.getHostServices().getDocumentBase()+"\n" +
-							"Пользователь: "+main.rc.getLoggedInUser()+"\n"
-							;
-
-			alert.setContentText(s);
-			alert.show();
-		});
+		version.setOnAction(actionEvent -> showAbout());
 
 		MenuItem aboutDz = new MenuItem("Digital Zone");
 		aboutDz.setOnAction(actionEvent -> main.getHostServices().showDocument(Defs.HOME_URL));
@@ -244,6 +229,33 @@ public class MapScene {
 
 		//menuBar.getMenus().addAll(fileMenu, webMenu, sqlMenu);
 		menuBar.getMenus().addAll(fileMenu, navMenu, dataMenu, aboutMenu );
+	}
+
+
+
+
+
+
+
+
+
+
+	private void showAbout() {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Версия системы");
+		alert.setHeaderText("ОРВД Планшет Инженера");
+
+		String s =
+				"Версия программы: \t"+Defs.VERSION+"\n"+
+				"Версия сервера:    \t\t"+main.rc.getServerVersion()+"\n"+
+				"URL сервера:       \t\t"+main.rc.getServerURL()+"\n"+
+				"Базовая ссылка:    \t\t"+main.getHostServices().getDocumentBase()+"\n"+ 
+				"Пользователь:      \t\t"+main.rc.getLoggedInUser()+"\n"
+				//+"Точка запуска:     \t\t"+main.getHostServices().getCodeBase()+"\n"
+				;
+
+		alert.setContentText(s);
+		alert.show();
 	}
 
 	

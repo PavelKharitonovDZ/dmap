@@ -39,14 +39,14 @@ public class RestCaller
 		// Let cookie authorization work
 		CookieManager cm = new CookieManager();
 		CookieHandler.setDefault(cm);
-		
+
 	}
 
 
 	static String loadString(InputStream is) throws IOException
 	{
 		StringBuilder sb = new StringBuilder();		
-		
+
 		InputStreamReader in = new InputStreamReader(is,"UTF-8");
 
 		BufferedReader br = new BufferedReader(in);
@@ -117,7 +117,7 @@ public class RestCaller
 		HttpURLConnection conn = mkConn(urlTail);
 		conn.setRequestMethod("POST");
 		conn.setRequestProperty("Content-Type", "application/json");
-		
+
 		if(postData != null)
 		{
 			conn.setDoOutput(true);
@@ -159,9 +159,9 @@ public class RestCaller
 
 		//String data = post("rest/login", "{\"login\":\"show\",\"password\":\"show\"}");
 		JSONObject data = post("rest/login", jo.toString() );
-		
+
 		loggedInUser = login;
-		
+
 		//System.out.println("Logged in\n");
 
 	}
@@ -191,7 +191,7 @@ public class RestCaller
 	{
 
 		String data = getString( "resources/models/means-form.js" );
-		
+
 		// This page gives out not a clean JSON but JavaScript assignment 
 		//data = data.replaceAll("^\\$v\\.models\\[\\'means-form\\'\\]=", "" );
 
@@ -201,60 +201,60 @@ public class RestCaller
 			System.out.println("no '=' sign in means data model "+data); // TODO logging
 			return null;
 		}
-		
+
 		data = data.substring(eqpos+1); // skip all up to and incl '=' sign
-		
-		
+
+
 		//System.out.println("model "+data);
-		
+
 		JSONObject out = new JSONObject(data);
-		
+
 		return out;
 	}
 
 
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
 	static final String LIST_REST_PATH = "rest/units/%s/list/";
-	
+
 	/**
 	 * Get list of objects of given type. 
 	 * @param type See ServerUnitType constants for types.
 	 * @return JSON with data
 	 * @throws IOException
 	 */
-	
+
 	public JSONObject loadList(ServerUnitType type) throws IOException
 	{
 		String path = String.format(LIST_REST_PATH, type);
-		
+
 		//path += "/?size=20&page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
 		path += "/?page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
-		
+
 		JSONObject jo = new JSONObject();
-/*		
+		/*		
 		jo.put("sort", "id" );
 		jo.put("order", "asc" );
 		jo.put("size", 1000 );
 		jo.put("page", 1 );
 		jo.put("_", "000" );
-*/		
+		 */		
 		//System.out.println(jo.toString());
-		
+
 		JSONObject out = post(path, jo.toString());
 		//JSONObject out = post(path, null);
 
 		//JSONObject out = getJSON(path);
-		
+
 		return out;
 	}
-	
+
 
 	/**
 	 * <p>Get object of given type.<p> 
@@ -263,12 +263,13 @@ public class RestCaller
 	 * @return JSON with data
 	 * @throws IOException
 	 */
-	
+
 	public JSONObject getDataRecord( ServerUnitType type, int id ) throws IOException
 	{
 		JSONObject data = getJSON( String.format( "rest/%s/view/%d/", type, id ) );
 		return data;
 	}
+
 
 	/**
 	 * <p>Get object of given type.<p> 
@@ -292,9 +293,9 @@ public class RestCaller
 	public JSONObject getDataModel(ServerUnitType unitType) throws IOException
 	{
 		String data = getString( String.format( "resources/models/%s-form.js", unitType ) );
-		
+
 		//jsEval(data);
-		
+
 		// This page gives out not a clean JSON but JavaScript assignment 
 		//data = data.replaceAll("^\\$v\\.models\\[\\'means-form\\'\\]=", "" );
 
@@ -304,49 +305,113 @@ public class RestCaller
 			System.out.println("no '=' sign in means data model "+data); // TODO logging
 			return null;
 		}
-		
+
 		data = data.substring(eqpos+1); // skip all up to and incl '=' sign
-		
+
 		JSONObject out = new JSONObject(data);		
 		return out;
 	}
-	
+
 	/*
 	private ScriptEngineManager engineManager = new ScriptEngineManager();
-	
+
 	private String jsEval(String jsCode)
 	{
 		ScriptEngine engine = engineManager.getEngineByName("nashorn");
 
 		try {
 			System.out.println(jsCode);
-			
+
 			String ret = "";
-			
+
 			engine.put("ret", ret);
-			
-			
+
+
 			engine.eval("var $v; $v = new Object(); $v.models = new Object();");
 			engine.eval(jsCode+";");
 			engine.eval("ret = \"\" + $v.models['means-form'] ;");
 			//String ret = (String) engine.getContext().getAttribute("$v.models['means-form']");
 
 			ret = (String) engine.get("ret");
-			
+
 			System.out.println(ret);
 			return ret;
 		} catch (ScriptException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return "";
 	}
-*/	
-	
-	
-	
-	
+	 */	
+
+
+
+
+
+	private final Object serverMutex = new Object();
+	private String serverVersion = null;
+
+	/**
+	 * <p>Get server version by parsing web site index page.</p>
+	 * <p>TODO: make REST API call for that!</p>
+	 * @return Server version string.
+	 */
+	public String getServerVersion() {
+		synchronized (serverMutex) {
+			if( serverVersion == null )
+				loadServerVersion();
+			if( serverVersion == null )
+				serverVersion = "?.?";
+			return serverVersion;
+		}
+	}
+
+
+	private void loadServerVersion() {
+		try {
+			String indexPage = getString("index/");
+
+			int pos = indexPage.indexOf("Версия:");
+			if(pos < 0) return;
+			
+			pos += 7; // skip word
+			
+			String rest = indexPage.substring(pos);
+			
+			int endPos = rest.indexOf("<");
+			if(endPos <= 0) return;
+			if(endPos > 10) endPos = 10;
+			
+			serverVersion = rest.substring(0, endPos).trim();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
+	public String getLoggedInUser() {
+		return loggedInUser;
+	}
+
+
+
+
+	static public void dumpJson( JSONObject jo )
+	{
+		for( String key : jo.keySet() )
+		{
+			System.out.println(key);
+		}
+	}
+
+
+	public String getServerURL() {
+		return baseUrl;
+	}
+
 	public static void main(String[] args) 
 	{	
 		//RestCaller rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-test");
@@ -357,24 +422,26 @@ public class RestCaller
 
 			rc.login("show","show");
 			//rc.getIcon("248");
+
+			rc.getServerVersion();
 			
-/*			
+			/*			
 			JSONObject mr = rc.getMeansRecord( 2441372 );
 			System.out.println("Mean = "+mr.toString());
 
 			JSONObject mdm = rc.getDataModel(ServerUnitType.MEANS);//rc.getMeansDataModel();
 			System.out.println("Mean Data Model = "+mdm.toString());
-*/			
-			
-			
+			 */			
+
+
 			JSONObject objList = rc.loadList(ServerUnitType.OBJECTS);
 			//dumpJson(objList);
 			System.out.println("List = "+objList.toString());
-			
+
 			JSONObject obj = rc.getDataRecord(ServerUnitType.OBJECTS, 740316);
 			//dumpJson(obj);
 			System.out.println("Obj = "+obj.toString());
-			
+
 		} catch (MalformedURLException e) {
 
 			e.printStackTrace();
@@ -386,29 +453,7 @@ public class RestCaller
 		}		
 
 	}
-
-
-	public String getServerVersion() {
-		// TODO Auto-generated method stub
-		return "?.?";
-	}
-
-
-	public String getLoggedInUser() {
-		return loggedInUser;
-	}
-
-
-
 	
-	static public void dumpJson( JSONObject jo )
-	{
-	    for( String key : jo.keySet() )
-	    {
-	    	System.out.println(key);
-	    }
-	}
 
-	
 
 }

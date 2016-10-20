@@ -12,6 +12,10 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -111,14 +115,17 @@ public class RestCaller
 	private JSONObject post(String urlTail, String postData) throws IOException
 	{
 		HttpURLConnection conn = mkConn(urlTail);
-		conn.setRequestMethod("GET");
-
-		conn.setDoOutput(true);
-		OutputStream os = conn.getOutputStream();
-		os.write(postData.getBytes());
-		os.flush();
-		os.close();
-
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/json");
+		
+		if(postData != null)
+		{
+			conn.setDoOutput(true);
+			OutputStream os = conn.getOutputStream();
+			os.write(postData.getBytes());
+			os.flush();
+			os.close();
+		}
 		checkResponceCode(conn);
 
 		InputStream is = conn.getInputStream();
@@ -155,7 +162,7 @@ public class RestCaller
 		
 		loggedInUser = login;
 		
-		System.out.println("Logged in\n");
+		//System.out.println("Logged in\n");
 
 	}
 
@@ -191,7 +198,7 @@ public class RestCaller
 		int eqpos = data.indexOf("=");
 		if( eqpos < 0)
 		{
-			System.out.println("no '=' sign in means data model "+data);
+			System.out.println("no '=' sign in means data model "+data); // TODO logging
 			return null;
 		}
 		
@@ -214,7 +221,7 @@ public class RestCaller
 	
 	
 	
-	static final String LIST_REST_PATH = "rest/%s/list/";
+	static final String LIST_REST_PATH = "rest/units/%s/list/";
 	
 	/**
 	 * Get list of objects of given type. 
@@ -223,20 +230,25 @@ public class RestCaller
 	 * @throws IOException
 	 */
 	
-	JSONObject loadList(ServerUnitType type) throws IOException
+	public JSONObject loadList(ServerUnitType type) throws IOException
 	{
 		String path = String.format(LIST_REST_PATH, type);
 		
+		//path += "/?size=20&page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
+		path += "/?page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
+		
 		JSONObject jo = new JSONObject();
+/*		
 		jo.put("sort", "id" );
 		jo.put("order", "asc" );
 		jo.put("size", 1000 );
 		jo.put("page", 1 );
 		jo.put("_", "000" );
-		
-		System.out.println(jo.toString());
+*/		
+		//System.out.println(jo.toString());
 		
 		JSONObject out = post(path, jo.toString());
+		//JSONObject out = post(path, null);
 
 		//JSONObject out = getJSON(path);
 		
@@ -254,7 +266,7 @@ public class RestCaller
 	
 	public JSONObject getDataRecord( ServerUnitType type, int id ) throws IOException
 	{
-		JSONObject data = post( String.format( "rest/%s/view/%d/", type, id ), "" );
+		JSONObject data = getJSON( String.format( "rest/%s/view/%d/", type, id ) );
 		return data;
 	}
 	
@@ -269,13 +281,15 @@ public class RestCaller
 	{
 		String data = getString( String.format( "resources/models/%s-form.js", unitType ) );
 		
+		//jsEval(data);
+		
 		// This page gives out not a clean JSON but JavaScript assignment 
 		//data = data.replaceAll("^\\$v\\.models\\[\\'means-form\\'\\]=", "" );
 
 		int eqpos = data.indexOf("=");
 		if( eqpos < 0)
 		{
-			System.out.println("no '=' sign in means data model "+data);
+			System.out.println("no '=' sign in means data model "+data); // TODO logging
 			return null;
 		}
 		
@@ -285,9 +299,38 @@ public class RestCaller
 		return out;
 	}
 	
+	/*
+	private ScriptEngineManager engineManager = new ScriptEngineManager();
 	
-	
-	
+	private String jsEval(String jsCode)
+	{
+		ScriptEngine engine = engineManager.getEngineByName("nashorn");
+
+		try {
+			System.out.println(jsCode);
+			
+			String ret = "";
+			
+			engine.put("ret", ret);
+			
+			
+			engine.eval("var $v; $v = new Object(); $v.models = new Object();");
+			engine.eval(jsCode+";");
+			engine.eval("ret = \"\" + $v.models['means-form'] ;");
+			//String ret = (String) engine.getContext().getAttribute("$v.models['means-form']");
+
+			ret = (String) engine.get("ret");
+			
+			System.out.println(ret);
+			return ret;
+		} catch (ScriptException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return "";
+	}
+*/	
 	
 	
 	
@@ -303,21 +346,22 @@ public class RestCaller
 			rc.login("show","show");
 			//rc.getIcon("248");
 			
-			/*
+/*			
 			JSONObject mr = rc.getMeansRecord( 2441372 );
 			System.out.println("Mean = "+mr.toString());
 
-			JSONObject mdm = rc.getMeansDataModel();
+			JSONObject mdm = rc.getDataModel(ServerUnitType.MEANS);//rc.getMeansDataModel();
 			System.out.println("Mean Data Model = "+mdm.toString());
-			*/
+*/			
 			
 			
 			JSONObject objList = rc.loadList(ServerUnitType.OBJECTS);
-			dumpJson(objList);
-			
+			//dumpJson(objList);
+			System.out.println("List = "+objList.toString());
 			
 			JSONObject obj = rc.getDataRecord(ServerUnitType.OBJECTS, 740316);
-			dumpJson(obj);
+			//dumpJson(obj);
+			System.out.println("Obj = "+obj.toString());
 			
 		} catch (MalformedURLException e) {
 

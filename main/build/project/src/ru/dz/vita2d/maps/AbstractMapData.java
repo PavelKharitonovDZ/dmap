@@ -8,6 +8,7 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import ru.dz.vita2d.ui.anim.SpriteAnimation;
 
 /**
  * Abstract implementation of map data - class that keeps internal representation
@@ -40,8 +41,13 @@ public abstract class AbstractMapData implements IMapData
 	List<MapOverlay> overlays = new LinkedList<MapOverlay>();
 	
 	public void addOverlay(MapTileDefinition mtd, IMapData hyperlink ) {
-		MapOverlay mo = new MapOverlay(mtd.getFile(), mtd.getX(), mtd.getY(), hyperlink);
-		mo.setTileDefinition( mtd );
+		//MapOverlay mo = new MapOverlay(mtd.getFile(), mtd.getX(), mtd.getY(), hyperlink);
+		//mo.setTileDefinition( mtd );
+		MapOverlay mo = new MapOverlay(mtd, hyperlink);
+		
+		SpriteAnimation sa = mtd.getSpriteAnimation();
+		if( sa != null) mo.setAnimation(sa);
+		
 		overlays.add(mo);		
 	}
 	

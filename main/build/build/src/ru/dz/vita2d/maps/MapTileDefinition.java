@@ -2,6 +2,10 @@ package ru.dz.vita2d.maps;
 
 import org.json.JSONObject;
 
+import javafx.util.Duration;
+import ru.dz.vita2d.data.EntityRef;
+import ru.dz.vita2d.ui.anim.SpriteAnimation;
+
 /**
  * Tile (Overlay) definition as loaded from JSON file. 
  * TODO name is not too good - there possibly will be tiles to combine map itself from. 
@@ -16,6 +20,8 @@ public class MapTileDefinition {
 		private int x;
 		private int y;
 		private MapDefinition mapDefinition;
+		private SpriteAnimation spriteAnimation;
+		private EntityRef reference;
 
 		/*
 		public MapTileDefinition( String id, String name, String file ) 
@@ -41,30 +47,30 @@ public class MapTileDefinition {
 			y = tile.getInt("y");
 			
 			//MapOverlay mo = new MapOverlay(file, x, y, hyperlink)
+			if( tile.has("anim-file-base") )
+			{
+				String afile = tile.getString("anim-file-base");
+				int acount = tile.getInt("anim-file-count");
+				
+				spriteAnimation = new SpriteAnimation( new Duration(1000), acount, afile);
+			}
 			
+			if( tile.has("ref-unit-type") )
+			{
+				String reftype = tile.getString("ref-unit-type");
+				int refid = tile.getInt("ref-unit-id");
+				reference = new EntityRef(reftype, refid);
+			}
 		}
 
-		public String getLinkId() {
-			return linkId;
-		}
+		public String getLinkId() {			return linkId;		}
+		public String getName() {			return name;		}
+		public String getFile() {			return file;		}
+		public int getX() {			return x;		}
+		public int getY() {			return y;		}		
+		public SpriteAnimation getSpriteAnimation() {			return spriteAnimation;		}
+		public EntityRef getReference() {			return reference;		}
 
-		public String getName() {
-			return name;
-		}
-
-		public String getFile() {
-			return file;
-		}
-
-		public int getX() {
-			return x;
-		}
-
-		public int getY() {
-			return y;
-		}
-		
-		
 		@Override
 		public String toString() {
 			return name+"@"+file;

@@ -2,7 +2,7 @@
 	"main-id":"main",
 	"maps":[
 		{
-			"name":"Главная карта",
+			"name":"Р“Р»Р°РІРЅР°СЏ РєР°СЂС‚Р°",
 			"id":"main",
 			"file":"map.png",
 			"attrs":{
@@ -11,42 +11,53 @@
 			},
 			"tiles":[
 				{
-				"name":"Локатор ОРЛ-А",
+				"name":"Р›РѕРєР°С‚РѕСЂ РћР Р›-Рђ",
 				"file":"orl-a-icon.png",
 				"x":926, "y":1205,
 				"link-id":"orla"
 				},
 				{
-				"name":"Локатор ОРЛ-Т",
+				"name":"Р›РѕРєР°С‚РѕСЂ РћР Р›-Рў",
 				"file":"orl-t-icon.png",
 				"x":1143, "y":1050,
 				"link-id":"orla"
 				},
 				{
-				"name":"Вышка АКДП",
+				"name":"Р’С‹С€РєР° РђРљР”Рџ",
 				"file":"akdp-icon.png",
 				"x":995, "y":499,
 				"link-id":"orla"
 				},
 				{
-				"name":"ДПРМ28Л",
+				"name":"Р”РџР Рњ28Р›",
 				"file":"dprm28l-icon.png",
 				"x":1572, "y":874,
-				"link-id":"orla"
+				"link-id":"orla",
+				"ref-unit-type":"obj", "ref-unit-id":2047461
 				},
 			]
 		},
 		{
-			"name":"ОРЛ-А",
+			"name":"Р›РѕРєР°С‚РѕСЂ РћР Р›-Рђ",
 			"id":"orla",
 			"file":"orl_a_map.png",
 			"attrs":{
 				"type":"outdoor",
 				"entity":"notifications"
-			}
+			},
+			"tiles":[
+				{
+				"name":"Р›РѕРєР°С‚РѕСЂ РћР Р›-Рђ",
+				"file":"orl-a-icon.png",
+				"x":725, "y":190,
+				"link-id":"orla",
+				"anim-file-base":"orl-anim/locator_%05d.png",
+				"anim-file-count":16
+				}
+			]
 		},
 		{
-			"name":"Здание",
+			"name":"Р›РѕРєР°С‚РѕСЂ РћР Р›-Рђ, РіР»Р°РІРЅРѕРµ Р·РґР°РЅРёРµ",
 			"id":"orla-build1",
 			"file":"plan.png",
 			"attrs":{
@@ -55,7 +66,7 @@
 			}
 		},
 		{
-			"name":"Щиток электрический",
+			"name":"Р©РёС‚РѕРє",
 			"id":"orla-build1-dev1",
 			"file":"device_00.png",
 			"attrs":{

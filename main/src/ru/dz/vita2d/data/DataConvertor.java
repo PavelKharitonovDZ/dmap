@@ -35,6 +35,7 @@ public class DataConvertor {
 			break;
 		}
 
+		case "multi":
 		case "integer":
 		case "positiveInteger":
 		case "positiveShort":

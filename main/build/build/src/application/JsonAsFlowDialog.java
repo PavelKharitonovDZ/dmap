@@ -17,18 +17,25 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import ru.dz.vita2d.data.DataConvertor;
+import ru.dz.vita2d.data.PerTypeCache;
 import ru.dz.vita2d.data.ServerCache;
+import ru.dz.vita2d.data.ServerUnitType;
 
+@Deprecated
 public class JsonAsFlowDialog 
 {
 	private JSONObject jo;			// Data
 	//private Map<String, String> dm = null; 	// Data model (field names)
 	private Dialog<ButtonType> dialog;
-	private ServerCache sc;
+	//private ServerCache sc;
+	private ServerUnitType type;
+	private PerTypeCache tc;
 
-	public JsonAsFlowDialog(JSONObject jo) 
+	public JsonAsFlowDialog(ServerUnitType type, JSONObject jo) 
 	{
-		this.jo = jo;		
+		this.jo = jo;
+		this.type = type;		
 	}
 /*	
 	void setDataModel(Map<String, String> fieldNamesMap )
@@ -36,6 +43,10 @@ public class JsonAsFlowDialog
 		this.dm = fieldNamesMap;		
 	}
 */
+	public void setCache(PerTypeCache tc) {
+		this.tc = tc;
+	}
+/*
 	public void setServerCache(ServerCache sc) {
 		this.sc = sc;
 	}
@@ -45,7 +56,7 @@ public class JsonAsFlowDialog
 		//String fn = dm.get(id);
 		//if( fn == null )			fn = id;
 		//return fn;
-		return sc.getFieldName(id);
+		return sc.getFieldName(type,id);
 	}
 
 	private String getFieldType( String id )
@@ -53,15 +64,15 @@ public class JsonAsFlowDialog
 		//String fn = dm.get(id);
 		//if( fn == null )			fn = id;
 		//return fn;
-		return sc.getFieldType(id);
+		return sc.getFieldType(type,id);
 	}
-	
+*/	
 	
 	public void show()
 	{
 		//Dialog<ButtonType> 
 		dialog = new Dialog<>();
-	    dialog.setTitle("Средство"); // TODO hardcode
+	    dialog.setTitle("РЎСЂРµРґСЃС‚РІРѕ"); // TODO hardcode
 
 	    final DialogPane dialogPane = dialog.getDialogPane();
 	    dialogPane.setContentText("Means:"); // TODO hardcode
@@ -107,9 +118,9 @@ public class JsonAsFlowDialog
 			//Label value = new Label(object.toString());
 
 	    	if( "shortName".equalsIgnoreCase(key))
-	    		dialog.setTitle("Средство '"+object+"'");
+	    		dialog.setTitle("РЎСЂРµРґСЃС‚РІРѕ '"+object+"'");
 	    	
-			String fieldName = getFieldName(key);
+			String fieldName = tc.getFieldName(key);
 			
 			if(fieldName == null)
 				continue;
@@ -160,27 +171,17 @@ public class JsonAsFlowDialog
 		String name;
 		String value;
 		String type;
-		boolean isBool = false;
 
 		public ViewItem(String id, String name, String _value) {
 			this.name = name;
 			this.value = _value;
 			
-			type = getFieldType(id);
+			type = tc.getFieldType(id);
 			
 			if( type == null )
 				type = "string";
-			
-			if( type.equalsIgnoreCase("bool")) 
-				isBool = true;
-			
-			if(isBool)
-			{
-				if( value.equalsIgnoreCase("true") )
-					value = "Да";
-				else
-					value = "Нет";
-			}
+
+			value = DataConvertor.readableValue(type, value);
 		}
 		
 		@Override

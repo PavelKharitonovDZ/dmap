@@ -88,7 +88,7 @@ public class MapScene {
 	
 	
 	
-	
+	/*
 	private HBox createButtons(double width, double height, ImageView imageView) 
 	{
 		Button reset = new Button("Сброс масштаба");
@@ -116,17 +116,13 @@ public class MapScene {
 			}
 		} );
 
-
-
-
-
 		//HBox buttons = new HBox(10, reset, full, m0, m1, m2, m3, r1, mroot);
 		HBox buttons = new HBox(10, reset, full, r1 );
 		buttons.setAlignment(Pos.CENTER);
 		buttons.setPadding(new Insets(10));
 		return buttons;
 	}
-
+	*/
 
 	// reset to the top left:
 	private void reset(ImageView imageView, double width, double height) {
@@ -351,8 +347,8 @@ public class MapScene {
 			}
 		});
 
-		imageView.setOnMouseMoved(e -> {
-
+		imageView.setOnMouseMoved(e -> 
+		{
 			Point2D mouseClick = imageViewToImage(imageView, new Point2D(e.getX(), e.getY()));
 
 			MapOverlay overlay = mData.getOverlayByRectangle( mouseClick.getX(), mouseClick.getY() );
@@ -363,17 +359,19 @@ public class MapScene {
 			}
 		});
 
-		
-		
-		HBox buttons = createButtons(width, height, imageView);
-		Tooltip tooltip = new Tooltip("Scroll to zoom, drag to pan");
-		Tooltip.install(buttons, tooltip);
-
+	
 		Pane container = new Pane(imageView);
-		container.setPrefSize(800, 600);
-
+		if(!Defs.FULL_SCREEN)
+		{
+			container.setPrefSize(800, 600);
+			//container.setPrefSize(1400, 800);
+			//container.setMinSize(900, 800);
+		}
+		
 		info = new Pane();
-		info.setPrefSize(400, 600);
+		if(!Defs.FULL_SCREEN)
+			info.setPrefSize(400, 600);
+		info.setPadding(new Insets(20)); // TODO wrong
 		fillInfo();
 
 		HBox mapAndInfo = new HBox(10, container, info);
@@ -386,17 +384,15 @@ public class MapScene {
 
 		fillMenu(menuBar);
 
-		//HBox links = createLinks();
 
-		//VBox root = new VBox(menuBar, links, container, buttons);
-		VBox root = new VBox(menuBar, mapAndInfo, buttons);
+		VBox root = new VBox(menuBar, mapAndInfo);
 		root.setFillWidth(true);
 		VBox.setVgrow(container, Priority.ALWAYS);
 
 		scene = new Scene(root);
 		primaryStage.setScene(scene);
 		primaryStage.setTitle( "ОРВД: " + mData.getTitle() ); //"ОРВД - Планшет Инженера");
-		primaryStage.show();
+		//primaryStage.show();
 	}
 
 	
@@ -429,6 +425,7 @@ public class MapScene {
 		info.getChildren().clear();
 		
 		VBox vb = new VBox(10);
+		//vb.setPadding(new Insets(10));
 		info.getChildren().add(vb);
 		
 		//vb.getChildren().clear();
@@ -447,7 +444,10 @@ public class MapScene {
 				ServerUnitType type = ref.getType();
 				try {
 					EntityFormView view = new EntityFormView(type, main.rc, main.sc.getTypeCache(type), ref.getId() );
-					vb.getChildren().add( view.create() );
+					Pane node = view.create();
+					//node.setMaxWidth(300);
+					vb.getChildren().add( node );
+					//VBox.setVgrow(node, Priority.ALWAYS);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -455,7 +455,7 @@ public class MapScene {
 			}
 			
 		}
-		
+			
 	}
 
 

@@ -12,6 +12,7 @@ import ru.dz.vita2d.data.RestCaller;
 import ru.dz.vita2d.data.ServerCache;
 import ru.dz.vita2d.maps.MapList;
 import ru.dz.vita2d.media.Player;
+import ru.dz.vita2d.ui.LoginFormWindow;
 
 
 public class Main extends Application 
@@ -39,6 +40,13 @@ public class Main extends Application
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
+		
+		if( Defs.FULL_SCREEN)
+		{
+			primaryStage.setMaximized(true);		
+			primaryStage.setResizable(false);
+		}
+		
 		/*
 		AnimationTimer at = new AnimationTimer() {			
 			@Override
@@ -54,16 +62,26 @@ public class Main extends Application
 		logout();
 	}    
 
+	LoginFormWindow lw;
+	
 	public void logout() {
 		//LoginScene ls = 
-		new LoginScene(rc, primaryStage, this );    	
+		//new LoginScene(rc, primaryStage, this );
+		new BackgroundScene( primaryStage );
+		lw = new LoginFormWindow(rc, login -> afterLogin() );
+
 	}
 
 	public void afterLogin() {
-		// Resets Scene 
+		// Resets Scene
+		lw.close();
 		MapScene ms = new MapScene( primaryStage, this );
-		ms.setMapData( ml.getRootMap() );//bigMapData);
-		primaryStage.centerOnScreen();
+		ms.setMapData( ml.getRootMap() );
+		
+		if( !Defs.FULL_SCREEN )
+			primaryStage.centerOnScreen();
+
+		//primaryStage.setMaximized(true);
 		//primaryStage.setMaximized(true);
 		Player.bell();
 	}

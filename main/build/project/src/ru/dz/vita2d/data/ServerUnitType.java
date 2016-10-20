@@ -1,5 +1,11 @@
 package ru.dz.vita2d.data;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Consumer;
+
+import javafx.util.Pair;
+
 /**
  * This is actually a string with a server unitType name
  * @author dz
@@ -7,30 +13,68 @@ package ru.dz.vita2d.data;
  */
 public class ServerUnitType 
 {
-	/*
-	static final public String UNIT_TYPE_OBJECTS = "objs";
-	static final public String UNIT_TYPE_MEANS = "means";
-	static final public String UNIT_TYPE_JOBS = "jobs";
-	static final public String UNIT_TYPE_EVENTS = "events";
-	*/
+	static private Set<ServerUnitType> all; 
+	static {
+		all = new HashSet<>();
+	}
 
-	static final public ServerUnitType OBJECTS = new ServerUnitType("objs");
-	static final public ServerUnitType MEANS = new ServerUnitType("means");
-	static final public ServerUnitType JOBS = new ServerUnitType("jobs");
-	static final public ServerUnitType EVENTS = new ServerUnitType("events");
+	static final public ServerUnitType OBJECTS = new ServerUnitType("obj","объект");
+	static final public ServerUnitType MEANS = new ServerUnitType("mean","средство");
+	static final public ServerUnitType JOBS = new ServerUnitType("job","работа");
+	static final public ServerUnitType EVENTS = new ServerUnitType("event","событие");
 	
+	private final String plural;
+	private final String single;
+	private final String displayName;
 	
-	private final String type;
-	
-	private ServerUnitType(String name) {
-		type = name;
+	private ServerUnitType(String name, String displayName) {
+		this.displayName = displayName;
+		plural = name+"s";
+		single = name;
+		
+		all.add(this);
 	}
 	
-	public String getTypeName() { return type; }
+	static public void forEach(Consumer<? super ServerUnitType> action)
+	{
+		all.forEach(action);
+	}
 	
+	/**
+	 * Single form.
+	 * @return type name as in JSON data.
+	 */
+	public String getObjectTypeName() { return single; }
+	
+	/**
+	 * Plural form.
+	 * @return type name as in requests.
+	 */
+	public String getPluralTypeName() { return plural; }
+	
+	public String getDisplayName() {		return displayName;	}
+
 	@Override
 	public String toString() {
-		return type;
+		return plural;
+	}
+
+	static class sutptr {
+		ServerUnitType t = null;
 	}
 	
+	public static ServerUnitType fromString(String unitType )
+	{
+		sutptr p = new sutptr();
+		
+		all.forEach( t -> { if( t.plural.equalsIgnoreCase(unitType) ) p.t = t; });
+		
+		if(p.t == null)
+			all.forEach( t -> { if( t.single.equalsIgnoreCase(unitType) ) p.t = t; });
+		
+		if(p.t == null)
+			System.out.println("Unknown Unit Type +"+unitType); // TODO log
+		
+		return p.t;
+	}
 }

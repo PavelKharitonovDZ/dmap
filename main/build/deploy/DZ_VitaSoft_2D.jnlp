@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="DZ_VitaSoft_2D.jar" size="14982926" download="eager" />
+    <jar href="DZ_VitaSoft_2D.jar" size="15412977" download="eager" />
     <jar href="libs\json-20160810.jar" size="54495" download="eager" />
   </resources>
   <jfx:javafx-desc  width="0" height="0" main-class="application.Main"  name="Engineer workpad" />

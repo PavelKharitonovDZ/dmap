@@ -20,9 +20,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ru.dz.vita2d.data.RestCaller;
 
+@Deprecated
 public class LoginScene {
-	TextField loginField;
-	TextField passwdField;
+	private TextField loginField;
+	private TextField passwdField;
 
 	//private static VBox root;
 	private RestCaller rc;

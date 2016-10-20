@@ -12,8 +12,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -39,11 +39,24 @@ public class LoginScene {
 		passwdField = new TextField();		
 		message = new Label();
 		message.setMinWidth(300);
-		
-        VBox container = new VBox( loginField, passwdField, message );
+				
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        //grid.setPadding(new Insets(10));
+        
+        grid.add(loginField, 1, 0);
+        grid.add(passwdField, 1, 1);
+        //grid.add(message, 0, 2);
+        
+        grid.add(new Label("РРјСЏ"), 0, 0);
+        grid.add(new Label("РџР°СЂРѕР»СЊ"), 0, 1);
+        
+        VBox container = new VBox( grid, message );
         container.setPadding(new Insets(10));
         container.setSpacing(10);
-		
+        
+        
         Image logo = new Image("logo.png");
         ImageView logoView = new ImageView(logo);
 
@@ -61,23 +74,23 @@ public class LoginScene {
 
 	        public void handle(KeyEvent ke) {
 	            if (ke.getCode() == KeyCode.ESCAPE) {
-	                System.out.println("Key Pressed: " + ke.getCode());
+	                //System.out.println("Key Pressed: " + ke.getCode());
 	                doDemoLogin();
 	            }
 	        }
 	    });
 		
 		primaryStage.setScene(me);
-        primaryStage.setTitle( "ОРВД: Вход в систему"  );
+        primaryStage.setTitle( "РћР Р’Р”: Р’С…РѕРґ РІ СЃРёСЃС‚РµРјСѓ"  );
         primaryStage.show();
 
 	}
 
 	private HBox createButtons() {
-        Button m1 = new Button("Войти");
+        Button m1 = new Button("Р’РѕР№С‚Рё");
         m1.setOnAction(e -> doLogin(loginField.getText(),passwdField.getText()) );
         
-        Button m2 = new Button("Демо [ESC]");
+        Button m2 = new Button("Р”РµРјРѕ [ESC]");
         m2.setOnAction(e -> doDemoLogin() );
         
         
@@ -94,15 +107,15 @@ public class LoginScene {
 	private void doLogin(String login, String pw) {
 		try {
 			rc.login(login,pw);
-			
-			System.out.println("login successful, user is "+login);
+			// TODO log
+			//System.out.println("login successful, user is "+login);
 
 			main.afterLogin();
 		} catch (java.net.ProtocolException e) {
 			// Login failed
-			message.setText("Неверный логин или пароль");
+			message.setText("РќРµРІРµСЂРЅС‹Р№ Р»РѕРіРёРЅ РёР»Рё РїР°СЂРѕР»СЊ");
 		} catch (IOException e) {
-			message.setText("Нет связи");
+			message.setText("РќРµС‚ СЃРІСЏР·Рё");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

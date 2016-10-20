@@ -1,10 +1,13 @@
 package application;
 
+import javafx.animation.AnimationTimer;
+
 // http://sv-web-15.vtsft.ru/orvd-release/index/#
 // http://sv-web-15.vtsft.ru/orvd-test/index/#
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import ru.dz.vita2d.data.RestCaller;
 import ru.dz.vita2d.data.ServerCache;
 import ru.dz.vita2d.maps.MapList;
@@ -25,10 +28,10 @@ public class Main extends Application
 		super.init();
 
 		//rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-test");
-		rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-release");
+		rc = new RestCaller(Defs.HOST_NAME);
 		sc = new ServerCache(rc);
 	
-		// Load data from local file with list of map
+		// Load data from local file with list of maps
 		ml = new MapList();
 
 	}
@@ -36,6 +39,18 @@ public class Main extends Application
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
+		/*
+		AnimationTimer at = new AnimationTimer() {			
+			@Override
+			public void handle(long now) {
+				System.out.println("at ");
+				
+			}
+		};
+		at.start();
+		*/
+		
+		//primaryStage.initStyle(StageStyle.DECORATED);
 		logout();
 	}    
 

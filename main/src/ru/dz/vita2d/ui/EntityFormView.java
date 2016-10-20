@@ -67,7 +67,8 @@ public class EntityFormView {
 		
 		JSONObject record;
 
-		record = rc.getDataRecord(type, entityId);
+		//record = rc.getDataRecord(type, entityId);
+		record = tc.getServerCache().getDataRecord(type, entityId);
 		
 		//System.out.println(record);
 		JSONObject entity = record.getJSONObject("entity");
@@ -85,7 +86,7 @@ public class EntityFormView {
 
 		table.setEditable(true);
 		table.getSelectionModel().setCellSelectionEnabled(true);
-		table.setMinWidth(600);
+		table.setMinWidth(470);
 
 		TableColumn<Map, String> col1 = new TableColumn<>("Поле");
 		col1.setCellValueFactory(new MapValueFactory("fn"));

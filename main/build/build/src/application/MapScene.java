@@ -29,33 +29,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ru.dz.vita2d.maps.DeviceMapData;
+import ru.dz.vita2d.data.EntityRef;
+import ru.dz.vita2d.data.ServerUnitType;
 import ru.dz.vita2d.maps.IMapData;
-import ru.dz.vita2d.maps.IndoorMapData;
 import ru.dz.vita2d.maps.MapOverlay;
-import ru.dz.vita2d.maps.OutoorMapData;
+import ru.dz.vita2d.ui.EntityFormView;
+import ru.dz.vita2d.ui.EntityListWindow;
 
 public class MapScene {
-
-	
-	// --------------------------------------------------
-	// To kill
-	// --------------------------------------------------
-/*	
-	OutoorMapData bigMapData = new OutoorMapData("map.png", "Карта объекта");
-	OutoorMapData mainMapData = new OutoorMapData("orl_a_map.png", "Карта ОРЛ-А");
-	IndoorMapData mainPlanData = new IndoorMapData("plan.png", "План здания");
-	DeviceMapData deviceData = new DeviceMapData("device_00.png", "Щиток"); 
-
-	{
-		bigMapData.addOverlay( "orl-a-icon.png", 926, 1205, mainMapData );
-	}
-*/
-	// --------------------------------------------------
-	
-	
-	
-	
+		
 	private static final int MIN_PIXELS = 10;
 
 	private Stage primaryStage;
@@ -109,27 +91,11 @@ public class MapScene {
 	
 	private HBox createButtons(double width, double height, ImageView imageView) 
 	{
-		Button reset = new Button("Сброс масштаба");
+		Button reset = new Button("РЎР±СЂРѕСЃ РјР°СЃС€С‚Р°Р±Р°");
 		reset.setOnAction(e -> reset(imageView, width / 2, height / 2));
 
-		Button full = new Button("Обзор");
+		Button full = new Button("РћР±Р·РѕСЂ");
 		full.setOnAction(e -> setOverviewScale());
-/*
-		Button m0 = new Button("Общая карта");
-		m0.setOnAction(e -> setMapData(bigMapData));        
-
-		Button m1 = new Button("Карта объекта");
-		m1.setOnAction(e -> setMapData(mainMapData));
-
-		Button m2 = new Button("Строение");
-		m2.setOnAction(e -> setMapData(mainPlanData) );
-
-		Button m3 = new Button("Щиток");
-		m3.setOnAction(e -> setMapData(deviceData) );
-
-		Button mroot = new Button("Map list test");
-		mroot.setOnAction(e -> setMapData(main.ml.getRootMap()) );
-*/
 
 		Button r1 = new Button("Means test");
 		r1.setOnAction(e -> {
@@ -140,9 +106,9 @@ public class MapScene {
 
 				JSONObject entity = mr.getJSONObject("entity");
 
-				JsonAsFlowDialog jd = new JsonAsFlowDialog( entity );
+				JsonAsFlowDialog jd = new JsonAsFlowDialog( ServerUnitType.MEANS, entity );
 				//jd.setDataModel(sc.getFieldNamesMap());
-				jd.setServerCache( main.sc );
+				jd.setCache( main.sc.getTypeCache(ServerUnitType.MEANS) );
 				jd.show();
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
@@ -177,12 +143,12 @@ public class MapScene {
 	
 	private void fillMenu(MenuBar menuBar) {
 		// File menu - new, save, exit
-		Menu fileMenu = new Menu("Файл");
+		Menu fileMenu = new Menu("Р¤Р°Р№Р»");
 
-		MenuItem loginMenuItem = new MenuItem("Сменить пользователя");
+		MenuItem loginMenuItem = new MenuItem("РЎРјРµРЅРёС‚СЊ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ");
 		loginMenuItem.setOnAction(actionEvent -> main.logout());
 
-		MenuItem exitMenuItem = new MenuItem("Выход (выключить планшет)");
+		MenuItem exitMenuItem = new MenuItem("Р’С‹С…РѕРґ (РІС‹РєР»СЋС‡РёС‚СЊ РїР»Р°РЅС€РµС‚)");
 		exitMenuItem.setOnAction(actionEvent -> Platform.exit());
 		exitMenuItem.setAccelerator(KeyCombination.keyCombination("Alt+F4"));
 
@@ -192,21 +158,33 @@ public class MapScene {
 
 
 
-		Menu navMenu = new Menu("Навигация");
+		Menu navMenu = new Menu("РќР°РІРёРіР°С†РёСЏ");
 
-		MenuItem navHomeMap = new MenuItem("На общую карту");
+		MenuItem navHomeMap = new MenuItem("РќР° РѕР±С‰СѓСЋ РєР°СЂС‚Сѓ");
 		//navHomeMap.setOnAction(actionEvent -> setMapData(bigMapData));
 		navHomeMap.setOnAction(actionEvent -> setMapData(main.ml.getRootMap()));
 
-		Menu navMaps = new Menu("Карты");
+		Menu navMaps = new Menu("РљР°СЂС‚С‹");
 		//navMaps.setOnAction(actionEvent -> setMapData(bigMapData));
 		main.ml.fillMapsMenu( navMaps, this );
 
-		MenuItem navOverview = new MenuItem("Обзор");
+		MenuItem navOverview = new MenuItem("РћР±Р·РѕСЂ");
 		navOverview.setOnAction(actionEvent -> setOverviewScale());
 
 		navMenu.getItems().addAll( navHomeMap, navMaps, new SeparatorMenuItem(), navOverview );
 
+		
+		
+		Menu dataMenu = new Menu("Р”Р°РЅРЅС‹Рµ");
+
+		ServerUnitType.forEach(t -> {
+			MenuItem dataItem = new MenuItem(t.getDisplayName());
+			dataItem.setOnAction(actionEvent -> new EntityListWindow(t, main.rc, main.sc));
+
+			dataMenu.getItems().add(dataItem);			
+		});
+		
+		
 		/*
 	    Menu webMenu = new Menu("Web");
 	    CheckMenuItem htmlMenuItem = new CheckMenuItem("HTML");
@@ -238,20 +216,20 @@ public class MapScene {
 	    sqlMenu.getItems().add(tutorialManeu);
 		 */
 
-		Menu aboutMenu = new Menu("О системе");
+		Menu aboutMenu = new Menu("Рћ СЃРёСЃС‚РµРјРµ");
 
-		MenuItem version = new MenuItem("Версия");
+		MenuItem version = new MenuItem("Р’РµСЂСЃРёСЏ");
 		version.setOnAction(actionEvent -> {
 			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Версия системы");
-			alert.setHeaderText("ОРВД Планшет Инженера");
+			alert.setTitle("Р’РµСЂСЃРёСЏ СЃРёСЃС‚РµРјС‹");
+			alert.setHeaderText("РћР Р’Р” РџР»Р°РЅС€РµС‚ РРЅР¶РµРЅРµСЂР°");
 
 			String s =
-					"Версия фронтального приложения: 0.1\n"+
-							"Версия сервера: "+main.rc.getServerVersion()+"\n"+
-							"Точка запуска: "+main.getHostServices().getCodeBase()+"\n"+
-							"Базовая ссылка: "+main.getHostServices().getDocumentBase()+"\n" +
-							"Пользователь: "+main.rc.getLoggedInUser()+"\n"
+					"Р’РµСЂСЃРёСЏ С„СЂРѕРЅС‚Р°Р»СЊРЅРѕРіРѕ РїСЂРёР»РѕР¶РµРЅРёСЏ: 0.1\n"+
+							"Р’РµСЂСЃРёСЏ СЃРµСЂРІРµСЂР°: "+main.rc.getServerVersion()+"\n"+
+							"РўРѕС‡РєР° Р·Р°РїСѓСЃРєР°: "+main.getHostServices().getCodeBase()+"\n"+
+							"Р‘Р°Р·РѕРІР°СЏ СЃСЃС‹Р»РєР°: "+main.getHostServices().getDocumentBase()+"\n" +
+							"РџРѕР»СЊР·РѕРІР°С‚РµР»СЊ: "+main.rc.getLoggedInUser()+"\n"
 							;
 
 			alert.setContentText(s);
@@ -269,7 +247,7 @@ public class MapScene {
 		// --------------- Menu bar
 
 		//menuBar.getMenus().addAll(fileMenu, webMenu, sqlMenu);
-		menuBar.getMenus().addAll(fileMenu, navMenu, aboutMenu );
+		menuBar.getMenus().addAll(fileMenu, navMenu, dataMenu, aboutMenu );
 	}
 
 	
@@ -417,7 +395,7 @@ public class MapScene {
 
 		scene = new Scene(root);
 		primaryStage.setScene(scene);
-		primaryStage.setTitle( "ОРВД: " + mData.getTitle() ); //"ОРВД - Планшет Инженера");
+		primaryStage.setTitle( "РћР Р’Р”: " + mData.getTitle() ); //"РћР Р’Р” - РџР»Р°РЅС€РµС‚ РРЅР¶РµРЅРµСЂР°");
 		primaryStage.show();
 	}
 
@@ -455,13 +433,27 @@ public class MapScene {
 		
 		//vb.getChildren().clear();
 		
-		vb.getChildren().add( new Label("Карта: "+mData.getTitle()) );
+		vb.getChildren().add( new Label("РљР°СЂС‚Р°: "+mData.getTitle()) );
 		
 		if( currentOverlay != null )
 		{
-			vb.getChildren().add( new Label("Объект: "+currentOverlay.getTitle() ) );
+			vb.getChildren().add( new Label("РћР±СЉРµРєС‚: "+currentOverlay.getTitle() ) );
 			
 			vb.getChildren().add( new ImageView( currentOverlay.getImage() ) );
+			
+			EntityRef ref = currentOverlay.getReference();
+			if( ref != null )
+			{
+				ServerUnitType type = ref.getType();
+				try {
+					EntityFormView view = new EntityFormView(type, main.rc, main.sc.getTypeCache(type), ref.getId() );
+					vb.getChildren().add( view.create() );
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
 		}
 		
 	}

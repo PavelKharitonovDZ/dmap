@@ -17,13 +17,21 @@ public class PerTypeCache {
 	private Map <String,String> fieldNamesMap;
 	private Map <String,String> fieldTypesMap;
 
+	private ServerCache sc;
+
 	
 	
-	public PerTypeCache(ServerUnitType type, RestCaller rc) {
+	public PerTypeCache(ServerUnitType type, RestCaller rc, ServerCache sc) {
 		this.type = type;
 		this.rc = rc;
+		this.sc = sc;
 	}
 	
+	
+	public ServerCache getServerCache()
+	{
+		return sc;
+	}
 	
 	
 	public String getFieldName(String name)

@@ -257,7 +257,7 @@ public class RestCaller
 	
 
 	/**
-	 * Get object of given type. 
+	 * <p>Get object of given type.<p> 
 	 * @param type See ServerUnitType constants for types.
 	 * @param id object id
 	 * @return JSON with data
@@ -268,6 +268,18 @@ public class RestCaller
 	{
 		JSONObject data = getJSON( String.format( "rest/%s/view/%d/", type, id ) );
 		return data;
+	}
+
+	/**
+	 * <p>Get object of given type.<p> 
+	 * @param ref object reference (type+id)
+	 * @return JSON with data
+	 * @throws IOException
+	 */
+	
+	public JSONObject getDataRecord( EntityRef ref ) throws IOException
+	{
+		return getDataRecord( ref.getType(), ref.getId() );
 	}
 	
 	

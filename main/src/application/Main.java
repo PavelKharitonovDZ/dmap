@@ -82,8 +82,12 @@ public class Main extends Application
 		//LoginScene ls = 
 		//new LoginScene(rc, primaryStage, this );
 		new BackgroundScene( primaryStage );
+		
+		//do {
 		lw = new LoginFormWindow(rc, login -> afterLogin() );
+		//} while(!lw.isLoggedIn());
 
+		
 	}
 
 	public void afterLogin() {

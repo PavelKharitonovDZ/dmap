@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.function.Consumer;
 
 import application.Main;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -30,13 +31,14 @@ public class LoginFormView
 	private RestCaller rc;
 	private Label message;
 	private Consumer<String> loginDone = null;
+	private boolean loggedIn = false;
 
 	public LoginFormView(RestCaller rc, Consumer<String> loginDone) {
 		this.rc = rc;
 		this.loginDone = loginDone;		
 	}
 
-	
+
 	public Pane create()	
 	{
 		HBox buttons = createButtons();
@@ -75,37 +77,51 @@ public class LoginFormView
 		return root;
 	}
 
+	private Button loginButton = new Button("Войти");
+	private Button demoButton = new Button("Демо [ESC]");
+
 	private HBox createButtons() {
-		Button m1 = new Button("Войти");
-		m1.setOnAction(e -> doLogin(loginField.getText(),passwdField.getText()) );
-		m1.setDefaultButton(true);
+		//Button loginButton = new Button("Войти");
+		//loginButton.setOnAction(e -> doLogin(loginField.getText(),passwdField.getText()) );
+		loginButton.setOnAction(e -> doThreadedLogin(loginField.getText(),passwdField.getText()) );
+		
+		loginButton.setDefaultButton(true);
 
-		Button m2 = new Button("Демо [ESC]");
-		m2.setOnAction(e -> doDemoLogin() );
-		m2.setCancelButton(true);
+		//Button demoButton = new Button("Демо [ESC]");
+		demoButton.setOnAction(e -> doDemoLogin() );
+		demoButton.setCancelButton(true);
 
 
-		HBox buttons = new HBox(10, m1, m2 );
+		HBox buttons = new HBox(10, loginButton, demoButton );
 		buttons.setAlignment(Pos.CENTER);
 		buttons.setPadding(new Insets(10));
+
+		loginButton.setDisable(false);
+		demoButton.setDisable(false);
+
 		return buttons;
 	}
 
 	private void doDemoLogin() {
-		doLogin("show","show");
+		//doLogin("show","show");
+		doThreadedLogin("show","show");
 	}
 
 	private void doLogin(String login, String pw) {
 		try {
 			rc.login(login,pw);
 			// TODO log
-			System.out.println("login successful, user is "+login);
+			//System.out.println("login successful, user is "+login);
 
-			//main.afterLogin();
-			
+			loggedIn = true; // TODO wrong? check in RestCaller?
+
+			message.setText("Имя и пароль приняты, запуск приложения");
+			loginButton.setDisable(true);
+			demoButton.setDisable(true);
+
 			if(loginDone != null)
 				loginDone.accept(login);
-			
+
 		} catch (java.net.ProtocolException e) {
 			// Login failed
 			message.setText("Неверный логин или пароль");
@@ -114,6 +130,82 @@ public class LoginFormView
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+
+	private void doThreadedLogin(String login, String pw)
+	{
+		loginButton.setDisable(true);
+		demoButton.setDisable(true);
+		message.setText("Проверяем имя и пароль");
+
+		Thread r = new Thread(new Runnable() {			
+			@Override
+			public void run() {
+				boolean succ = false;
+				boolean ioerr = false;
+				try {
+					rc.login(login,pw);
+					succ = true;
+				} catch (java.net.ProtocolException e) {
+					// Login failed
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					ioerr = true;
+				}
+
+				backToWinThread(succ,ioerr);
+
+			}
+
+			private void backToWinThread(boolean succ, boolean ioerr) {
+				Platform.runLater(new Runnable() {					
+					@Override
+					public void run() {
+						afterLogin(succ,ioerr,login);						
+					}
+				});
+			}
+		});
+		
+		r.start();
+	}
+
+	private void afterLogin(boolean succ, boolean ioerr, String login)	
+	{
+		if( ioerr )
+		{
+			loginButton.setDisable(false);
+			demoButton.setDisable(false);
+			message.setText("Ошибка связи");
+		
+			return;
+		}
+		
+		if(!succ)
+		{
+			loginButton.setDisable(false);
+			demoButton.setDisable(false);
+			message.setText("Неверный логин или пароль");
+		}
+		else
+		{
+
+			loggedIn = true; // TODO wrong? check in RestCaller?			
+			message.setText("Имя и пароль приняты, запуск приложения");
+		}
+
+		if(succ && (loginDone != null))
+			loginDone.accept(login);
+
+	}
+
+
+	public boolean isLoggedIn() {
+
+		return loggedIn;
 	}
 
 

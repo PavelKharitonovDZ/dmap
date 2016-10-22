@@ -13,11 +13,12 @@ public class PerTypeCache {
 	private ServerUnitType type;
 
 	private RestCaller rc;
+	private ServerCache sc;
 
 	private Map <String,String> fieldNamesMap;
 	private Map <String,String> fieldTypesMap;
 
-	private ServerCache sc;
+	private Model model;
 
 	
 	
@@ -95,16 +96,18 @@ public class PerTypeCache {
 	
 	private void loadDataModel() throws IOException
 	{
-		//JSONObject mdm = rc.getMeansDataModel();
 		JSONObject mdm = rc.getDataModel(type);
-		//RestCaller.dumpJson(mdm);
+		parseModel(mdm);
+		model = new Model(mdm);
 
-		//System.out.println();
+	}
 
+
+	private void parseModel(JSONObject model) {
 		fieldNamesMap = new HashMap<String,String>();
 		fieldTypesMap = new HashMap<String,String>();
 
-		JSONArray fieldNames = mdm.getJSONArray("items");
+		JSONArray fieldNames = model.getJSONArray("items");
 
 		for( Object ao : fieldNames )
 		{
@@ -176,13 +179,21 @@ public class PerTypeCache {
 
 			}
 		}
-
 	}
 	
 	
 	
-	
-	
+	/**
+	 * Must be called for each field value when loading table so that we
+	 * can gather stats on field values.
+	 * 
+	 * @param fieldName field short name (id)
+	 * @param fieldValue
+	 */
+	public void updateFieldValuesStats(String fieldName, String fieldValue)
+	{
+		
+	}
 	
 	
 	

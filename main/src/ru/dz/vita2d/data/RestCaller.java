@@ -69,7 +69,14 @@ public class RestCaller
 
 	private void checkResponceCode(HttpURLConnection conn) throws IOException {
 		if (conn.getResponseCode() != 200) {
-			String errText = loadString(conn.getErrorStream());
+			String errText = "?";
+			
+			try {
+			errText = loadString(conn.getErrorStream());
+			} catch( Throwable e )
+			{
+				System.out.println(e);
+			}
 			URL errUrl = conn.getURL();
 			throw new ProtocolException("Url: "+errUrl+" HTTP responce code: " + conn.getResponseCode() + " text = '"+errText+"'");
 		}
@@ -177,43 +184,6 @@ public class RestCaller
 		JSONObject data = post("rest/files/icons", jo.toString() ); // "{\"id\":\"248\"}");
 		System.out.println("Icon = "+data.toString());
 	}
-
-/*
-	@Deprecated
-	public JSONObject getMeansRecord( int meanId ) throws IOException
-	{
-
-		JSONObject data = getJSON( String.format( "rest/means/view/%d/", meanId ) );
-		return data;
-	}
-
-	// http://sv-web-15.vtsft.ru/orvd-release/resources/models/means-form.js
-	@Deprecated
-	public JSONObject getMeansDataModel() throws IOException
-	{
-
-		String data = getString( "resources/models/means-form.js" );
-
-		// This page gives out not a clean JSON but JavaScript assignment 
-		//data = data.replaceAll("^\\$v\\.models\\[\\'means-form\\'\\]=", "" );
-
-		int eqpos = data.indexOf("=");
-		if( eqpos < 0)
-		{
-			System.out.println("no '=' sign in means data model "+data); // TODO logging
-			return null;
-		}
-
-		data = data.substring(eqpos+1); // skip all up to and incl '=' sign
-
-
-		//System.out.println("model "+data);
-
-		JSONObject out = new JSONObject(data);
-
-		return out;
-	}
-*/
 
 
 

@@ -17,6 +17,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import ru.dz.vita2d.data.RestCaller;
 import ru.dz.vita2d.data.ServerCache;
 import ru.dz.vita2d.maps.MapList;
@@ -57,6 +58,7 @@ public class Main extends Application
 		
 		if( Defs.FULL_SCREEN)
 		{
+			//primaryStage.initStyle(StageStyle.UNDECORATED);
 			primaryStage.setMaximized(true);		
 			primaryStage.setResizable(false);
 		}

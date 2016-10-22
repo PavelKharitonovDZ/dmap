@@ -47,6 +47,7 @@ public class DataConvertor {
 			break;
 		}
 
+		case "currency":
 		case "multi":
 		case "integer":
 		case "positiveInteger":
@@ -64,7 +65,7 @@ public class DataConvertor {
 			break;
 
 		default:
-			System.out.println("unknown type "+type);
+			System.out.println("readableValue: unknown type "+type);
 			break;
 		}
 
@@ -151,6 +152,8 @@ public class DataConvertor {
 		if(
 				(data instanceof String)
 				|| (data instanceof Integer)
+				|| (data instanceof Long)
+				|| (data instanceof Double)
 				|| (data instanceof Boolean)
 				) 
 		{

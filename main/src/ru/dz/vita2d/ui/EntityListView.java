@@ -9,7 +9,6 @@ import java.util.Set;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import application.JsonAsFlowDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -27,6 +26,7 @@ import ru.dz.vita2d.data.PerTypeCache;
 import ru.dz.vita2d.data.RestCaller;
 import ru.dz.vita2d.data.ServerCache;
 import ru.dz.vita2d.data.ServerUnitType;
+import ru.dz.vita2d.unused.JsonAsFlowDialog;
 /**
  * </p>Display list of entities.</p>
  * 
@@ -91,17 +91,6 @@ public class EntityListView {
 					//System.out.println(id);
 
 					try {
-						/*
-						JSONObject record = rc.getDataRecord(type, id);
-						//System.out.println(record);
-						JSONObject entity = record.getJSONObject("entity");
-
-						//JsonAsFlowDialog jd = new JsonAsFlowDialog( ServerUnitType.MEANS, entity );
-						JsonAsFlowDialog jd = new JsonAsFlowDialog( type, entity );
-						//jd.setDataModel(sc.getFieldNamesMap());
-						jd.setCache( tc );
-						jd.show();
-						*/
 						EntityFormWindow fw = new EntityFormWindow(type, rc, tc, id);
 
 					} catch (IOException e) {
@@ -146,22 +135,17 @@ public class EntityListView {
 		table.getColumns().add(col);
 	}
 
-	private ObservableList<Map> generateDataInMap() {
-		//int max = 10;
+	private ObservableList<Map> generateDataInMap() 
+	{
+
 		ObservableList<Map> allData = FXCollections.observableArrayList();
 
 		try {
 			//rc.login("show","show");
 
 			JSONObject objList = rc.loadList(type);
-			//JSONObject objList = rc.loadList(ServerUnitType.JOBS);
-
-			//System.out.println("List = "+objList);
 
 			JSONArray a = objList.getJSONArray("list");
-			//RestCaller.dumpJson(objList);
-			//System.out.println("List = "+a);
-			//System.out.println();
 
 			a.forEach( li -> { 
 				//System.out.println("li = "+li); 
@@ -181,8 +165,6 @@ public class EntityListView {
 				}
 				else
 				{
-
-
 					JSONArray ja = lio.getJSONArray(type.getPluralTypeName());
 
 					ja.forEach(jae -> {

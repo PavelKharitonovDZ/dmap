@@ -3,6 +3,7 @@ package ru.dz.vita2d.data;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -192,7 +193,20 @@ public class PerTypeCache {
 	 */
 	public void updateFieldValuesStats(String fieldName, String fieldValue)
 	{
+		if( model == null ) return;
 		
+		model.updateFieldValuesStats(fieldName, fieldValue);
+	}
+
+
+	public ModelFieldDefinition getFieldModel(String fn) {
+		
+		return model.getFieldModel(fn);
+	}
+
+
+	public Set<String> getFieldIds() {
+		return fieldNamesMap.keySet();		
 	}
 	
 	

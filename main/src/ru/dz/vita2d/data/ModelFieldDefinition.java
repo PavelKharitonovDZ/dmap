@@ -1,12 +1,8 @@
 package ru.dz.vita2d.data;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -20,7 +16,7 @@ import org.json.JSONObject;
  * @author dz
  *
  */
-public class ModelFieldDefinition 
+public class ModelFieldDefinition extends JsonParser
 {
 	/**
 	 * Internal field name, as in model's items.id field.
@@ -130,22 +126,7 @@ public class ModelFieldDefinition
 			name = jo.getString("name");
 	}
 
-	private String tryLoadString(JSONObject jo, String name)
-	{
-		if(jo.has(name))			
-			return jo.getString(name);
-		else
-			return null;
-	}
-
-
-	private boolean tryLoadBool(JSONObject jo, String name)
-	{
-		if(jo.has(name))			
-			return jo.getString(name).equalsIgnoreCase("true");
-		else
-			return false;
-	}
+	
 
 
 	
@@ -178,6 +159,50 @@ public class ModelFieldDefinition
 	public double getMax() {		return max;	}
 	public boolean isHaveValueStats() {		return haveValueStats;	}
 
+
+
+
+	public void updateValuesStats(String fieldValue) 
+	{
+		// TODO must process following ones in a specific way
+		// 		case "date": 		case "datetime":		case "bool":
+		
+		if(isNumeric())
+		{
+			double v = Double.parseDouble(fieldValue);
+			min = Math.min(min, v);
+			max = Math.min(max, v);
+		}
+		else
+			values.add(fieldValue);
+
+		haveValueStats = true; // At least one :)
+	}
+
+
+
+	/** 
+	 * 
+	 * @return true if field is numeric.
+	 */
+	public boolean isNumeric() {
+		if(domain == null)
+			return false;
+		return DataConvertor.isNumericDomain(domain);
+	}
+
+
+	public boolean isDateOrTime() {
+		if(domain == null)
+			return false;
+		return DataConvertor.isDateOrTime(domain);
+	}
+
+	public boolean isNonFilterable() {
+		if(domain == null)
+			return false;
+		return DataConvertor.isNonFilterable(domain);
+	}
 	
-	
+
 }

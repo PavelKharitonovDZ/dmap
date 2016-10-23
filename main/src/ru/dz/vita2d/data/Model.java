@@ -2,13 +2,10 @@ package ru.dz.vita2d.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -17,7 +14,7 @@ import org.json.JSONObject;
  * @author dz
  *
  */
-public class Model 
+public class Model extends JsonParser
 {
 	private String name;
 	private String id;
@@ -28,8 +25,8 @@ public class Model
 	
 	public Model(JSONObject model)
 	{
-		if(model.has("name"))
-			name = model.getString("name");
+		//if(model.has("name"))			name = model.getString("name");
+		name = tryLoadString(model, "name");
 		id = model.getString("id");
 		
 		loadFieldDefs( model.getJSONArray("items"));
@@ -57,5 +54,25 @@ public class Model
 				System.out.println("Model.loadFieldDefs: can't load JSON "+ao+", e="+e);
 			}
 		}
+	}
+
+	public void updateFieldValuesStats(String fieldName, String fieldValue) {
+		ModelFieldDefinition fieldDefinition = itemForField.get(fieldName);
+		if( fieldDefinition == null)
+		{
+			// It is ok to have missing field model - there are technical fields
+			//System.out.println("updateFieldValuesStats: no field in model, name = "+fieldName);
+		}
+		else
+			fieldDefinition.updateValuesStats(fieldValue);
+	}
+
+	public String getName() {		return name;	}
+	public String getId() {		return id;	}
+
+	//public List<ModelFieldDefinition> getItems() {		return items;	}
+
+	public ModelFieldDefinition getFieldModel(String fieldName) {
+		return itemForField.get(fieldName);
 	}
 }

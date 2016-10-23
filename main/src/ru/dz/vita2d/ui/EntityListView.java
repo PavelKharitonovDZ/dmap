@@ -13,7 +13,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -21,7 +25,10 @@ import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.util.Pair;
 import ru.dz.vita2d.data.DataConvertor;
+import ru.dz.vita2d.data.FilterSet;
+import ru.dz.vita2d.data.ModelFieldDefinition;
 import ru.dz.vita2d.data.PerTypeCache;
 import ru.dz.vita2d.data.RestCaller;
 import ru.dz.vita2d.data.ServerCache;
@@ -41,6 +48,7 @@ public class EntityListView {
 
 	private Set<String> fieldNames = new HashSet<>();
 	private String title = "";
+	private FilterSet fs = new FilterSet();
 
 
 	public EntityListView(ServerUnitType type, RestCaller rc, ServerCache sc) {
@@ -54,6 +62,9 @@ public class EntityListView {
 
 
 
+	private ObservableList<Map> allData = FXCollections.observableArrayList();
+	private TableView<Map> table;
+	
 	public Pane create()	
 	{
 		//Group root = new Group();
@@ -62,7 +73,9 @@ public class EntityListView {
 		label.setFont(new Font("Arial", 20));
 
 
-		TableView<Map> table = new TableView<>(generateDataInMap());
+		//TableView<Map>
+		generateDataInMap(allData);
+		table = new TableView<>(allData);
 
 		table.setEditable(true);
 		table.getSelectionModel().setCellSelectionEnabled(true);
@@ -107,10 +120,12 @@ public class EntityListView {
 
 		vbox.setSpacing(5);
 		vbox.setPadding(new Insets(10, 0, 0, 10));
-		vbox.getChildren().addAll(label, table);
+		vbox.getChildren().addAll(getMenu(), label, table);
 
 		return vbox;
 	}
+
+
 
 
 
@@ -135,15 +150,15 @@ public class EntityListView {
 		table.getColumns().add(col);
 	}
 
-	private ObservableList<Map> generateDataInMap() 
+	private ObservableList<Map> generateDataInMap(ObservableList<Map> allData) 
 	{
 
-		ObservableList<Map> allData = FXCollections.observableArrayList();
+		//ObservableList<Map> allData = FXCollections.observableArrayList();
 
 		try {
 			//rc.login("show","show");
 
-			JSONObject objList = rc.loadList(type);
+			JSONObject objList = rc.loadUnitList(type);
 
 			JSONArray a = objList.getJSONArray("list");
 
@@ -159,8 +174,11 @@ public class EntityListView {
 
 					Map<String, String> dataRow = new HashMap<>();
 
-					loadEntity(odata, dataRow);
-					allData.add(dataRow);
+					BoolPtr ok = new BoolPtr();
+					loadEntity(odata, dataRow, ok);
+					
+					if( ok.ok ) //filter(dataRow ) )					
+						allData.add(dataRow);
 
 				}
 				else
@@ -176,8 +194,10 @@ public class EntityListView {
 
 						Map<String, String> dataRow = new HashMap<>();
 
-						loadEntity(odata, dataRow);
-						allData.add(dataRow);
+						BoolPtr ok = new BoolPtr();
+						loadEntity(odata, dataRow, ok);
+						if( ok.ok ) //filter(dataRow ) )					
+							allData.add(dataRow);
 					} );
 				}
 
@@ -193,55 +213,130 @@ public class EntityListView {
 
 
 
-	private void loadEntity(JSONObject odata, Map<String, String> dataRow) {
+
+
+
+
+	private void loadEntity(JSONObject odata, Map<String, String> dataRow, BoolPtr ok ) {
 		odata.keySet().forEach(fName -> 
 		{ 
 			Object data = odata.get(fName);
-			//String type = tc.getFieldType(fName);
-			
+
 			DataConvertor.parseAnything(fName, data, (fieldName,fieldVal) -> {
 				String fieldType = tc.getFieldType(fName);
-				dataRow.put(fieldName, DataConvertor.readableValue( fieldType, fieldVal )); 
-				fieldNames.add(fieldName); 
+				String readableValue = DataConvertor.readableValue( fieldType, fieldVal );
 				
+				filter(ok, fName, readableValue);
+				
+				dataRow.put(fieldName, readableValue); 
+				fieldNames.add(fieldName); 
+				// update set of possible values in per type cache
+				tc.updateFieldValuesStats(fieldName, readableValue);
 			});
-			
-			/*
-			if(
-					(data instanceof String)
-					|| (data instanceof Integer) 
-					) 
-			{
-				dataRow.put(fName, DataConvertor.readableValue( type, data.toString() )); 
-				fieldNames.add(fName); 
-			}
-			else if(data instanceof Boolean)
-			{
-				dataRow.put(fName, DataConvertor.booleanReadableValue(data.toString())); 
-				fieldNames.add(fName); 
-			}
-			else if(data instanceof JSONObject) 
-			{
-				JSONObject sub = (JSONObject) data;
-				if( sub.has("name") )
-				{
 
-					dataRow.put(fName, sub.getString("name")); 
-					fieldNames.add(fName); 
-				}
-			}
-			else
-			{
-				//System.out.println("class = "+ data.getClass()+" "+fName+"="+data );
-			}
-			*/
+
 		} );
 	}
 
 
 
+
+
+	private void filter(BoolPtr ok, String fieldId, String readableValue) 
+	{
+		
+		boolean filter = fs.filter( fieldId, readableValue );
+		//System.out.println(fieldId+"="+readableValue+" = "+(filter?"1":"0") );
+		if( !filter ) ok.ok = false;
+	}
+
+
+	private class BoolPtr { boolean ok = true; } 
+
 	public String getTitle() {
 		return title;
+	}
+
+	private Node getMenu() {
+		MenuBar mb = new MenuBar();
+
+		Menu filterMenu = new Menu("Фильтр");
+
+		MenuItem d1 = new MenuItem("Фильтровать");
+		d1.setOnAction(actionEvent -> showFilter() );		
+		filterMenu.getItems().add(d1);
+
+		//filterMenu.setOnAction(actionEvent -> showFilter() );
+
+		mb.getMenus().addAll(filterMenu );
+
+		return mb;
+	}
+
+
+
+	private void showFilter() {
+		
+		//fieldNames.forEach(fn -> {	fieldFilter(fn); } );
+		
+		FilterDialog fd = new FilterDialog(tc);
+		fd.show( fs );
+		
+		//table.refresh();
+		//table = new TableView<>(generateDataInMap());
+		//table.data
+		allData.clear();
+		//table.getda
+		generateDataInMap(allData);
+		table.refresh();
+	}
+
+
+
+	private void fieldFilter(String fn) {
+		if( fn == null ) return;
+		
+		ModelFieldDefinition fm = tc.getFieldModel(fn);
+		
+		if( fm == null ) return;
+		
+		if( fm.isNumeric() ) return; // TODO make range filtering
+		
+		if( fm.isDateOrTime() ) return; // TODO make date range filtering
+		
+		// It's ok, we have related table's value here available
+		//if( fm.isNonFilterable() ) return; // TODO filter by related table row
+		
+		// In any case don't show filter if no choice exist
+		if( fm.getValues().isEmpty() ) return;
+		
+		// Only one case - can't filter too
+		if( fm.getValues().size() == 1 ) return;
+		
+		System.out.println(fn+":");
+		fm.getValues().forEach(fv -> System.out.println("\t"+fv));
+		
+		
+	}
+
+	/** 
+	 * Check if this row is to be shown.
+	 * @param dataRow
+	 * @return
+	 */
+	private boolean filter(Map<String, String> dataRow) 
+	{
+		
+		for( Map.Entry<String,String> e : dataRow.entrySet() )
+		{
+			if( fs.filter(e.getKey(), e.getValue() ) == false )
+			{
+				System.out.println("off "+e.getKey());
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 }

@@ -180,6 +180,10 @@ public class MapScene {
 			dataMenu.getItems().add(dataItem);			
 		});
 		
+		//dataMenu.Menu debugMenu = new Menu("Debug");
+		//MenuItem d1 = new MenuItem("На общую карту");
+		//d1.setOnAction(actionEvent -> setMapData(main.ml.getRootMap()));
+
 		
 		/*
 	    Menu webMenu = new Menu("Web");

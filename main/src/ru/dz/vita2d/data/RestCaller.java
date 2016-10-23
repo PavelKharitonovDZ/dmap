@@ -193,7 +193,8 @@ public class RestCaller
 
 
 
-	static final String LIST_REST_PATH = "rest/units/%s/list/";
+	static final String UNIT_LIST_REST_PATH = "rest/units/%s/list/";
+	private static final String OTHER_LIST_REST_PATH = "rest/%s/list/";
 
 	/**
 	 * Get list of objects of given type. 
@@ -202,12 +203,26 @@ public class RestCaller
 	 * @throws IOException
 	 */
 
-	public JSONObject loadList(ServerUnitType type) throws IOException
+	public JSONObject loadUnitList(ServerUnitType type) throws IOException
 	{
-		String path = String.format(LIST_REST_PATH, type);
+		String path = String.format(UNIT_LIST_REST_PATH, type);
 
 		//path += "/?size=20&page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
 		path += "/?page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
+
+		JSONObject jo = new JSONObject();
+		JSONObject out = post(path, jo.toString());
+
+		return out;
+	}
+
+	/** God knows what differs units from other entities */
+	public JSONObject loadOtherList(String entityType) throws IOException
+	{
+		String path = String.format(OTHER_LIST_REST_PATH, entityType);
+
+		//path += "/?size=20&page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
+		path += "/?page=1&sort=name&order=asc&parentId=&scrollToId=-1";
 
 		JSONObject jo = new JSONObject();
 		JSONObject out = post(path, jo.toString());
@@ -398,8 +413,13 @@ public class RestCaller
 			rc.login("show","show");
 			//rc.getIcon("248");
 
-			rc.getServerVersion();
+			//rc.getServerVersion();
 			
+			JSONObject empl =  rc.loadOtherList("employees");
+			saveToFile( "employees_list", empl.toString() );
+
+			JSONObject mkl =  rc.loadOtherList("meanKinds");
+			saveToFile( "meanKinds_list", mkl.toString() );
 			/*			
 			JSONObject mr = rc.getMeansRecord( 2441372 );
 			System.out.println("Mean = "+mr.toString());
@@ -413,12 +433,12 @@ public class RestCaller
 			saveToFile( "objs_model", odm.toString() );
 
 			
-			JSONObject meanList = rc.loadList(ServerUnitType.MEANS);
+			JSONObject meanList = rc.loadUnitList(ServerUnitType.MEANS);
 			//dumpJson(objList);
 			//System.out.println("List = "+objList.toString());
 			saveToFile( "means_list", meanList.toString() );
 
-			JSONObject objList = rc.loadList(ServerUnitType.OBJECTS);
+			JSONObject objList = rc.loadUnitList(ServerUnitType.OBJECTS);
 			//dumpJson(objList);
 			//System.out.println("List = "+objList.toString());
 			saveToFile( "objs_list", objList.toString() );

@@ -26,7 +26,7 @@ public class DataConvertor {
 	public static String readableValue( String type, String value )
 	{
 		if( type == null ) return value;
-		
+
 		switch(type)
 		{
 		case "bool":
@@ -105,7 +105,7 @@ public class DataConvertor {
 			}
 		}
 
-		
+
 		switch(fieldName)
 		{
 		case "division":
@@ -122,8 +122,8 @@ public class DataConvertor {
 			}
 			break;			
 		}
-		
-		
+
+
 	}
 
 	private static void l2field(String l2fn, JSONObject sub, BiConsumer<String, String> out) {
@@ -131,7 +131,7 @@ public class DataConvertor {
 			parseComplexVal(l2fn, sub.getJSONObject(l2fn), out);
 	}
 
-	
+
 	public static void parseArrayVal( String fieldName, JSONArray arr, BiConsumer<String,String> out )	
 	{
 		arr.forEach( jo -> {
@@ -146,7 +146,7 @@ public class DataConvertor {
 		});
 	}
 
-	
+
 	public static void parseAnything( String fieldName, Object data, BiConsumer<String,String> out )
 	{
 		if(
@@ -173,8 +173,47 @@ public class DataConvertor {
 		{
 			System.out.println("parseAnything unknown class = "+ data.getClass()+" "+fieldName+"="+data );
 		}
-		
+
 	}
 
-	
+	public static boolean isNumericDomain(String domain) {
+		switch(domain)
+		{
+		case "currency":
+		case "integer":
+		case "positiveInteger":
+		case "positiveShort":
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	public static boolean isDateOrTime(String domain) {
+		switch(domain)
+		{
+		case "date":
+		case "datetime":
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	/** 
+	 * 
+	 * @param domain
+	 * @return True if fields of this domain can't be used as data filters (directly).
+	 */
+	public static boolean isNonFilterable(String domain) {
+		switch(domain)
+		{
+		case "reference":
+		case "sysreference":
+			return true;
+		default:
+			return false;
+		}
+	}
+
 }

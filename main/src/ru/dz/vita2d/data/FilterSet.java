@@ -49,14 +49,27 @@ public class FilterSet {
 	}
 
 	public void setSearchFilter(String text) {
-		this.searchText = text;
-		this.searchActive = (text != null) && (text.length() > 0);
+		if(text != null)
+			text = text.toLowerCase();
+
+		searchText = text;
+		searchActive = (text != null) && (text.length() > 0);
+		
+		//if(searchText != null) System.out.println("srch text="+searchText);
 	}
 
 	public boolean checkSearchFilter(String text)
 	{
 		if(!searchActive) return true;
 		
+		text = text.toLowerCase();
+		
 		return text.indexOf(searchText) >= 0;
 	}
+
+	public boolean isSearchActive() {
+		return searchActive;
+	}
+
+	
 }

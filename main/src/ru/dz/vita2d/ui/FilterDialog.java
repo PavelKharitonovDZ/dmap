@@ -168,7 +168,12 @@ public class FilterDialog {
 	}
 
 
-	private void fillFilterSet(FilterSet fs) {
+	/**
+	 * if checkbox is checked, add it's field name/val to filter set
+	 * @param fs
+	 */
+	private void fillFilterSet(FilterSet fs) 
+	{
 		boxes.keySet().forEach(pair -> {
 			String fieldId = pair.getKey();
 			String fieldValue = pair.getValue();

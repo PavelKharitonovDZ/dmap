@@ -12,6 +12,8 @@ public class FilterSet {
 
 	private Map<String,FieldFilter> filters = new HashMap<>();
 	private Object mutex = new Object();
+	private String searchText;
+	private boolean searchActive;
 	
 	public void clear() { filters.clear(); }
 	
@@ -45,5 +47,16 @@ public class FilterSet {
 			f.add(fVal);
 		}
 	}
-	
+
+	public void setSearchFilter(String text) {
+		this.searchText = text;
+		this.searchActive = (text != null) && (text.length() > 0);
+	}
+
+	public boolean checkSearchFilter(String text)
+	{
+		if(!searchActive) return true;
+		
+		return text.indexOf(searchText) >= 0;
+	}
 }

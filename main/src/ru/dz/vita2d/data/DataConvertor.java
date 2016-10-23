@@ -47,6 +47,8 @@ public class DataConvertor {
 			break;
 		}
 
+		case "reflist":
+		case "unit":
 		case "currency":
 		case "multi":
 		case "integer":
@@ -201,7 +203,7 @@ public class DataConvertor {
 	}
 
 	/** 
-	 * 
+	 * TODO unused 
 	 * @param domain
 	 * @return True if fields of this domain can't be used as data filters (directly).
 	 */
@@ -210,6 +212,7 @@ public class DataConvertor {
 		{
 		case "reference":
 		case "sysreference":
+		case "reflist":
 			return true;
 		default:
 			return false;

@@ -48,6 +48,13 @@ public class FilterSet {
 		}
 	}
 
+	public boolean isFilterActive() {
+		return !filters.isEmpty();
+	}
+
+	
+	
+	
 	public void setSearchFilter(String text) {
 		if(text != null)
 			text = text.toLowerCase();
@@ -70,6 +77,7 @@ public class FilterSet {
 	public boolean isSearchActive() {
 		return searchActive;
 	}
+
 
 	
 }

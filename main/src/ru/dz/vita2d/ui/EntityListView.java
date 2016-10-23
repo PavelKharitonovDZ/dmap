@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -24,6 +25,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.MapValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -89,8 +92,8 @@ public class EntityListView {
 	{
 		//Group root = new Group();
 
-		final Label label = new Label(type.getDisplayName());
-		label.setFont(new Font("Arial", 20));
+		//final Label label = new Label(type.getDisplayName());
+		//label.setFont(new Font("Arial", 20));
 
 
 		//TableView<Map>
@@ -140,7 +143,7 @@ public class EntityListView {
 
 		vbox.setSpacing(5);
 		vbox.setPadding(new Insets(10, 0, 0, 10));
-		vbox.getChildren().addAll(getMenu(), label, table);
+		vbox.getChildren().addAll(getMenu(), /*label,*/ table);
 
 		return vbox;
 	}
@@ -287,6 +290,7 @@ public class EntityListView {
 	} 
 
 	private Node getMenu() {
+		/*
 		MenuBar mb = new MenuBar();
 
 		Menu filterMenu = new Menu("Фильтр");
@@ -298,7 +302,22 @@ public class EntityListView {
 		//filterMenu.setOnAction(actionEvent -> showFilter() );
 
 		mb.getMenus().addAll(filterMenu );
+		*/
+		Button clearFlterButton = new Button("X");
+		clearFlterButton.setVisible(false);
+		clearFlterButton.setOnAction(a -> clearFilters(clearFlterButton) );
+		clearFlterButton.setTooltip(new Tooltip("Очистить фильтры"));
+		
+		Button filterButton = new Button("Фильтр");
+		filterButton.setOnAction( a -> showFilter(clearFlterButton) );
 
+		//ImageView clearIv = new ImageView(new Image("icons/color/close.png"));
+		//Button clearButton = new Button("",clearIv);
+		Button clearButton = new Button("X");
+		clearButton.setVisible(false); // search field is empty bu default
+		clearButton.setTooltip(new Tooltip("Очистить поисковый запрос"));
+		
+		
 		TextField searchField = new TextField();
 		//searchField.setOnAction(action -> searchModified(searchField.getText()));
 		Tooltip tip = new Tooltip("Поиск по любому полю");
@@ -306,17 +325,28 @@ public class EntityListView {
 		searchField.setPromptText("Поиск");
 		searchField.setFocusTraversable(false); // or else it gets focus and does not show prompt text
 		searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-		    searchModified(newValue);
+		    searchModified(newValue,clearButton);
 		});
 		
+		clearButton.setOnAction(a -> { searchField.setText(""); } );		
+		
+		/*
+		//searchField.setMinHeight(clearButton.getHeight());
+		//clearButton.setMaxHeight(searchField.getHeight());
+		clearIv.setPreserveRatio(true);
+		//clearIv.setScaleY(value);
+		clearIv.setFitWidth(searchField.getHeight());
+		clearIv.setFitHeight(searchField.getHeight());
+		clearButton.setGraphic(clearIv);
+		*/
 		
 		// Auto-sizing spacer
 	    Region spacer = new Region();
 	    HBox.setHgrow(spacer, Priority.ALWAYS);
-
 		
 		//HBox mhbox = new HBox( mb, spacer, new Label("Поиск: "), searchField );
-		HBox mhbox = new HBox( mb, spacer, searchField );
+		//HBox mhbox = new HBox( mb, spacer, searchField, clearButton );
+		HBox mhbox = new HBox( filterButton, clearFlterButton, spacer, searchField, clearButton );
 		//mhbox.setPadding(new Insets(10));
 		mhbox.setPadding(new Insets(0,10,0,0)); // 10 px on right side
 		
@@ -326,9 +356,12 @@ public class EntityListView {
 
 
 
-	private void searchModified(String text) {
+
+
+	private void searchModified(String text, Button clearButton) {
 		//System.out.println("search: "+text);
 		fs.setSearchFilter(text);
+		clearButton.setVisible(fs.isSearchActive());
 		updateListData();
 	}
 
@@ -336,12 +369,14 @@ public class EntityListView {
 
 
 
-	private void showFilter() {
+	private void showFilter(Button clearFlterButton) {
 		
 		//fieldNames.forEach(fn -> {	fieldFilter(fn); } );
 		//fs.clear();
 		FilterDialog fd = new FilterDialog(tc);
 		fd.show( fs );
+		
+		clearFlterButton.setVisible(fs.isFilterActive());
 		
 		//table.refresh();
 		//table = new TableView<>(generateDataInMap());
@@ -349,6 +384,11 @@ public class EntityListView {
 		updateListData();
 	}
 
+	private void clearFilters(Button clearFlterButton) {
+		fs.clear(); 
+		clearFlterButton.setVisible(false); 
+		updateListData();
+	}
 
 
 

@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
 import javafx.util.Pair;
 import ru.dz.vita2d.data.FilterSet;
 import ru.dz.vita2d.data.ModelFieldDefinition;
@@ -152,8 +153,11 @@ public class FilterDialog {
 		//fm.getValues().forEach(fv -> System.out.println("\t"+fv));
 
 
-
-		grid.add(new Label(tc.getFieldName(fn)+":"), 0, lastGridRow++);
+		
+		Label fieldNameLabel = new Label(tc.getFieldName(fn)+":");
+		fieldNameLabel.setFont(new Font("Arial", 20));
+		grid.add(fieldNameLabel, 0, lastGridRow++);
+		
 
 		fm.getValues().forEach(fv -> {
 			//grid.add(new Label(fv), 1, myGridRow);

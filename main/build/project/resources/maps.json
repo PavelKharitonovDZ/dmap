@@ -14,13 +14,15 @@
 				"name":"Локатор ОРЛ-А",
 				"file":"orl-a-icon.png",
 				"x":926, "y":1205,
-				"link-id":"orla"
+				"link-id":"orla",
+				"ref-unit-type":"obj", "ref-unit-id":2042563
 				},
 				{
 				"name":"Локатор ОРЛ-Т",
 				"file":"orl-t-icon.png",
 				"x":1143, "y":1050,
-				"link-id":"orla"
+				"link-id":"orla",
+				"ref-unit-type":"obj", "ref-unit-id":2046116
 				},
 				{
 				"name":"Вышка АКДП",

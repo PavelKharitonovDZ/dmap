@@ -22,6 +22,9 @@ public class ServerUnitType
 	static final public ServerUnitType MEANS = new ServerUnitType("mean","средство");
 	static final public ServerUnitType JOBS = new ServerUnitType("job","работа");
 	static final public ServerUnitType EVENTS = new ServerUnitType("event","событие");
+
+	// does not work
+	//static final public ServerUnitType EMPLOYEES = new ServerUnitType("employee","сотрудник");
 	
 	private final String plural;
 	private final String single;

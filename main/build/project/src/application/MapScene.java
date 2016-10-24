@@ -16,14 +16,10 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -34,14 +30,11 @@ import ru.dz.vita2d.data.ServerUnitType;
 import ru.dz.vita2d.maps.IMapData;
 import ru.dz.vita2d.maps.MapOverlay;
 import ru.dz.vita2d.ui.EntityFormView;
-import ru.dz.vita2d.ui.EntityListWindow;
 
-public class MapScene {
+public class MapScene extends AbstractMapScene {
 		
 	private static final int MIN_PIXELS = 10;
 
-	private Stage primaryStage;
-	private Main main;
 
 	private Scene scene;
 	
@@ -56,8 +49,7 @@ public class MapScene {
 	
 	
 	public MapScene( Stage primaryStage, Main main ) {
-		this.primaryStage = primaryStage;
-		this.main = main;		
+		super(primaryStage,main);		
 	}
 	
 
@@ -68,8 +60,9 @@ public class MapScene {
 
 	
 	
-
-	private void setOverviewScale() 
+	@Override
+	public
+	void setOverviewScale() 
 	{
 		reset(imageView, width, height);
 	}
@@ -88,7 +81,7 @@ public class MapScene {
 	
 	
 	
-	
+	/*
 	private HBox createButtons(double width, double height, ImageView imageView) 
 	{
 		Button reset = new Button("Сброс масштаба");
@@ -116,141 +109,19 @@ public class MapScene {
 			}
 		} );
 
-
-
-
-
 		//HBox buttons = new HBox(10, reset, full, m0, m1, m2, m3, r1, mroot);
 		HBox buttons = new HBox(10, reset, full, r1 );
 		buttons.setAlignment(Pos.CENTER);
 		buttons.setPadding(new Insets(10));
 		return buttons;
 	}
-
+	*/
 
 	// reset to the top left:
 	private void reset(ImageView imageView, double width, double height) {
 		imageView.setViewport(new Rectangle2D(0, 0, width, height));
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	private void fillMenu(MenuBar menuBar) {
-		// File menu - new, save, exit
-		Menu fileMenu = new Menu("Файл");
-
-		MenuItem loginMenuItem = new MenuItem("Сменить пользователя");
-		loginMenuItem.setOnAction(actionEvent -> main.logout());
-
-		MenuItem exitMenuItem = new MenuItem("Выход (выключить планшет)");
-		exitMenuItem.setOnAction(actionEvent -> Platform.exit());
-		exitMenuItem.setAccelerator(KeyCombination.keyCombination("Alt+F4"));
-
-
-		fileMenu.getItems().addAll( loginMenuItem,
-				new SeparatorMenuItem(), exitMenuItem);
-
-
-
-		Menu navMenu = new Menu("Навигация");
-
-		MenuItem navHomeMap = new MenuItem("На общую карту");
-		//navHomeMap.setOnAction(actionEvent -> setMapData(bigMapData));
-		navHomeMap.setOnAction(actionEvent -> setMapData(main.ml.getRootMap()));
-
-		Menu navMaps = new Menu("Карты");
-		//navMaps.setOnAction(actionEvent -> setMapData(bigMapData));
-		main.ml.fillMapsMenu( navMaps, this );
-
-		MenuItem navOverview = new MenuItem("Обзор");
-		navOverview.setOnAction(actionEvent -> setOverviewScale());
-
-		navMenu.getItems().addAll( navHomeMap, navMaps, new SeparatorMenuItem(), navOverview );
-
-		
-		
-		Menu dataMenu = new Menu("Данные");
-
-		ServerUnitType.forEach(t -> {
-			MenuItem dataItem = new MenuItem(t.getDisplayName());
-			dataItem.setOnAction(actionEvent -> new EntityListWindow(t, main.rc, main.sc));
-
-			dataMenu.getItems().add(dataItem);			
-		});
-		
-		
-		/*
-	    Menu webMenu = new Menu("Web");
-	    CheckMenuItem htmlMenuItem = new CheckMenuItem("HTML");
-	    htmlMenuItem.setSelected(true);
-	    webMenu.getItems().add(htmlMenuItem);
-
-	    CheckMenuItem cssMenuItem = new CheckMenuItem("CSS");
-	    cssMenuItem.setSelected(true);
-	    webMenu.getItems().add(cssMenuItem);
-
-	    Menu sqlMenu = new Menu("SQL");
-	    ToggleGroup tGroup = new ToggleGroup();
-	    RadioMenuItem mysqlItem = new RadioMenuItem("MySQL");
-	    mysqlItem.setToggleGroup(tGroup);
-
-	    RadioMenuItem oracleItem = new RadioMenuItem("Oracle");
-	    oracleItem.setToggleGroup(tGroup);
-	    oracleItem.setSelected(true);
-
-	    sqlMenu.getItems().addAll(mysqlItem, oracleItem,
-	        new SeparatorMenuItem());
-
-	    Menu tutorialManeu = new Menu("Tutorial");
-	    tutorialManeu.getItems().addAll(
-	        new CheckMenuItem("Java"),
-	        new CheckMenuItem("JavaFX"),
-	        new CheckMenuItem("Swing"));
-
-	    sqlMenu.getItems().add(tutorialManeu);
-		 */
-
-		Menu aboutMenu = new Menu("О системе");
-
-		MenuItem version = new MenuItem("Версия");
-		version.setOnAction(actionEvent -> {
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Версия системы");
-			alert.setHeaderText("ОРВД Планшет Инженера");
-
-			String s =
-					"Версия фронтального приложения: 0.1\n"+
-							"Версия сервера: "+main.rc.getServerVersion()+"\n"+
-							"Точка запуска: "+main.getHostServices().getCodeBase()+"\n"+
-							"Базовая ссылка: "+main.getHostServices().getDocumentBase()+"\n" +
-							"Пользователь: "+main.rc.getLoggedInUser()+"\n"
-							;
-
-			alert.setContentText(s);
-			alert.show();
-		});
-
-		MenuItem aboutDz = new MenuItem("Digital Zone");
-		aboutDz.setOnAction(actionEvent -> main.getHostServices().showDocument(Defs.HOME_URL));
-
-		MenuItem aboutVita = new MenuItem("VitaSoft");
-		aboutVita.setOnAction(actionEvent -> main.getHostServices().showDocument("vtsft.ru"));
-
-		aboutMenu.getItems().addAll( version, new SeparatorMenuItem(), aboutDz, aboutVita );
-
-		// --------------- Menu bar
-
-		//menuBar.getMenus().addAll(fileMenu, webMenu, sqlMenu);
-		menuBar.getMenus().addAll(fileMenu, navMenu, dataMenu, aboutMenu );
-	}
-
-	
 	
 	
 	
@@ -351,8 +222,8 @@ public class MapScene {
 			}
 		});
 
-		imageView.setOnMouseMoved(e -> {
-
+		imageView.setOnMouseMoved(e -> 
+		{
 			Point2D mouseClick = imageViewToImage(imageView, new Point2D(e.getX(), e.getY()));
 
 			MapOverlay overlay = mData.getOverlayByRectangle( mouseClick.getX(), mouseClick.getY() );
@@ -363,17 +234,19 @@ public class MapScene {
 			}
 		});
 
-		
-		
-		HBox buttons = createButtons(width, height, imageView);
-		Tooltip tooltip = new Tooltip("Scroll to zoom, drag to pan");
-		Tooltip.install(buttons, tooltip);
-
+	
 		Pane container = new Pane(imageView);
-		container.setPrefSize(800, 600);
-
+		if(!Defs.FULL_SCREEN)
+		{
+			container.setPrefSize(800, 600);
+			//container.setPrefSize(1400, 800);
+			//container.setMinSize(900, 800);
+		}
+		
 		info = new Pane();
-		info.setPrefSize(400, 600);
+		if(!Defs.FULL_SCREEN)
+			info.setPrefSize(400, 600);
+		info.setPadding(new Insets(20)); // TODO wrong
 		fillInfo();
 
 		HBox mapAndInfo = new HBox(10, container, info);
@@ -386,17 +259,15 @@ public class MapScene {
 
 		fillMenu(menuBar);
 
-		//HBox links = createLinks();
 
-		//VBox root = new VBox(menuBar, links, container, buttons);
-		VBox root = new VBox(menuBar, mapAndInfo, buttons);
+		VBox root = new VBox(menuBar, mapAndInfo);
 		root.setFillWidth(true);
 		VBox.setVgrow(container, Priority.ALWAYS);
 
 		scene = new Scene(root);
 		primaryStage.setScene(scene);
 		primaryStage.setTitle( "ОРВД: " + mData.getTitle() ); //"ОРВД - Планшет Инженера");
-		primaryStage.show();
+		//primaryStage.show();
 	}
 
 	
@@ -429,11 +300,12 @@ public class MapScene {
 		info.getChildren().clear();
 		
 		VBox vb = new VBox(10);
+		//vb.setPadding(new Insets(10));
 		info.getChildren().add(vb);
 		
 		//vb.getChildren().clear();
 		
-		vb.getChildren().add( new Label("Карта: "+mData.getTitle()) );
+		//vb.getChildren().add( new Label("Карта: "+mData.getTitle()) );
 		
 		if( currentOverlay != null )
 		{
@@ -447,7 +319,10 @@ public class MapScene {
 				ServerUnitType type = ref.getType();
 				try {
 					EntityFormView view = new EntityFormView(type, main.rc, main.sc.getTypeCache(type), ref.getId() );
-					vb.getChildren().add( view.create() );
+					Pane node = view.create();
+					//node.setMaxWidth(300);
+					vb.getChildren().add( node );
+					//VBox.setVgrow(node, Priority.ALWAYS);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -455,7 +330,7 @@ public class MapScene {
 			}
 			
 		}
-		
+			
 	}
 
 

@@ -1,4 +1,4 @@
-package application;
+package ru.dz.vita2d.unused;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.json.JSONObject;
 
-import application.JsonAsFlowDialog.ViewItem;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -21,6 +20,7 @@ import ru.dz.vita2d.data.DataConvertor;
 import ru.dz.vita2d.data.PerTypeCache;
 import ru.dz.vita2d.data.ServerCache;
 import ru.dz.vita2d.data.ServerUnitType;
+import ru.dz.vita2d.unused.JsonAsFlowDialog.ViewItem;
 
 @Deprecated
 public class JsonAsFlowDialog 

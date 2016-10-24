@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import application.Defs;
+import application.IMapScene;
 import application.MapScene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -153,7 +154,7 @@ public class MapList
 		return rootMap.getMapData();
 	}
 
-	public void fillMapsMenu(Menu navMaps, MapScene mapScene) 
+	public void fillMapsMenu(Menu navMaps, IMapScene mapScene) 
 	{
 		for( MapDefinition md : mapDefs.values() )
 		{

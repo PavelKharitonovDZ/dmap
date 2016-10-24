@@ -21,18 +21,18 @@ public class ServerCache
 	//private Map <String,String> fieldTypesMap;
 
 	private Map<ServerUnitType,PerTypeCache> caches = new HashMap<>(); 
-	
+
 	public ServerCache(RestCaller rc) 
 	{
 		this.rc = rc;
-		
-		ServerUnitType.forEach( t -> caches.put(t, new PerTypeCache(t, rc)));
-		
+
+		ServerUnitType.forEach( t -> caches.put(t, new PerTypeCache(t, rc, this)));
+
 	}
 
 
 	public PerTypeCache getTypeCache(ServerUnitType type) { return caches.get(type); }
-	
+
 	/**
 	 * <p>Get field human readable name by internal name. <b>Slow!</b></p>
 	 * <p>Get type specific cache with getTypeCache and call it directly for speed.</p>
@@ -46,7 +46,7 @@ public class ServerCache
 	{
 		return caches.get(type).getFieldName(name);
 	}
-	
+
 	/**
 	 * <p>Get field type (domain) by internal name. <b>Slow!</b></p>
 	 * <p>Get type specific cache with getTypeCache and call it directly for speed.</p>
@@ -60,150 +60,71 @@ public class ServerCache
 	{
 		return caches.get(type).getFieldType(name);
 	}
-	
-	
-	/*
-	
-	public String getFieldName(String name)
+
+
+
+	private Map<EntityRef,JSONObject> cache = new HashMap<>();
+
+	/**
+	 * <p>Get object of given type, cached.<p> 
+	 * 
+	 * @param type See ServerUnitType constants for types.
+	 * @param id object id
+	 * @return JSON with data
+	 * @throws IOException
+	 */
+
+	public JSONObject getDataRecord( ServerUnitType type, int id ) throws IOException
 	{
-		Map<String, String> fnm = null;
-		try {
-			fnm = getFieldNamesMap();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return fnm == null ? null : fnm.get(name);
+		EntityRef ref = new EntityRef(type, id);
+		return getDataRecord( ref );
 	}
 
-	Map <String,String> getFieldNamesMap() throws IOException
+	/**
+	 * <p>Get object of given type, cached.<p> 
+	 * 
+	 * @param ref object reference (type+id)
+	 * @return JSON with data
+	 * @throws IOException
+	 */
+
+	public JSONObject getDataRecord( EntityRef ref ) throws IOException
 	{
-		if( fieldNamesMap != null )
-			return fieldNamesMap;
+		synchronized (cache) {
 
-		synchronized (this) {
-			if( fieldNamesMap == null )
-				loadMeansDataModel();
-		}
+			JSONObject cr = cache.get(ref);
+			if( cr == null)
+			{
 
-		return fieldNamesMap;
-	}
-
-
-	
-	
-	public String getFieldType(String name)
-	{
-		Map<String, String> ftm = null;
-		try {
-			ftm = getFieldTypesMap();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ftm == null ? null : ftm.get(name);
-	}
-
-	Map <String,String> getFieldTypesMap() throws IOException
-	{
-		if( fieldTypesMap != null )
-			return fieldTypesMap;
-
-		synchronized (this) {
-			if( fieldTypesMap == null )
-				loadMeansDataModel();
-		}
-
-		return fieldTypesMap;
-	}
-
-	
-	
-	
-	
-	private void loadMeansDataModel() throws IOException
-	{
-		JSONObject mdm = rc.getMeansDataModel();
-		//RestCaller.dumpJson(mdm);
-
-		//System.out.println();
-
-		fieldNamesMap = new HashMap<String,String>();
-		fieldTypesMap = new HashMap<String,String>();
-
-		JSONArray fieldNames = mdm.getJSONArray("items");
-
-		for( Object ao : fieldNames )
-		{
-			if (ao instanceof JSONObject) {
-				JSONObject jo = (JSONObject) ao;
-				//RestCaller.dumpJson(jo);
-
-				String fieldId = null;
-				String fieldName = null;
-
-				// Get id (internal field name)
-				try 
+				cr = rc.getDataRecord(ref.getType(), ref.getId());
+				if( cr != null )
 				{
-					fieldId = jo.getString("id");
-				}
-				catch(JSONException je)
-				{
-					//System.out.println("JSON exception: "+je);
-					continue; // Can't go on if no id
-				}
+					cache.put(ref, cr);
+					if( cache.size() > 1000)
+					{
+						// kill some
+						int max = cache.size();
+						int rnd = (int)(Math.random() * (max-1));
 
-				try 
-				{
-					// Get name on top level
-					fieldName = jo.getString("name");
-					fieldNamesMap.put(fieldId, fieldName);
-				}
-				catch(JSONException je)
-				{
-					//System.out.println("JSON exception: "+je);
-					// Ignore, it is ok
-				}
+						// TODO better way?
+						//cache.forEach( (k, v) -> { if(rnd-- == 0) { cache.remove(k);  }} );
 
-
-				JSONObject attrs = null;
-
-				// Get extended attrs
-				try 
-				{
-					attrs = jo.getJSONObject("attrs");
+						for( EntityRef r : cache.keySet())
+						{
+							if(rnd-- <= 0) 
+							{
+								cache.remove(r);
+								break;
+							}
+						}
+					}
 				}
-				catch(JSONException je)
-				{
-					//System.out.println("JSON exception: "+je);
-				}
-
-				if( (attrs != null) && (fieldName == null) ) try 
-				{
-					// Retry insinde of attrs
-					fieldName = attrs.getString("name");
-					fieldNamesMap.put(fieldId, fieldName);
-				}
-				catch(JSONException je)
-				{
-					//System.out.println("JSON exception: "+je);
-				}
-
-
-				if( attrs != null ) try 
-				{
-					String fieldType = attrs.getString("domain");
-					fieldTypesMap.put(fieldId, fieldType);
-				}
-				catch(JSONException je)
-				{
-					System.out.println("JSON exception: "+je+"for "+fieldId);
-				}
-
-
 			}
-		}
 
+			return cr;
+
+		}
 	}
-	*/
+
+
 }

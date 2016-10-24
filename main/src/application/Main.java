@@ -95,7 +95,7 @@ public class Main extends Application
 	public void afterLogin() {
 		// Resets Scene
 		lw.close();
-		MapScene ms = new MapScene( primaryStage, this );
+		AbstractMapScene ms = new MapScene( primaryStage, this );
 		ms.setMapData( ml.getRootMap() );
 		
 		if( !Defs.FULL_SCREEN )

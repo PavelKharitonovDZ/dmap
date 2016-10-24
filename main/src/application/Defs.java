@@ -13,4 +13,10 @@ public class Defs {
 
 	
 	public static final boolean FULL_SCREEN = false;
+
+
+	public static boolean animationEnabled() {
+		// TODO load property
+		return true;
+	}
 }

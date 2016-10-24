@@ -1,23 +1,13 @@
 package application;
 
-import java.io.IOException;
-
-import org.json.JSONObject;
-
-import javafx.application.Platform;
+import javafx.animation.AnimationTimer;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -25,41 +15,35 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ru.dz.vita2d.data.EntityRef;
-import ru.dz.vita2d.data.ServerUnitType;
 import ru.dz.vita2d.maps.IMapData;
 import ru.dz.vita2d.maps.MapOverlay;
-import ru.dz.vita2d.ui.EntityFormView;
 
 public class MapScene extends AbstractMapScene {
-		
+
 	private static final int MIN_PIXELS = 10;
 
 
-	private Scene scene;
-	
-	private Pane info; // Right pane - must be filled with info on current object
-	
+
+
 	private IMapData mData; // = bigMapData;
-	
+
 	private ImageView imageView;
 	private double width, height;
 
-	private MapOverlay currentOverlay; 
-	
-	
+
+
 	public MapScene( Stage primaryStage, Main main ) {
 		super(primaryStage,main);		
 	}
-	
-
-	
-	
-	
 
 
-	
-	
+
+
+
+
+
+
+
 	@Override
 	public
 	void setOverviewScale() 
@@ -67,69 +51,34 @@ public class MapScene extends AbstractMapScene {
 		reset(imageView, width, height);
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*
-	private HBox createButtons(double width, double height, ImageView imageView) 
-	{
-		Button reset = new Button("Сброс масштаба");
-		reset.setOnAction(e -> reset(imageView, width / 2, height / 2));
 
-		Button full = new Button("Обзор");
-		full.setOnAction(e -> setOverviewScale());
 
-		Button r1 = new Button("Means test");
-		r1.setOnAction(e -> {
-			try {
-				//RestCaller.dumpJson(fieldNames);
 
-				JSONObject mr = main.rc.getMeansRecord( 2441372 );
 
-				JSONObject entity = mr.getJSONObject("entity");
 
-				JsonAsFlowDialog jd = new JsonAsFlowDialog( ServerUnitType.MEANS, entity );
-				//jd.setDataModel(sc.getFieldNamesMap());
-				jd.setCache( main.sc.getTypeCache(ServerUnitType.MEANS) );
-				jd.show();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		} );
 
-		//HBox buttons = new HBox(10, reset, full, m0, m1, m2, m3, r1, mroot);
-		HBox buttons = new HBox(10, reset, full, r1 );
-		buttons.setAlignment(Pos.CENTER);
-		buttons.setPadding(new Insets(10));
-		return buttons;
-	}
-	*/
+
+
+
+
+
+
+
+
 
 	// reset to the top left:
 	private void reset(ImageView imageView, double width, double height) {
 		imageView.setViewport(new Rectangle2D(0, 0, width, height));
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
 	public void setMapData(IMapData mapData) 
 	{
 		mData = mapData;
@@ -143,12 +92,23 @@ public class MapScene extends AbstractMapScene {
 		imageView.setPreserveRatio(true);
 		//reset(imageView, width / 2, height / 2);
 		reset(imageView, width, height);
-		
+
+		if(Defs.animationEnabled())
+		{
+			AnimationTimer at = new AnimationTimer() {			
+				@Override
+				public void handle(long now) {
+					imageView.setImage( mData.putOverlays( image ) );				
+				}
+			};
+			at.start();
+		}
+
 		currentOverlay = null;
-		
+
 		restart();
 	}
-	
+
 	private void restart() {
 
 		width = mData.getImage().getWidth();
@@ -234,7 +194,7 @@ public class MapScene extends AbstractMapScene {
 			}
 		});
 
-	
+
 		Pane container = new Pane(imageView);
 		if(!Defs.FULL_SCREEN)
 		{
@@ -242,7 +202,7 @@ public class MapScene extends AbstractMapScene {
 			//container.setPrefSize(1400, 800);
 			//container.setMinSize(900, 800);
 		}
-		
+
 		info = new Pane();
 		if(!Defs.FULL_SCREEN)
 			info.setPrefSize(400, 600);
@@ -270,68 +230,22 @@ public class MapScene extends AbstractMapScene {
 		//primaryStage.show();
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	private void fillInfo() {
-		info.getChildren().clear();
-		
-		VBox vb = new VBox(10);
-		//vb.setPadding(new Insets(10));
-		info.getChildren().add(vb);
-		
-		//vb.getChildren().clear();
-		
-		//vb.getChildren().add( new Label("Карта: "+mData.getTitle()) );
-		
-		if( currentOverlay != null )
-		{
-			vb.getChildren().add( new Label("Объект: "+currentOverlay.getTitle() ) );
-			
-			vb.getChildren().add( new ImageView( currentOverlay.getImage() ) );
-			
-			EntityRef ref = currentOverlay.getReference();
-			if( ref != null )
-			{
-				ServerUnitType type = ref.getType();
-				try {
-					EntityFormView view = new EntityFormView(type, main.rc, main.sc.getTypeCache(type), ref.getId() );
-					Pane node = view.create();
-					//node.setMaxWidth(300);
-					vb.getChildren().add( node );
-					//VBox.setVgrow(node, Priority.ALWAYS);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-		}
-			
-	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -358,16 +272,7 @@ public class MapScene extends AbstractMapScene {
 
 		imageView.setViewport(new Rectangle2D(minX, minY, viewport.getWidth(), viewport.getHeight()));
 	}
-	
-	
-	private static double clamp(double value, double min, double max) {
 
-		if (value < min)
-			return min;
-		if (value > max)
-			return max;
-		return value;
-	}
 
 	// convert mouse coordinates in the imageView to coordinates in the actual image:
 	private static Point2D imageViewToImage(ImageView imageView, Point2D imageViewCoordinates) {
@@ -379,6 +284,6 @@ public class MapScene extends AbstractMapScene {
 				viewport.getMinX() + xProportion * viewport.getWidth(), 
 				viewport.getMinY() + yProportion * viewport.getHeight());
 	}
-	
-	
+
+
 }

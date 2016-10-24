@@ -1,13 +1,5 @@
 package application;
 
-import java.awt.event.MouseEvent;
-import java.io.IOException;
-
-import org.json.JSONObject;
-
-import javafx.application.Platform;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.Event;
 import javafx.event.EventDispatchChain;
 import javafx.event.EventDispatcher;
@@ -15,17 +7,10 @@ import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
-import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
@@ -34,20 +19,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ru.dz.vita2d.data.EntityRef;
-import ru.dz.vita2d.data.ServerUnitType;
 import ru.dz.vita2d.maps.IMapData;
 import ru.dz.vita2d.maps.MapOverlay;
-import ru.dz.vita2d.ui.EntityFormView;
 
 public class NewMapScene extends AbstractMapScene {
 		
 	private static final int MIN_PIXELS = 10;
 
 
-	private Scene scene;
 	
-	private Pane info; // Right pane - must be filled with info on current object
 	
 	private IMapData mData; // = bigMapData;
 	
@@ -55,7 +35,6 @@ public class NewMapScene extends AbstractMapScene {
 	private ScrollPane imagePane;
 	private double width, height;
 
-	private MapOverlay currentOverlay;
 
 	private Group group; 
 	
@@ -363,42 +342,7 @@ public class NewMapScene extends AbstractMapScene {
 	
 	
 	
-	private void fillInfo() {
-		info.getChildren().clear();
-		
-		VBox vb = new VBox(10);
-		//vb.setPadding(new Insets(10));
-		info.getChildren().add(vb);
-		
-		//vb.getChildren().clear();
-		
-		//vb.getChildren().add( new Label("Карта: "+mData.getTitle()) );
-		
-		if( currentOverlay != null )
-		{
-			vb.getChildren().add( new Label("Объект: "+currentOverlay.getTitle() ) );
-			
-			vb.getChildren().add( new ImageView( currentOverlay.getImage() ) );
-			
-			EntityRef ref = currentOverlay.getReference();
-			if( ref != null )
-			{
-				ServerUnitType type = ref.getType();
-				try {
-					EntityFormView view = new EntityFormView(type, main.rc, main.sc.getTypeCache(type), ref.getId() );
-					Pane node = view.create();
-					//node.setMaxWidth(300);
-					vb.getChildren().add( node );
-					//VBox.setVgrow(node, Priority.ALWAYS);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-			
-		}
-			
-	}
+	
 
 
 
@@ -443,12 +387,6 @@ public class NewMapScene extends AbstractMapScene {
 	}
 	*/
 	
-	private static double clamp(double value, double min, double max) {
-		if (value < min)			return min;
-		if (value > max)			return max;
-		return value;
-	}
-
 	/*
 	// convert mouse coordinates in the imageView to coordinates in the actual image:
 	private static Point2D imageViewToImage(ImageView imageView, Point2D imageViewCoordinates) {

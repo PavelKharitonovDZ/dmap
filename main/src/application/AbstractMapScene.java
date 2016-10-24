@@ -1,21 +1,41 @@
 package application;
 
+import java.io.IOException;
+
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import ru.dz.vita2d.data.EntityRef;
 import ru.dz.vita2d.data.ServerUnitType;
+import ru.dz.vita2d.maps.MapOverlay;
+import ru.dz.vita2d.ui.EntityFormView;
 import ru.dz.vita2d.ui.EntityListWindow;
 
 public abstract class AbstractMapScene implements IMapScene 
 {	
 	
+	protected static double clamp(double value, double min, double max) {
+		if (value < min)			return min;
+		if (value > max)			return max;
+		return value;
+	}
+
+	protected Scene scene;
 	protected Stage primaryStage;
 	protected Main main;
+
+	protected Pane info; // Right pane - must be filled with info on current object
+	protected MapOverlay currentOverlay; 
 
 	public AbstractMapScene( Stage primaryStage, Main main ) {
 		this.primaryStage = primaryStage;
@@ -136,6 +156,43 @@ public abstract class AbstractMapScene implements IMapScene
 	
 		//menuBar.getMenus().addAll(fileMenu, webMenu, sqlMenu);
 		menuBar.getMenus().addAll(fileMenu, navMenu, dataMenu, aboutMenu );
+	}
+
+	protected void fillInfo() {
+		info.getChildren().clear();
+		
+		VBox vb = new VBox(10);
+		//vb.setPadding(new Insets(10));
+		info.getChildren().add(vb);
+		
+		//vb.getChildren().clear();
+		
+		//vb.getChildren().add( new Label("Карта: "+mData.getTitle()) );
+		
+		if( currentOverlay != null )
+		{
+			vb.getChildren().add( new Label("Объект: "+currentOverlay.getTitle() ) );
+			
+			vb.getChildren().add( new ImageView( currentOverlay.getImage() ) );
+			
+			EntityRef ref = currentOverlay.getReference();
+			if( ref != null )
+			{
+				ServerUnitType type = ref.getType();
+				try {
+					EntityFormView view = new EntityFormView(type, main.rc, main.sc.getTypeCache(type), ref.getId() );
+					Pane node = view.create();
+					//node.setMaxWidth(300);
+					vb.getChildren().add( node );
+					//VBox.setVgrow(node, Priority.ALWAYS);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+			
 	}
 
 }

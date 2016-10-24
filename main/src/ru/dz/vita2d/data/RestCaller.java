@@ -253,7 +253,7 @@ public class RestCaller
 	 * @throws IOException
 	 */
 	
-	public JSONObject getDataRecord( EntityRef ref ) throws IOException
+	public JSONObject getDataRecord( UnitRef ref ) throws IOException
 	{
 		return getDataRecord( ref.getType(), ref.getId() );
 	}

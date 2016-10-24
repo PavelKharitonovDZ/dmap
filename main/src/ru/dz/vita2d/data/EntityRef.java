@@ -1,31 +1,31 @@
 package ru.dz.vita2d.data;
 
-/**
- * </p>Reference to server data object. Has server unit type as string and object id.</p>
- * @author dz
- *
- */
-public class EntityRef {
-
-	private ServerUnitType type;
-	private int id;
+public class EntityRef extends AbstractRef {
+	private String entityName;
 
 	public EntityRef(String reftype, int refid) {
-		type = ServerUnitType.fromString( reftype );
+		entityName = reftype;
 		id = refid;
 	}
 
-	public EntityRef(ServerUnitType reftype, int refid) {
-		type = reftype;
-		id = refid;
+	// deserialize
+	protected EntityRef(String s) {
+		s = s.substring(5);
+		int col = s.indexOf(':');
+		if( col < 0 )
+			throw new RuntimeException("wrong format: "+s);
+		
+		id = Integer.parseInt(s.substring(0,col));
+		entityName = s.substring(col+1);
 	}
 
-	public ServerUnitType getType() {
-		return type;
+	@Override
+	public String serialize() {
+		return String.format("enti:%d:%s", id, entityName);
 	}
-
-	public int getId() {
-		return id;
+	
+	public String getEntityName() {
+		return entityName;
 	}
 
 }

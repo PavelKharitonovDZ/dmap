@@ -203,7 +203,7 @@ public class DataConvertor {
 	}
 
 	/** 
-	 * TODO unused 
+	 * TODO unused and wrong 
 	 * @param domain
 	 * @return True if fields of this domain can't be used as data filters (directly).
 	 */
@@ -213,6 +213,18 @@ public class DataConvertor {
 		case "reference":
 		case "sysreference":
 		case "reflist":
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	public static boolean isReference(String domain) {
+		switch(domain)
+		{
+		case "reference":
+		case "sysreference":
+		//case "reflist": // TODO how do we process?
 			return true;
 		default:
 			return false;

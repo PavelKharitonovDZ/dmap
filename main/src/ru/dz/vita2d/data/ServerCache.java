@@ -63,7 +63,7 @@ public class ServerCache
 
 
 
-	private Map<EntityRef,JSONObject> cache = new HashMap<>();
+	private Map<UnitRef,JSONObject> cache = new HashMap<>();
 
 	/**
 	 * <p>Get object of given type, cached.<p> 
@@ -76,7 +76,7 @@ public class ServerCache
 
 	public JSONObject getDataRecord( ServerUnitType type, int id ) throws IOException
 	{
-		EntityRef ref = new EntityRef(type, id);
+		UnitRef ref = new UnitRef(type, id);
 		return getDataRecord( ref );
 	}
 
@@ -88,7 +88,7 @@ public class ServerCache
 	 * @throws IOException
 	 */
 
-	public JSONObject getDataRecord( EntityRef ref ) throws IOException
+	public JSONObject getDataRecord( UnitRef ref ) throws IOException
 	{
 		synchronized (cache) {
 
@@ -109,7 +109,7 @@ public class ServerCache
 						// TODO better way?
 						//cache.forEach( (k, v) -> { if(rnd-- == 0) { cache.remove(k);  }} );
 
-						for( EntityRef r : cache.keySet())
+						for( UnitRef r : cache.keySet())
 						{
 							if(rnd-- <= 0) 
 							{

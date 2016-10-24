@@ -21,6 +21,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import ru.dz.vita2d.data.DataConvertor;
+import ru.dz.vita2d.data.EntityRef;
+import ru.dz.vita2d.data.IRef;
+import ru.dz.vita2d.data.ModelFieldDefinition;
 import ru.dz.vita2d.data.PerTypeCache;
 import ru.dz.vita2d.data.RestCaller;
 import ru.dz.vita2d.data.ServerCache;
@@ -67,7 +70,6 @@ public class EntityFormView {
 
 		JSONObject record;
 
-		//record = rc.getDataRecord(type, entityId);
 		record = tc.getServerCache().getDataRecord(type, entityId);
 
 		//System.out.println(record);
@@ -97,19 +99,9 @@ public class EntityFormView {
 		col2.setCellValueFactory(new MapValueFactory("fv"));
 		table.getColumns().add(col2);
 
-		/*
-		table.setRowFactory( tv -> {
-			TableRow<Map> row = new TableRow<>();
-			row.setOnMouseClicked(event -> {
-				if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
-					Map<String,String> rowData = row.getItem();
-					//System.out.println(rowData);
-					String sid = rowData.get("id");
-				}
-			});
-			return row ;
-		});
-		 */
+		TableColumn<Map, String> col3 = new TableColumn<>("Ссылка");
+		col3.setCellValueFactory(new MapValueFactory("li"));
+		table.getColumns().add(col3);
 
 		final VBox vbox = new VBox();
 
@@ -129,14 +121,6 @@ public class EntityFormView {
 		{
 			Object object = jo.get(key);
 
-			/*
-	    	// Skip complex ones yet
-	    	if (object instanceof JSONObject) {
-				//JSONObject new_name = (JSONObject) object;
-				continue;
-			}
-			 */
-
 			if( "shortName".equalsIgnoreCase(key))
 			{
 				//dialog.setTitle("Средство '"+object+"'");
@@ -144,24 +128,10 @@ public class EntityFormView {
 				shortNameLabel.setText(title);
 			}
 
-			/*
-			String fieldName = tc.getFieldName(key);
-			String fieldType = tc.getFieldType(key);
-
-			if(fieldName == null)
-				continue;
-			String val = DataConvertor.readableValue( fieldType, object.toString() );
-
-			Map<String, String> dataRow = new HashMap<>();
-
-			dataRow.put("fn", fieldName );
-			dataRow.put("fv", val );
-
-			allData.add(dataRow);
-			 */
 			DataConvertor.parseAnything(key, object, (fName,fieldVal) -> {
 				String fieldName = tc.getFieldName(key);
 				String fieldType = tc.getFieldType(fName);
+				ModelFieldDefinition fieldModel = tc.getFieldModel(fName);
 				if( fieldName != null )
 				{
 					String val = DataConvertor.readableValue( fieldType, fieldVal ); 
@@ -171,6 +141,26 @@ public class EntityFormView {
 					dataRow.put("fn", fieldName );
 					dataRow.put("fv", val );
 
+					if( (fieldModel != null) && fieldModel.isReference())
+					{
+						String entity = fieldModel.getEntity();
+						int id = -1;
+						if (object instanceof JSONObject) {
+							JSONObject j = (JSONObject) object;
+							
+							if( j.has("id") )
+								id = j.getInt("id");
+						}
+						
+						System.out.println("ref ent="+entity+" id="+id);
+						IRef ref = new EntityRef( entity, id );
+						
+						dataRow.put("ref", ref.serialize() );
+						dataRow.put("li", "<i>link</i>" );
+					}
+					else
+						dataRow.put("li", "" );
+					
 					allData.add(dataRow);
 				}
 			});

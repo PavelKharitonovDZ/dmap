@@ -15,7 +15,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ru.dz.vita2d.data.EntityRef;
+import ru.dz.vita2d.data.UnitRef;
 import ru.dz.vita2d.data.ServerUnitType;
 import ru.dz.vita2d.maps.MapOverlay;
 import ru.dz.vita2d.ui.EntityFormView;
@@ -175,7 +175,7 @@ public abstract class AbstractMapScene implements IMapScene
 			
 			vb.getChildren().add( new ImageView( currentOverlay.getImage() ) );
 			
-			EntityRef ref = currentOverlay.getReference();
+			UnitRef ref = currentOverlay.getReference();
 			if( ref != null )
 			{
 				ServerUnitType type = ref.getType();

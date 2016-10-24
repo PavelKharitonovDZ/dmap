@@ -3,7 +3,7 @@ package ru.dz.vita2d.maps;
 import org.json.JSONObject;
 
 import javafx.util.Duration;
-import ru.dz.vita2d.data.EntityRef;
+import ru.dz.vita2d.data.UnitRef;
 import ru.dz.vita2d.ui.anim.SpriteAnimation;
 
 /**
@@ -21,7 +21,7 @@ public class MapTileDefinition {
 		private int y;
 		private MapDefinition mapDefinition;
 		private SpriteAnimation spriteAnimation;
-		private EntityRef reference;
+		private UnitRef reference;
 
 		/*
 		public MapTileDefinition( String id, String name, String file ) 
@@ -59,7 +59,7 @@ public class MapTileDefinition {
 			{
 				String reftype = tile.getString("ref-unit-type");
 				int refid = tile.getInt("ref-unit-id");
-				reference = new EntityRef(reftype, refid);
+				reference = new UnitRef(reftype, refid);
 			}
 		}
 
@@ -69,7 +69,7 @@ public class MapTileDefinition {
 		public int getX() {			return x;		}
 		public int getY() {			return y;		}		
 		public SpriteAnimation getSpriteAnimation() {			return spriteAnimation;		}
-		public EntityRef getReference() {			return reference;		}
+		public UnitRef getReference() {			return reference;		}
 
 		@Override
 		public String toString() {

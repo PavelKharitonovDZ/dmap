@@ -203,6 +203,15 @@ public class ModelFieldDefinition extends JsonParser
 			return false;
 		return DataConvertor.isNonFilterable(domain);
 	}
+
+
+
+
+	public boolean isReference() {
+		if(domain == null)
+			return false;
+		return DataConvertor.isReference(domain);
+	}
 	
 
 }

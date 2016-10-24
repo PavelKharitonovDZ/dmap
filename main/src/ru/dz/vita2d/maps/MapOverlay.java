@@ -2,7 +2,7 @@ package ru.dz.vita2d.maps;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import ru.dz.vita2d.data.EntityRef;
+import ru.dz.vita2d.data.UnitRef;
 import ru.dz.vita2d.ui.anim.SpriteAnimation;
 
 /**
@@ -108,7 +108,7 @@ public class MapOverlay
 	 * If tile refers to some data entity, return reference.
 	 * @return
 	 */
-	public EntityRef getReference()
+	public UnitRef getReference()
 	{
 		return mtd == null ? null : mtd.getReference();
 	}

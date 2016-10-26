@@ -1,5 +1,9 @@
 package ru.dz.vita2d.data;
 
+import java.util.function.Consumer;
+
+import org.json.JSONObject;
+
 /**
  * Interface for entity/unit type common methods.
  * 
@@ -41,12 +45,22 @@ public interface IEntityType {
 	public String getPluralTypeName();
 	
 	
+	/**
+	 * <p>Break down server JSON to single records.</p> 
+	 * <p>Note that server JSON can contain other (related) record 
+	 * types that will be just ignored by this processing.</p>
+	 * 
+	 * @param json Source JSON as from server
+	 * @param jsonRecordConsumer Consumer to get and process one JSON record.
+	 */
+	void forEachRecord(JSONObject json, Consumer<JSONObject> jsonRecordConsumer);
+	
 	/*
 	 * TODO
 	 * 
-	 * break object down to records
+	 * break object down to records returning IRef?
 	 * 
-	 * forEachRecord(JSONObject json, Consumer<JSONObject> jsonRecord	  
+	 * forEachRecord(JSONObject json, Consumer<IRef> referenceConsumer	  
 	 * 
 	 * break record down to fields
 	 * 

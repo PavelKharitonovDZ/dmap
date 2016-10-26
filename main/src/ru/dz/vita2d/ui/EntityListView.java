@@ -186,7 +186,12 @@ public class EntityListView {
 			//JSONObject objList = rc.loadUnitList(type);
 			if(objList == null)
 				return;
-
+			
+			type.forEachRecord(objList, odata -> {
+				transferEntity(allData, odata);
+			});
+			
+			/*
 			JSONArray a = objList.getJSONArray("list");
 
 			a.forEach( li -> { 
@@ -211,7 +216,7 @@ public class EntityListView {
 				}
 
 			});
-
+			*/
 		}
 		/*catch (IOException e) {
 			// TODO Auto-generated catch block

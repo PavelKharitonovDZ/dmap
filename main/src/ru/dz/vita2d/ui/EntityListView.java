@@ -51,7 +51,7 @@ import ru.dz.vita2d.unused.JsonAsFlowDialog;
 public class EntityListView {
 
 	private ServerUnitType type;
-	private RestCaller rc;
+	//private RestCaller rc;
 	private PerTypeCache tc;
 
 	private Set<String> fieldNames = new HashSet<>();
@@ -63,17 +63,17 @@ public class EntityListView {
 	
 	private JSONObject objList;
 	
-	public EntityListView(ServerUnitType type, RestCaller rc, ServerCache sc) 
+	public EntityListView(ServerUnitType type, ServerCache sc) 
 	{
 		super();
 
 		this.type = type;
-		this.rc = rc;
+		//this.rc = rc;
 		title = "Список: "+type.getDisplayName();
 		tc = sc.getTypeCache(type); //new PerTypeCache(type, rc);
 		
 		try {
-			objList = rc.loadUnitList(type);
+			objList = sc.loadUnitList(type);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -127,7 +127,7 @@ public class EntityListView {
 					//System.out.println(id);
 
 					try {
-						EntityFormWindow fw = new EntityFormWindow(type, rc, tc, id);
+						EntityFormWindow fw = new EntityFormWindow(type, tc, id);
 
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -193,38 +193,20 @@ public class EntityListView {
 				//System.out.println("li = "+li); 
 				JSONObject lio = (JSONObject) li;
 
-				if(type == ServerUnitType.OBJECTS)
+				if( (type == ServerUnitType.OBJECTS) || (type == ServerUnitType.SINGLE_OBJECTS))
 				{
 					JSONObject odata = lio.getJSONObject("obj");
-
-					//System.out.println("data = "+odata);
-
-					Map<String, String> dataRow = new HashMap<>();
-
-					BoolPtr ok = new BoolPtr();
-					loadEntity(odata, dataRow, ok);
-					
-					if( ok.ok && ok.search ) //filter(dataRow ) )					
-						allData.add(dataRow);
-
+					transferEntity(allData, odata);
 				}
 				else
 				{
-					JSONArray ja = lio.getJSONArray(type.getPluralTypeName());
+					String jid = type.getPluralTypeName();
+					//if(type == ServerUnitType.DOCUMENTS) jid = "files"; // Oh, my god.
+					JSONArray ja = lio.getJSONArray(jid);
 
 					ja.forEach(jae -> {
-
-						JSONObject odata = (JSONObject) jae; //lio.getJSONObject(type.getPluralTypeName());
-						//JSONObject odata = lio.getJSONObject("obj");
-
-						//System.out.println("data = "+odata);
-
-						Map<String, String> dataRow = new HashMap<>();
-
-						BoolPtr ok = new BoolPtr();
-						loadEntity(odata, dataRow, ok);
-						if( ok.ok && ok.search ) //filter(dataRow ) )					
-							allData.add(dataRow);
+						JSONObject odata = (JSONObject) jae;
+						transferEntity(allData, odata);
 					} );
 				}
 
@@ -237,6 +219,18 @@ public class EntityListView {
 		}*/
 
 		//return allData;
+	}
+
+
+
+	private void transferEntity(ObservableList<Map> allData, JSONObject odata) {
+		Map<String, String> dataRow = new HashMap<>();
+
+		BoolPtr ok = new BoolPtr();
+		loadEntity(odata, dataRow, ok);
+		
+		if( ok.ok && ok.search ) //filter(dataRow ) )					
+			allData.add(dataRow);
 	}
 
 

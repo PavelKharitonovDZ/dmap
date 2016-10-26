@@ -21,19 +21,19 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import ru.dz.vita2d.data.RestCaller;
+import ru.dz.vita2d.data.IRestCaller;
 
 public class LoginFormView 
 {
 	private TextField loginField;
 	private TextField passwdField;
 
-	private RestCaller rc;
+	private IRestCaller rc;
 	private Label message;
 	private Consumer<String> loginDone = null;
 	private boolean loggedIn = false;
 
-	public LoginFormView(RestCaller rc, Consumer<String> loginDone) {
+	public LoginFormView(IRestCaller rc, Consumer<String> loginDone) {
 		this.rc = rc;
 		this.loginDone = loginDone;		
 	}

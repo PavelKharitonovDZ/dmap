@@ -23,8 +23,15 @@ public class ServerUnitType
 	static final public ServerUnitType JOBS = new ServerUnitType("job","работа");
 	static final public ServerUnitType EVENTS = new ServerUnitType("event","событие");
 
+	static final public ServerUnitType SINGLE_OBJECTS = new ServerUnitType("singleObj","подобъект");
+/* all broken
+	//static final public ServerUnitType DOCUMENTS = new ServerUnitType("linkedFile","документ");
+	static final public ServerUnitType DOCUMENTS = new ServerUnitType("file","документ");
+	static final public ServerUnitType CONTRACTS = new ServerUnitType("contract","контракт");
+	static final public ServerUnitType NOTIFICATIONS = new ServerUnitType("notification","напоминание");
+*/
 	// does not work
-	//static final public ServerUnitType EMPLOYEES = new ServerUnitType("employee","сотрудник");
+	static final public ServerUnitType EMPLOYEES = new ServerUnitType("employee","сотрудник");
 	
 	private final String plural;
 	private final String single;

@@ -10,9 +10,9 @@ import ru.dz.vita2d.data.ServerUnitType;
 public class EntityFormWindow extends AbstractFormWindow {
 	private EntityFormView view;
 
-	public EntityFormWindow(ServerUnitType type, RestCaller rc, PerTypeCache tc, int id) throws IOException {
+	public EntityFormWindow(ServerUnitType type, PerTypeCache tc, int id) throws IOException {
 		
-		view = new EntityFormView(type, rc, tc, id);
+		view = new EntityFormView(type, tc, id);
 		
 		scene = new Scene(view.create());
 

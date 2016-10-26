@@ -15,21 +15,23 @@ import org.json.JSONObject;
  */
 public class ServerCache 
 {
-	private RestCaller rc;
+	private IRestCaller rc;
 
 	//private Map <String,String> fieldNamesMap;
 	//private Map <String,String> fieldTypesMap;
 
 	private Map<ServerUnitType,PerTypeCache> caches = new HashMap<>(); 
 
-	public ServerCache(RestCaller rc) 
+	public ServerCache(IRestCaller rc) 
 	{
 		this.rc = rc;
-
 		ServerUnitType.forEach( t -> caches.put(t, new PerTypeCache(t, rc, this)));
-
 	}
 
+
+	public IRestCaller getRestCaller() {
+		return rc;
+	}
 
 	public PerTypeCache getTypeCache(ServerUnitType type) { return caches.get(type); }
 
@@ -63,7 +65,7 @@ public class ServerCache
 
 
 
-	private Map<UnitRef,JSONObject> cache = new HashMap<>();
+	private Map<IRef,JSONObject> cache = new HashMap<>();
 
 	/**
 	 * <p>Get object of given type, cached.<p> 
@@ -88,7 +90,7 @@ public class ServerCache
 	 * @throws IOException
 	 */
 
-	public JSONObject getDataRecord( UnitRef ref ) throws IOException
+	public JSONObject getDataRecord( IRef ref ) throws IOException
 	{
 		synchronized (cache) {
 
@@ -96,7 +98,7 @@ public class ServerCache
 			if( cr == null)
 			{
 
-				cr = rc.getDataRecord(ref.getType(), ref.getId());
+				cr = rc.getDataRecord(ref);
 				if( cr != null )
 				{
 					cache.put(ref, cr);
@@ -109,7 +111,7 @@ public class ServerCache
 						// TODO better way?
 						//cache.forEach( (k, v) -> { if(rnd-- == 0) { cache.remove(k);  }} );
 
-						for( UnitRef r : cache.keySet())
+						for( IRef r : cache.keySet())
 						{
 							if(rnd-- <= 0) 
 							{
@@ -124,6 +126,19 @@ public class ServerCache
 			return cr;
 
 		}
+	}
+
+
+	// TODO not cached!
+	public JSONObject loadUnitList(ServerUnitType type) throws IOException {
+		return rc.loadUnitList(type);
+	}
+
+
+
+	// TODO not cached!
+	public JSONObject getDataModel(String entityName) throws IOException {		
+		return rc.getDataModel(entityName);
 	}
 
 

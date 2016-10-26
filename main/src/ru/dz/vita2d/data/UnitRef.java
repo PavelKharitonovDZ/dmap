@@ -23,9 +23,13 @@ public class UnitRef extends AbstractRef {
 		return type;
 	}
 
+	public String getEntityName() {
+		return type.getPluralTypeName();
+	}
+
 	@Override
 	public String serialize() {
-		return String.format("unit:%d:%s", id, type.getObjectTypeName());
+		return String.format("unit-%d-%s", id, type.getObjectTypeName());
 	}
 
 }

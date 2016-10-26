@@ -22,10 +22,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import ru.dz.vita2d.data.DataConvertor;
 import ru.dz.vita2d.data.EntityRef;
+import ru.dz.vita2d.data.IEntityDataSource;
 import ru.dz.vita2d.data.IRef;
+import ru.dz.vita2d.data.IRestCaller;
 import ru.dz.vita2d.data.ModelFieldDefinition;
 import ru.dz.vita2d.data.PerTypeCache;
-import ru.dz.vita2d.data.RestCaller;
 import ru.dz.vita2d.data.ServerCache;
 import ru.dz.vita2d.data.ServerUnitType;
 
@@ -39,7 +40,7 @@ import ru.dz.vita2d.data.ServerUnitType;
 public class EntityFormView {
 
 	private ServerUnitType type;
-	private RestCaller rc;
+	//private RestCaller rc;
 	private PerTypeCache tc;
 
 	private JSONObject jo;			// Data
@@ -59,12 +60,12 @@ public class EntityFormView {
 	 * @throws IOException 
 	 */
 
-	public EntityFormView(ServerUnitType type, RestCaller rc, PerTypeCache tc, int entityId) throws IOException 
+	public EntityFormView(ServerUnitType type, PerTypeCache tc, int entityId) throws IOException 
 	{
 		super();
 
 		this.type = type;
-		this.rc = rc;
+		//this.rc = rc;
 		this.tc = tc;
 		this.entityId = entityId;
 
@@ -84,25 +85,27 @@ public class EntityFormView {
 		shortNameLabel.setFont(new Font("Arial", 20));
 		shortNameLabel.setTooltip(new Tooltip("id: "+entityId) );
 
-		TableView<Map> table = new TableView<>(generateDataInMap());
+		TableView<Map<String,String>> table = new TableView<>(generateDataInMap());
 
 		table.setEditable(true);
 		table.getSelectionModel().setCellSelectionEnabled(true);
 		table.setMinWidth(470);
 
-		TableColumn<Map, String> col1 = new TableColumn<>("Поле");
+		TableColumn<Map<String,String>, String> col1 = new TableColumn<>("Поле");
 		col1.setCellValueFactory(new MapValueFactory("fn"));
 		table.getColumns().add(col1);
 
-
-		TableColumn<Map, String> col2 = new TableColumn<>("Значение");
+		TableColumn<Map<String,String>, String> col2 = new TableColumn<>("Значение");
 		col2.setCellValueFactory(new MapValueFactory("fv"));
 		table.getColumns().add(col2);
 
-		TableColumn<Map, String> col3 = new TableColumn<>("Ссылка");
+		TableColumn<Map<String,String>, String> col3 = new TableColumn<>("Ссылка");
 		col3.setCellValueFactory(new MapValueFactory("li"));
 		table.getColumns().add(col3);
-
+		
+		setOnClick(table);
+		
+		
 		final VBox vbox = new VBox();
 
 		vbox.setSpacing(5);
@@ -113,9 +116,52 @@ public class EntityFormView {
 	}
 
 
-	private ObservableList<Map> generateDataInMap() {
+	private void setOnClick(TableView<Map<String, String>> table) {
+		table.setRowFactory( tv -> {
+		    TableRow<Map<String,String>> row = new TableRow<>();
+		    row.setOnMouseClicked(event -> {
+		        if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+		            onDoubleClick(row);
+		        }
+		    });
+		    return row ;
+		});
+	}
+
+	// TODO implement
+	private void onDoubleClick(TableRow<Map<String, String>> row) 
+	{
+		Map<String, String> rowData = row.getItem();
+	
+		if(rowData == null)
+			return;
+		
+		String ref = rowData.get("ref");
+		System.out.println(rowData);
+		IRef iref = IRef.deserialize(ref);
+		try {
+			IEntityDataSource instance = iref.instantiate(tc.getServerCache());
+			System.out.println(instance.getJson());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		IRestCaller rc = tc.getServerCache().getRestCaller();
+		try {
+			JSONObject dm = rc.getDataModel(iref.getEntityName());
+			System.out.println(dm);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+
+	private ObservableList<Map<String,String>> generateDataInMap() {
 		//int max = 10;
-		ObservableList<Map> allData = FXCollections.observableArrayList();
+		ObservableList<Map<String,String>> allData = FXCollections.observableArrayList();
 
 		for( String key : jo.keySet() )
 		{
@@ -156,7 +202,7 @@ public class EntityFormView {
 						IRef ref = new EntityRef( entity, id );
 						
 						dataRow.put("ref", ref.serialize() );
-						dataRow.put("li", "<i>link</i>" );
+						dataRow.put("li", "ссылка" );
 					}
 					else
 						dataRow.put("li", "" );

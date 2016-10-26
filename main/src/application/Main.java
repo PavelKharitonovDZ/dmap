@@ -18,8 +18,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import ru.dz.vita2d.data.CacheRestCaller;
+import ru.dz.vita2d.data.IRestCaller;
 import ru.dz.vita2d.data.RestCaller;
 import ru.dz.vita2d.data.ServerCache;
+import ru.dz.vita2d.data.store.LocalFileStorage;
 import ru.dz.vita2d.maps.MapList;
 import ru.dz.vita2d.media.Player;
 import ru.dz.vita2d.ui.LoginFormWindow;
@@ -30,11 +33,13 @@ public class Main extends Application
 
 	private Stage primaryStage;
 
-	public RestCaller rc;
+	public IRestCaller rc;
 	public ServerCache sc;
 	public MapList ml;
 
 	public Properties property = new Properties();
+	
+	public LocalFileStorage store = new LocalFileStorage(); 
 	
 	@Override
 	public void init() throws Exception {
@@ -45,6 +50,7 @@ public class Main extends Application
 		if(propStream != null) property.load(psr);
 
 		rc = new RestCaller(property.getProperty(Defs.PROP_HOST, Defs.HOST_NAME) );
+		//rc = new CacheRestCaller( new RestCaller(property.getProperty(Defs.PROP_HOST, Defs.HOST_NAME) ) );
 		sc = new ServerCache(rc);
 	
 		// Load data from local file with list of maps
@@ -63,16 +69,6 @@ public class Main extends Application
 			primaryStage.setResizable(false);
 		}
 		
-		/*
-		AnimationTimer at = new AnimationTimer() {			
-			@Override
-			public void handle(long now) {
-				System.out.println("at ");
-				
-			}
-		};
-		at.start();
-		*/
 		
 		//primaryStage.initStyle(StageStyle.DECORATED);
 		logout();

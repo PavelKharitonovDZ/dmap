@@ -1,5 +1,7 @@
 package ru.dz.vita2d.data;
 
+import java.io.IOException;
+
 public class EntityRef extends AbstractRef {
 	private String entityName;
 
@@ -11,7 +13,7 @@ public class EntityRef extends AbstractRef {
 	// deserialize
 	protected EntityRef(String s) {
 		s = s.substring(5);
-		int col = s.indexOf(':');
+		int col = s.indexOf('-');
 		if( col < 0 )
 			throw new RuntimeException("wrong format: "+s);
 		
@@ -21,11 +23,12 @@ public class EntityRef extends AbstractRef {
 
 	@Override
 	public String serialize() {
-		return String.format("enti:%d:%s", id, entityName);
+		return String.format("enti-%d-%s", id, entityName);
 	}
 	
 	public String getEntityName() {
 		return entityName;
 	}
+
 
 }

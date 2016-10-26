@@ -13,7 +13,7 @@ public class PerTypeCache {
 
 	private ServerUnitType type;
 
-	private RestCaller rc;
+	private IRestCaller rc;
 	private ServerCache sc;
 
 	private Map <String,String> fieldNamesMap;
@@ -23,7 +23,7 @@ public class PerTypeCache {
 
 	
 	
-	public PerTypeCache(ServerUnitType type, RestCaller rc, ServerCache sc) {
+	public PerTypeCache(ServerUnitType type, IRestCaller rc, ServerCache sc) {
 		this.type = type;
 		this.rc = rc;
 		this.sc = sc;

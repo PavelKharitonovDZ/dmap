@@ -52,8 +52,10 @@ public abstract class AbstractMapScene implements IMapScene
 				"Версия сервера:    \t\t"+main.rc.getServerVersion()+"\n"+
 				"URL сервера:       \t\t"+main.rc.getServerURL()+"\n"+
 				"Базовая ссылка:    \t\t"+main.getHostServices().getDocumentBase()+"\n"+ 
-				"Пользователь:      \t\t"+main.rc.getLoggedInUser()+"\n"
+				"Пользователь:      \t\t"+main.rc.getLoggedInUser()+"\n"+
+				"Каталог:      \t\t\t"+main.store.getBasedir()+"\n"+
 				//+"Точка запуска:     \t\t"+main.getHostServices().getCodeBase()+"\n"
+				""
 				;
 	
 		alert.setContentText(s);
@@ -180,7 +182,7 @@ public abstract class AbstractMapScene implements IMapScene
 			{
 				ServerUnitType type = ref.getType();
 				try {
-					EntityFormView view = new EntityFormView(type, main.rc, main.sc.getTypeCache(type), ref.getId() );
+					EntityFormView view = new EntityFormView(type, main.sc.getTypeCache(type), ref.getId() );
 					Pane node = view.create();
 					//node.setMaxWidth(300);
 					vb.getChildren().add( node );

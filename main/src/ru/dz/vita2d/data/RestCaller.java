@@ -1,25 +1,11 @@
 package ru.dz.vita2d.data;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 // "http://sv-web-15.vtsft.ru/orvd-test/rest/login"
 
@@ -28,138 +14,22 @@ import org.json.JSONTokener;
  * @author dz
  *
  */
-public class RestCaller 
+public class RestCaller extends HttpCaller implements IRestCaller
 {
 
-	private final String baseUrl;
 	private String loggedInUser;
 
 
 	public RestCaller(String baseUrl) {
-		this.baseUrl = baseUrl;
-
-		// Let cookie authorization work
-		CookieManager cm = new CookieManager();
-		CookieHandler.setDefault(cm);
+		super(baseUrl);
 
 	}
 
 
-	static String loadString(InputStream is) throws IOException
-	{
-		StringBuilder sb = new StringBuilder();		
-
-		InputStreamReader in = new InputStreamReader(is,"UTF-8");
-
-		BufferedReader br = new BufferedReader(in);
-
-		String output;
-		while ((output = br.readLine()) != null) {
-			sb.append(output);
-		}
-
-		return sb.toString();
-	}
-
-	static JSONObject loadJSON(InputStream is) throws IOException
-	{		
-		JSONTokener jt = new JSONTokener(loadString(is));
-		return new JSONObject(jt);		
-	}
-
-	private void checkResponceCode(HttpURLConnection conn) throws IOException {
-		if (conn.getResponseCode() != 200) {
-			String errText = "?";
-			
-			try {
-			errText = loadString(conn.getErrorStream());
-			} catch( Throwable e )
-			{
-				System.out.println(e);
-			}
-			URL errUrl = conn.getURL();
-			throw new ProtocolException("Url: "+errUrl+" HTTP responce code: " + conn.getResponseCode() + " text = '"+errText+"'");
-		}
-	}
-
-
-	private HttpURLConnection mkConn(String urlTail) throws MalformedURLException, IOException {
-		URL url = new URL(baseUrl + "/" + urlTail );
-		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-		conn.setRequestProperty("Accept", "application/json");
-		return conn;
-	}
-
-
-
-	private String getString(String urlTail) throws IOException
-	{
-		HttpURLConnection conn = mkConn(urlTail);
-		conn.setRequestMethod("GET");
-
-		checkResponceCode(conn);
-
-		InputStream is = conn.getInputStream();
-
-		String out = loadString(is);
-		conn.disconnect();
-		return out;
-	}
-
-
-	private JSONObject getJSON(String urlTail) throws IOException
-	{
-		HttpURLConnection conn = mkConn(urlTail);
-		conn.setRequestMethod("GET");
-
-		checkResponceCode(conn);
-
-		InputStream is = conn.getInputStream();
-
-		JSONObject out = loadJSON(is);
-		conn.disconnect();
-		return out;
-	}
-
-	private JSONObject post(String urlTail, String postData) throws IOException
-	{
-		HttpURLConnection conn = mkConn(urlTail);
-		conn.setRequestMethod("POST");
-		conn.setRequestProperty("Content-Type", "application/json");
-
-		if(postData != null)
-		{
-			conn.setDoOutput(true);
-			OutputStream os = conn.getOutputStream();
-			os.write(postData.getBytes());
-			os.flush();
-			os.close();
-		}
-		checkResponceCode(conn);
-
-		InputStream is = conn.getInputStream();
-
-		JSONObject out = loadJSON(is);
-		conn.disconnect();
-		return out;
-	}
-
-
-
-
-
-
-
-
-
-
-
-	/**
-	 * Logs us in. Must be called first.
-	 * @param login
-	 * @param password
-	 * @throws IOException
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.data.IRestCaller#login(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void login( String login, String password ) throws IOException 
 	{
 		JSONObject jo = new JSONObject();
@@ -193,20 +63,18 @@ public class RestCaller
 
 
 
-	static final String UNIT_LIST_REST_PATH = "rest/units/%s/list/";
-	private static final String OTHER_LIST_REST_PATH = "rest/%s/list/";
-
-	/**
-	 * Get list of objects of given type. 
-	 * @param type See ServerUnitType constants for types.
-	 * @return JSON with data
-	 * @throws IOException
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.data.IRestCaller#loadUnitList(ru.dz.vita2d.data.ServerUnitType)
 	 */
 
+	@Override
 	public JSONObject loadUnitList(ServerUnitType type) throws IOException
 	{
 		String path = String.format(UNIT_LIST_REST_PATH, type);
-
+		/*
+		if(type == ServerUnitType.DOCUMENTS)
+			path = String.format(UNIT_LIST_REST_PATH, "linkedFiles"); // My god...
+		*/
 		//path += "/?size=20&page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
 		path += "/?page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
 
@@ -216,7 +84,10 @@ public class RestCaller
 		return out;
 	}
 
-	/** God knows what differs units from other entities */
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.data.IRestCaller#loadOtherList(java.lang.String)
+	 */
+	@Override
 	public JSONObject loadOtherList(String entityType) throws IOException
 	{
 		String path = String.format(OTHER_LIST_REST_PATH, entityType);
@@ -230,15 +101,40 @@ public class RestCaller
 		return out;
 	}
 
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.data.IRestCaller#loadDictList(java.lang.String)
+	 */
+	@Override
+	public JSONObject loadDictList(String entityType) throws IOException
+	{
+		String path = String.format(OTHER_DICT_REST_PATH, entityType);
 
-	/**
-	 * <p>Get object of given type.<p> 
-	 * @param type See ServerUnitType constants for types.
-	 * @param id object id
-	 * @return JSON with data
-	 * @throws IOException
+		//path += "/?size=20&page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
+		path += "/?page=1&sort=name&order=asc&parentId=&scrollToId=-1";
+
+		JSONObject jo = new JSONObject();
+		JSONObject out = post(path, jo.toString());
+
+		return out;
+	}
+
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.data.IRestCaller#getDataRecord(ru.dz.vita2d.data.IRef)
 	 */
 
+	@Override
+	public JSONObject getDataRecord( IRef ref ) throws IOException
+	{
+		JSONObject data = getJSON( String.format( "rest/%s/view/%d/", ref.getEntityName(), ref.getId() ) );
+		return data;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.data.IRestCaller#getDataRecord(ru.dz.vita2d.data.ServerUnitType, int)
+	 */
+
+	@Override
 	public JSONObject getDataRecord( ServerUnitType type, int id ) throws IOException
 	{
 		JSONObject data = getJSON( String.format( "rest/%s/view/%d/", type, id ) );
@@ -246,29 +142,34 @@ public class RestCaller
 	}
 
 
-	/**
-	 * <p>Get object of given type.<p> 
-	 * @param ref object reference (type+id)
-	 * @return JSON with data
-	 * @throws IOException
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.data.IRestCaller#getDataRecord(ru.dz.vita2d.data.UnitRef)
 	 */
 	
+	@Override
 	public JSONObject getDataRecord( UnitRef ref ) throws IOException
 	{
 		return getDataRecord( ref.getType(), ref.getId() );
 	}
 	
 	
-	/**
-	 * Get data model (field names, types, etc) for given type.
-	 * @param unitType See ServerUnitType constants for types.
-	 * @return JSON with model
-	 * @throws IOException
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.data.IRestCaller#getDataModel(ru.dz.vita2d.data.ServerUnitType)
 	 */
+	@Override
 	public JSONObject getDataModel(ServerUnitType unitType) throws IOException
 	{
-		String data = getString( String.format( "resources/models/%s-form.js", unitType ) );
-
+		return getDataModel(unitType.toString());
+	}
+	
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.data.IRestCaller#getDataModel(java.lang.String)
+	 */
+	@Override
+	public JSONObject getDataModel(String entityName) throws IOException {
+		String data = getString( String.format( "resources/models/%s-form.js", entityName ) );
+		if( data == null)
+			return null;
 		//jsEval(data);
 
 		// This page gives out not a clean JSON but JavaScript assignment 
@@ -282,8 +183,14 @@ public class RestCaller
 		}
 
 		data = data.substring(eqpos+1); // skip all up to and incl '=' sign
-
-		JSONObject out = new JSONObject(data);		
+		JSONObject out = null;
+		try {
+		out = new JSONObject(data);
+		} catch(JSONException e)
+		{
+			System.out.println("wrong data model "+data); // TODO logging
+			throw e;
+		}
 		return out;
 	}
 
@@ -327,11 +234,10 @@ public class RestCaller
 	private final Object serverMutex = new Object();
 	private String serverVersion = null;
 
-	/**
-	 * <p>Get server version by parsing web site index page.</p>
-	 * <p>TODO: make REST API call for that!</p>
-	 * @return Server version string.
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.data.IRestCaller#getServerVersion()
 	 */
+	@Override
 	public String getServerVersion() {
 		synchronized (serverMutex) {
 			if( serverVersion == null )
@@ -367,6 +273,10 @@ public class RestCaller
 	}
 
 
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.data.IRestCaller#getLoggedInUser()
+	 */
+	@Override
 	public String getLoggedInUser() {
 		return loggedInUser;
 	}
@@ -383,6 +293,10 @@ public class RestCaller
 	}
 
 
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.data.IRestCaller#getServerURL()
+	 */
+	@Override
 	public String getServerURL() {
 		return baseUrl;
 	}
@@ -405,26 +319,28 @@ public class RestCaller
 	public static void main(String[] args) 
 	{	
 		//RestCaller rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-test");
-		RestCaller rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-release");
+		IRestCaller rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-release");
+
+		System.out.println("Start\n");
 
 		try {
-			System.out.println("Start\n");
 
 			rc.login("show","show");
 			//rc.getIcon("248");
 
 			//rc.getServerVersion();
 			
-			JSONObject empl =  rc.loadOtherList("employees");
-			saveToFile( "employees_list", empl.toString() );
+			extractOther(rc,"employees");
+			extractOther(rc,"meanKinds");
+			extractOther(rc,"objKinds");
+			extractOther(rc,"contragents");
+			extractOther(rc,"locations");
+			extractOther(rc,"divisions");
+			extractOther(rc,"users");
 
-			JSONObject mkl =  rc.loadOtherList("meanKinds");
-			saveToFile( "meanKinds_list", mkl.toString() );
-			/*			
-			JSONObject mr = rc.getMeansRecord( 2441372 );
-			System.out.println("Mean = "+mr.toString());
-			 */			
+			extractDict(rc,"airRoutes");
 
+			
 			JSONObject mdm = rc.getDataModel(ServerUnitType.MEANS);//rc.getMeansDataModel();
 			//System.out.println("Mean Data Model = "+mdm.toString());
 			saveToFile( "means_model", mdm.toString() );
@@ -465,8 +381,23 @@ public class RestCaller
 
 		}		
 
+		System.out.println("Done\n");
+
 	}
-	
+
+
+	private static void extractDict(IRestCaller rc, String name) throws IOException {
+		JSONObject mkl =  rc.loadDictList(name);
+		saveToFile( name+"_dict", mkl.toString() );
+	}
+
+
+	private static void extractOther(IRestCaller rc, String name) throws IOException {
+		JSONObject mkl =  rc.loadOtherList(name);
+		saveToFile( name+"_list", mkl.toString() );
+	}
+
+
 
 
 }

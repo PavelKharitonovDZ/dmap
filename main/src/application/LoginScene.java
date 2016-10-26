@@ -18,7 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ru.dz.vita2d.data.RestCaller;
+import ru.dz.vita2d.data.IRestCaller;
 
 @Deprecated
 public class LoginScene {
@@ -26,12 +26,12 @@ public class LoginScene {
 	private TextField passwdField;
 
 	//private static VBox root;
-	private RestCaller rc;
+	private IRestCaller rc;
 	private Scene me;
 	private Main main;
 	private Label message;
 
-	public LoginScene(RestCaller rc, Stage primaryStage, Main main) {
+	public LoginScene(IRestCaller rc, Stage primaryStage, Main main) {
         this.rc = rc;
 		this.main = main;
 		HBox buttons = createButtons();

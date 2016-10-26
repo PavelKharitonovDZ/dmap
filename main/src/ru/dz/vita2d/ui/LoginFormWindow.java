@@ -8,13 +8,13 @@ import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-import ru.dz.vita2d.data.RestCaller;
+import ru.dz.vita2d.data.IRestCaller;
 
 public class LoginFormWindow extends AbstractFormWindow 
 {
 	private LoginFormView view;
 
-	public LoginFormWindow(RestCaller rc, Consumer<String> loginDone)  {
+	public LoginFormWindow(IRestCaller rc, Consumer<String> loginDone)  {
 		
 		view = new LoginFormView(rc, loginDone);
 		

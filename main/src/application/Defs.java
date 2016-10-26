@@ -15,8 +15,9 @@ public class Defs {
 	public static final boolean FULL_SCREEN = false;
 
 
+	// TODO makes app unstable :(
 	public static boolean animationEnabled() {
 		// TODO load property
-		return true;
+		return false;
 	}
 }

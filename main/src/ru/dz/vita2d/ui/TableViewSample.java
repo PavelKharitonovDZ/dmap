@@ -3,6 +3,7 @@ package ru.dz.vita2d.ui;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import ru.dz.vita2d.data.IRestCaller;
 import ru.dz.vita2d.data.RestCaller;
 import ru.dz.vita2d.data.ServerCache;
 import ru.dz.vita2d.data.ServerUnitType;
@@ -11,7 +12,7 @@ public class TableViewSample extends Application {
 
 	//ServerUnitType type = ServerUnitType.OBJECTS;
 	ServerUnitType type = ServerUnitType.OBJECTS;
-	RestCaller rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-release");
+	IRestCaller rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-release");
 	ServerCache sc = new ServerCache(rc);
 
 	private EntityListView view;
@@ -23,7 +24,7 @@ public class TableViewSample extends Application {
 	@Override
 	public void start(Stage stage) 
 	{
-		view = new EntityListView(type, rc, sc);
+		view = new EntityListView(type, sc);
 		
 		Scene scene = new Scene(view.create());
 		

@@ -20,6 +20,7 @@ import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import ru.dz.vita2d.data.AbstractEntityType;
 import ru.dz.vita2d.data.DataConvertor;
 import ru.dz.vita2d.data.EntityRef;
 import ru.dz.vita2d.data.IEntityDataSource;
@@ -39,7 +40,7 @@ import ru.dz.vita2d.data.ServerUnitType;
 
 public class EntityFormView {
 
-	private ServerUnitType type;
+	private AbstractEntityType type;
 	//private RestCaller rc;
 	private PerTypeCache tc;
 

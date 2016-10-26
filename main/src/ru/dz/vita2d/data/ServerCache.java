@@ -33,7 +33,7 @@ public class ServerCache
 		return rc;
 	}
 
-	public PerTypeCache getTypeCache(ServerUnitType type) { return caches.get(type); }
+	public PerTypeCache getTypeCache(AbstractEntityType type) { return caches.get(type); }
 
 	/**
 	 * <p>Get field human readable name by internal name. <b>Slow!</b></p>
@@ -44,7 +44,7 @@ public class ServerCache
 	 * 
 	 * @return Human readable name.
 	 */
-	public String getFieldName(ServerUnitType type, String name)
+	public String getFieldName(AbstractEntityType type, String name)
 	{
 		return caches.get(type).getFieldName(name);
 	}
@@ -58,7 +58,7 @@ public class ServerCache
 	 * 
 	 * @return Data type (domain).
 	 */
-	public String getFieldType(ServerUnitType type, String name)
+	public String getFieldType(AbstractEntityType type, String name)
 	{
 		return caches.get(type).getFieldType(name);
 	}

@@ -4,43 +4,36 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import javafx.util.Pair;
-
 /**
  * This is actually a string with a server unitType name
  * @author dz
  *
  */
-public class ServerUnitType 
+public class ServerUnitType extends AbstractEntityType
 {
-	static private Set<ServerUnitType> all; 
+	protected static Set<ServerUnitType> all;
 	static {
 		all = new HashSet<>();
 	}
 
-	static final public ServerUnitType OBJECTS = new ServerUnitType("obj","объект");
-	static final public ServerUnitType MEANS = new ServerUnitType("mean","средство");
-	static final public ServerUnitType JOBS = new ServerUnitType("job","работа");
-	static final public ServerUnitType EVENTS = new ServerUnitType("event","событие");
+	static final public ServerUnitType OBJECTS = new ServerUnitType("obj","объект","объекты");
+	static final public ServerUnitType MEANS = new ServerUnitType("mean","средство","средства");
+	static final public AbstractEntityType JOBS = new ServerUnitType("job","работа","работы");
+	static final public AbstractEntityType EVENTS = new ServerUnitType("event","событие","события");
 
-	static final public ServerUnitType SINGLE_OBJECTS = new ServerUnitType("singleObj","подобъект");
+	static final public AbstractEntityType SINGLE_OBJECTS = new ServerUnitType("singleObj","подобъект","подобъекты");
 /* all broken
 	//static final public ServerUnitType DOCUMENTS = new ServerUnitType("linkedFile","документ");
-	static final public ServerUnitType DOCUMENTS = new ServerUnitType("file","документ");
 	static final public ServerUnitType CONTRACTS = new ServerUnitType("contract","контракт");
 	static final public ServerUnitType NOTIFICATIONS = new ServerUnitType("notification","напоминание");
 */
+	static final public ServerUnitType DOCUMENTS = new ServerUnitType("file","документ", "документы" );
+
 	// does not work
-	static final public ServerUnitType EMPLOYEES = new ServerUnitType("employee","сотрудник");
+	//static final public ServerUnitType EMPLOYEES = new ServerUnitType("employee","сотрудник");
 	
-	private final String plural;
-	private final String single;
-	private final String displayName;
-	
-	private ServerUnitType(String name, String displayName) {
-		this.displayName = displayName;
-		plural = name+"s";
-		single = name;
+	private ServerUnitType(String name, String displayName, String pluralDisplayName) {
+		super(name, displayName, pluralDisplayName);
 		
 		all.add(this);
 	}
@@ -50,20 +43,7 @@ public class ServerUnitType
 		all.forEach(action);
 	}
 	
-	/**
-	 * Single form.
-	 * @return type name as in JSON data.
-	 */
-	public String getObjectTypeName() { return single; }
 	
-	/**
-	 * Plural form.
-	 * @return type name as in requests.
-	 */
-	public String getPluralTypeName() { return plural; }
-	
-	public String getDisplayName() {		return displayName;	}
-
 	@Override
 	public String toString() {
 		return plural;

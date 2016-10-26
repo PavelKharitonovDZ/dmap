@@ -71,10 +71,10 @@ public class RestCaller extends HttpCaller implements IRestCaller
 	public JSONObject loadUnitList(ServerUnitType type) throws IOException
 	{
 		String path = String.format(UNIT_LIST_REST_PATH, type);
-		/*
+		
 		if(type == ServerUnitType.DOCUMENTS)
 			path = String.format(UNIT_LIST_REST_PATH, "linkedFiles"); // My god...
-		*/
+		
 		//path += "/?size=20&page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
 		path += "/?page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
 
@@ -338,7 +338,13 @@ public class RestCaller extends HttpCaller implements IRestCaller
 			extractOther(rc,"divisions");
 			extractOther(rc,"users");
 
+
 			extractDict(rc,"airRoutes");
+
+			JSONObject filesList = rc.loadUnitList(ServerUnitType.DOCUMENTS);
+			//dumpJson(objList);
+			//System.out.println("List = "+objList.toString());
+			saveToFile( "files_list", filesList.toString() );
 
 			
 			JSONObject mdm = rc.getDataModel(ServerUnitType.MEANS);//rc.getMeansDataModel();

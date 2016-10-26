@@ -99,7 +99,14 @@ public abstract class AbstractMapScene implements IMapScene
 		Menu dataMenu = new Menu("Данные");
 	
 		ServerUnitType.forEach(t -> {
-			MenuItem dataItem = new MenuItem(t.getDisplayName());
+			String name = t.getPluralDisplayName();
+			
+			String first = name.substring(0,1);
+			String rest = name.substring(1);
+			
+			name = first.toUpperCase()+rest;
+			
+			MenuItem dataItem = new MenuItem(name);
 			dataItem.setOnAction(actionEvent -> new EntityListWindow(t, main.rc, main.sc));
 	
 			dataMenu.getItems().add(dataItem);			

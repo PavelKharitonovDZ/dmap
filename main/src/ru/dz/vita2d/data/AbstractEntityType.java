@@ -1,5 +1,6 @@
 package ru.dz.vita2d.data;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.json.JSONArray;
@@ -74,4 +75,35 @@ public abstract class AbstractEntityType implements IEntityType {
 		});
 
 	}
+	
+	
+	
+	@Override
+	public void forEachField(JSONObject jsonRecord, FieldConsumer fieldNameandDataConsumer)
+	{
+		jsonRecord.keySet().forEach(fName -> 
+		{ 
+			Object data = jsonRecord.get(fName);
+			// TODO no readable name here!
+			DataConvertor.parseAnything(fName, data, (fieldName,fieldVal) -> {
+				String readableValue = DataConvertor.readableValue( getObjectTypeName(), fieldVal );
+
+				fieldNameandDataConsumer.accept(fName, data.toString(), readableValue);
+				
+				// TODO update set of possible values in per type cache
+				//tc.updateFieldValuesStats(fieldName, readableValue);
+			});
+
+
+		} );
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }

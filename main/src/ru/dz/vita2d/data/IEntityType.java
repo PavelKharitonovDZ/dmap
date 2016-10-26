@@ -1,5 +1,6 @@
 package ru.dz.vita2d.data;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.json.JSONObject;
@@ -62,9 +63,18 @@ public interface IEntityType {
 	 * 
 	 * forEachRecord(JSONObject json, Consumer<IRef> referenceConsumer	  
 	 * 
-	 * break record down to fields
 	 * 
-	 * forEachRecord(JSONObject jsonRecord, BiConsumer<String fieldName,String data> jsonRecord	  
+	 * 
+	 * 	  
 	 */
+	
+	/** 
+	 * <p>Break record down to fields.<p> 
+	 * 
+	 * @param jsonRecord Record to break down
+	 * @param fieldNameandDataConsumer Consumer to accept field name and value. 
+	 * Field name is in raw form (as in JSON), value is cooked (human readable format).
+	 */
+	void forEachField(JSONObject jsonRecord, FieldConsumer fieldNameAndDataConsumer);
 	
 }

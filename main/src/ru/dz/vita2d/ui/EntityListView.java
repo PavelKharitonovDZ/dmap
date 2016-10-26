@@ -245,6 +245,18 @@ public class EntityListView {
 
 
 	private void loadEntity(JSONObject odata, Map<String, String> dataRow, BoolPtr ok ) {
+		
+		type.forEachField(odata, (fieldName,rawData,readableValue) -> {
+			//String fieldType = tc.getFieldType(rawName);
+			filter(ok, fieldName, readableValue);
+			dataRow.put(fieldName, readableValue); 
+			fieldNames.add(fieldName); 
+			// update set of possible values in per type cache
+			tc.updateFieldValuesStats(fieldName, readableValue);
+			
+		});
+		
+		/*
 		odata.keySet().forEach(fName -> 
 		{ 
 			Object data = odata.get(fName);
@@ -263,6 +275,7 @@ public class EntityListView {
 
 
 		} );
+		*/
 	}
 
 

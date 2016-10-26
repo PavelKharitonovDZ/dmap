@@ -347,7 +347,11 @@ public class RestCaller extends HttpCaller implements IRestCaller
 			saveToFile( "files_list", filesList.toString() );
 
 			ServerUnitType.DOCUMENTS.forEachRecord(filesList, jRec -> {
-				System.out.println("File = "+jRec.toString());
+				//System.out.println("File = "+jRec.toString());
+				ServerUnitType.DOCUMENTS.forEachField(jRec, (fName,rawVal,fVal) -> {
+					System.out.print(fName+"='"+fVal+"' ");
+				});
+				System.out.println();
 			});
 			
 			JSONObject mdm = rc.getDataModel(ServerUnitType.MEANS);//rc.getMeansDataModel();

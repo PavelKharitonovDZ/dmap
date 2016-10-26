@@ -47,6 +47,7 @@ public class DataConvertor {
 			break;
 		}
 
+		case "file":
 		case "reflist":
 		case "unit":
 		case "currency":

@@ -67,4 +67,9 @@ public class ServerUnitType extends AbstractEntityType
 		
 		return p.t;
 	}
+
+	@Override
+	public IRef makeIRef(int id) {		
+		return new UnitRef(this,id);
+	}
 }

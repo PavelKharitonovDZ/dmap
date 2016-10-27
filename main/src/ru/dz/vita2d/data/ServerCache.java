@@ -76,9 +76,9 @@ public class ServerCache
 	 * @throws IOException
 	 */
 
-	public JSONObject getDataRecord( ServerUnitType type, int id ) throws IOException
+	public JSONObject getDataRecord( IEntityType type, int id ) throws IOException
 	{
-		UnitRef ref = new UnitRef(type, id);
+		IRef ref = type.makeIRef(id);//new IRef.(type, id);
 		return getDataRecord( ref );
 	}
 

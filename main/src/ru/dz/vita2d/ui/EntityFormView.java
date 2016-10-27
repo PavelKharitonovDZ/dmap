@@ -24,6 +24,7 @@ import ru.dz.vita2d.data.AbstractEntityType;
 import ru.dz.vita2d.data.DataConvertor;
 import ru.dz.vita2d.data.EntityRef;
 import ru.dz.vita2d.data.IEntityDataSource;
+import ru.dz.vita2d.data.IEntityType;
 import ru.dz.vita2d.data.IRef;
 import ru.dz.vita2d.data.IRestCaller;
 import ru.dz.vita2d.data.ModelFieldDefinition;
@@ -40,7 +41,7 @@ import ru.dz.vita2d.data.ServerUnitType;
 
 public class EntityFormView {
 
-	private AbstractEntityType type;
+	private IEntityType type;
 	//private RestCaller rc;
 	private PerTypeCache tc;
 
@@ -61,7 +62,7 @@ public class EntityFormView {
 	 * @throws IOException 
 	 */
 
-	public EntityFormView(ServerUnitType type, PerTypeCache tc, int entityId) throws IOException 
+	public EntityFormView(IEntityType type, PerTypeCache tc, int entityId) throws IOException 
 	{
 		super();
 
@@ -138,6 +139,9 @@ public class EntityFormView {
 			return;
 		
 		String ref = rowData.get("ref");
+		if(ref == null)
+			return;
+
 		System.out.println(rowData);
 		IRef iref = IRef.deserialize(ref);
 		try {
@@ -161,7 +165,7 @@ public class EntityFormView {
 
 
 	private ObservableList<Map<String,String>> generateDataInMap() {
-		//int max = 10;
+
 		ObservableList<Map<String,String>> allData = FXCollections.observableArrayList();
 
 		for( String key : jo.keySet() )
@@ -188,35 +192,40 @@ public class EntityFormView {
 					dataRow.put("fn", fieldName );
 					dataRow.put("fv", val );
 
-					if( (fieldModel != null) && fieldModel.isReference())
-					{
-						String entity = fieldModel.getEntity();
-						int id = -1;
-						if (object instanceof JSONObject) {
-							JSONObject j = (JSONObject) object;
-							
-							if( j.has("id") )
-								id = j.getInt("id");
-						}
-						
-						System.out.println("ref ent="+entity+" id="+id);
-						IRef ref = new EntityRef( entity, id );
-						
-						dataRow.put("ref", ref.serialize() );
-						dataRow.put("li", "ссылка" );
-					}
-					else
-						dataRow.put("li", "" );
+					processReference(object, fieldModel, dataRow);
 					
 					allData.add(dataRow);
 				}
 			});
-
+		
 		}	    
 
 
 
 		return allData;
+	}
+
+
+	private void processReference(Object jsonSrc, ModelFieldDefinition fieldModel, Map<String, String> dataRow) {
+		if( (fieldModel != null) && fieldModel.isReference())
+		{
+			String entity = fieldModel.getEntity();
+			int id = -1;
+			if (jsonSrc instanceof JSONObject) {
+				JSONObject j = (JSONObject) jsonSrc;
+				
+				if( j.has("id") )
+					id = j.getInt("id");
+			}
+			
+			System.out.println("ref ent="+entity+" id="+id);
+			IRef ref = new EntityRef( entity, id );
+			
+			dataRow.put("ref", ref.serialize() );
+			dataRow.put("li", "ссылка" );
+		}
+		else
+			dataRow.put("li", "" );
 	}
 
 

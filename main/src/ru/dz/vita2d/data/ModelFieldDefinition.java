@@ -140,6 +140,7 @@ public class ModelFieldDefinition extends JsonParser
 	public String getName() {		return name;	}
 	
 	public String getDomain() {		return domain;	}
+	/** Entity (table name) reference leads to. Relevant for reference (isReference()) fields.*/
 	public String getEntity() {		return entity;	}
 	
 	public boolean isRequired() {		return required;	}
@@ -206,7 +207,7 @@ public class ModelFieldDefinition extends JsonParser
 
 
 
-
+	/** The field we represent is reference to other record. Checks <i>domain</i> field.*/
 	public boolean isReference() {
 		if(domain == null)
 			return false;

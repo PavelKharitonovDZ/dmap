@@ -1,6 +1,5 @@
 package ru.dz.vita2d.data;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.json.JSONObject;
@@ -76,5 +75,8 @@ public interface IEntityType {
 	 * Field name is in raw form (as in JSON), value is cooked (human readable format).
 	 */
 	void forEachField(JSONObject jsonRecord, FieldConsumer fieldNameAndDataConsumer);
+
+	/** Create IRef for our type. */
+	public IRef makeIRef(int id);
 	
 }

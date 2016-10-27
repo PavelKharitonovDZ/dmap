@@ -1,6 +1,10 @@
 package ru.dz.vita2d.data;
 
-
+/**
+ * USed to supply lambda with field name/data info.
+ * @author dz
+ *
+ */
 
 @FunctionalInterface
 public interface FieldConsumer {

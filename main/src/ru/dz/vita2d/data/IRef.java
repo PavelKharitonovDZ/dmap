@@ -21,8 +21,8 @@ public interface IRef {
 	{
 		switch(s.substring(0, 5))
 		{
-		//case "unit:": return new UnitRef(s);
-		case "enti:": return new EntityRef(s);
+		//case "unit-": return new UnitRef(s);
+		case "enti-": return new EntityRef(s);
 		}
 		
 		return null;
@@ -38,5 +38,7 @@ public interface IRef {
 	public IEntityDataSource instantiate(ServerCache sc) throws IOException;
 	public JSONObject getDataModel(ServerCache sc) throws IOException;
 
+	
+	//public PerTypeCache getPerTypeCache();
 	
 }

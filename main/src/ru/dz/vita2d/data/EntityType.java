@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 /**
- * This is actually a string with a server entity name
+ * This is actually a string with a server entity (table) name
  * @author dz
  *
  */
@@ -54,4 +54,10 @@ public class EntityType extends AbstractEntityType
 		
 		return p.t;
 	}
+
+	@Override
+	public IRef makeIRef(int id) {		
+		return new EntityRef(this.plural,id);
+	}
+	
 }

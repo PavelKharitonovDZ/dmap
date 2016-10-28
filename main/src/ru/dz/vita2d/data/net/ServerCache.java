@@ -1,4 +1,4 @@
-package ru.dz.vita2d.data;
+package ru.dz.vita2d.data.net;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -7,6 +7,15 @@ import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import ru.dz.vita2d.data.EntityTypeCache;
+import ru.dz.vita2d.data.ITypeCache;
+import ru.dz.vita2d.data.UnitTypeCache;
+import ru.dz.vita2d.data.ref.IRef;
+import ru.dz.vita2d.data.type.AbstractEntityType;
+import ru.dz.vita2d.data.type.EntityType;
+import ru.dz.vita2d.data.type.IEntityType;
+import ru.dz.vita2d.data.type.ServerUnitType;
 
 /**
  * Place to keep cached data from server.
@@ -20,12 +29,15 @@ public class ServerCache
 	//private Map <String,String> fieldNamesMap;
 	//private Map <String,String> fieldTypesMap;
 
-	private Map<ServerUnitType,PerTypeCache> caches = new HashMap<>(); 
+	//private Map<ServerUnitType,UnitTypeCache> caches = new HashMap<>(); 
+	private Map<AbstractEntityType,ITypeCache> caches = new HashMap<>(); 
 
 	public ServerCache(IRestCaller rc) 
 	{
 		this.rc = rc;
-		ServerUnitType.forEach( t -> caches.put(t, new PerTypeCache(t, rc, this)));
+		ServerUnitType.forEach( t -> caches.put(t, new UnitTypeCache(t, rc, this)));
+		EntityType.forEach( t -> caches.put(t, new EntityTypeCache(t.getPluralTypeName(), rc, this)));
+		
 	}
 
 
@@ -33,7 +45,7 @@ public class ServerCache
 		return rc;
 	}
 
-	public PerTypeCache getTypeCache(AbstractEntityType type) { return caches.get(type); }
+	public ITypeCache getTypeCache(IEntityType type) { return caches.get(type); }
 
 	/**
 	 * <p>Get field human readable name by internal name. <b>Slow!</b></p>

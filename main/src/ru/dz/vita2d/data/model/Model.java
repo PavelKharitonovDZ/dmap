@@ -1,4 +1,4 @@
-package ru.dz.vita2d.data;
+package ru.dz.vita2d.data.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

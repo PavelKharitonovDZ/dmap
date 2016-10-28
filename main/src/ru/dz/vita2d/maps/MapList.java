@@ -21,7 +21,7 @@ import application.IMapScene;
 import application.MapScene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import ru.dz.vita2d.data.RestCaller;
+import ru.dz.vita2d.data.net.RestCaller;
 
 /**
  * List of all maps - loaded from JSON file

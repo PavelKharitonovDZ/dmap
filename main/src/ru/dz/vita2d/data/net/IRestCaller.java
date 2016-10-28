@@ -1,8 +1,13 @@
-package ru.dz.vita2d.data;
+package ru.dz.vita2d.data.net;
 
 import java.io.IOException;
 
 import org.json.JSONObject;
+
+import ru.dz.vita2d.data.ref.IRef;
+import ru.dz.vita2d.data.ref.UnitRef;
+import ru.dz.vita2d.data.type.IEntityType;
+import ru.dz.vita2d.data.type.ServerUnitType;
 
 public interface IRestCaller {
 
@@ -60,11 +65,15 @@ public interface IRestCaller {
 
 	/**
 	 * Get data model (field names, types, etc) for given type.
-	 * @param unitType See ServerUnitType constants for types.
+	 * 
+	 * TODO list/form kinds
+	 * 
+	 * @param unitType See ServerUnitType/EntityType constants for types.
 	 * @return JSON with model
 	 * @throws IOException
 	 */
-	JSONObject getDataModel(ServerUnitType unitType) throws IOException;
+	public JSONObject getDataModel(IEntityType unitType) throws IOException;
+	//JSONObject getDataModel(ServerUnitType unitType) throws IOException;
 
 	JSONObject getDataModel(String entityName) throws IOException;
 

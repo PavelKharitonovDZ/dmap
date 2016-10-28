@@ -16,9 +16,9 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Font;
 import javafx.util.Pair;
-import ru.dz.vita2d.data.FilterSet;
-import ru.dz.vita2d.data.ModelFieldDefinition;
-import ru.dz.vita2d.data.PerTypeCache;
+import ru.dz.vita2d.data.ITypeCache;
+import ru.dz.vita2d.data.filter.FilterSet;
+import ru.dz.vita2d.data.model.ModelFieldDefinition;
 
 /**
  * <p>Dialog used to set up table (list)filtering.</p>
@@ -29,9 +29,9 @@ import ru.dz.vita2d.data.PerTypeCache;
 public class FilterDialog {
 
 	private Set<String> fieldIds;
-	private PerTypeCache tc;
+	private ITypeCache tc;
 
-	public FilterDialog(PerTypeCache tc) 
+	public FilterDialog(ITypeCache tc) 
 	{
 		this.tc = tc;
 		fieldIds = tc.getFieldIds();

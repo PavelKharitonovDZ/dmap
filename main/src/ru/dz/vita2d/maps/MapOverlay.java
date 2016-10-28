@@ -2,7 +2,7 @@ package ru.dz.vita2d.maps;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import ru.dz.vita2d.data.UnitRef;
+import ru.dz.vita2d.data.ref.UnitRef;
 import ru.dz.vita2d.ui.anim.SpriteAnimation;
 
 /**

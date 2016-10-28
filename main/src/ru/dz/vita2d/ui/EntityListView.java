@@ -35,12 +35,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Pair;
 import ru.dz.vita2d.data.DataConvertor;
-import ru.dz.vita2d.data.FilterSet;
-import ru.dz.vita2d.data.ModelFieldDefinition;
-import ru.dz.vita2d.data.PerTypeCache;
-import ru.dz.vita2d.data.RestCaller;
-import ru.dz.vita2d.data.ServerCache;
-import ru.dz.vita2d.data.ServerUnitType;
+import ru.dz.vita2d.data.ITypeCache;
+import ru.dz.vita2d.data.filter.FilterSet;
+import ru.dz.vita2d.data.model.ModelFieldDefinition;
+import ru.dz.vita2d.data.net.RestCaller;
+import ru.dz.vita2d.data.net.ServerCache;
+import ru.dz.vita2d.data.type.ServerUnitType;
 import ru.dz.vita2d.unused.JsonAsFlowDialog;
 /**
  * </p>Display list of entities.</p>
@@ -52,7 +52,7 @@ public class EntityListView {
 
 	private ServerUnitType type;
 	//private RestCaller rc;
-	private PerTypeCache tc;
+	private ITypeCache tc;
 
 	private Set<String> fieldNames = new HashSet<>();
 	private String title = "";

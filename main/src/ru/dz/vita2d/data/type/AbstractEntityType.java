@@ -1,10 +1,13 @@
-package ru.dz.vita2d.data;
+package ru.dz.vita2d.data.type;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import ru.dz.vita2d.data.DataConvertor;
+import ru.dz.vita2d.data.func.FieldConsumer;
 
 /**
  * Common stuff for entity and unit type.

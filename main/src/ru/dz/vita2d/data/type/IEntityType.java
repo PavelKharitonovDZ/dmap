@@ -1,8 +1,11 @@
-package ru.dz.vita2d.data;
+package ru.dz.vita2d.data.type;
 
 import java.util.function.Consumer;
 
 import org.json.JSONObject;
+
+import ru.dz.vita2d.data.func.FieldConsumer;
+import ru.dz.vita2d.data.ref.IRef;
 
 /**
  * Interface for entity/unit type common methods.
@@ -25,6 +28,9 @@ public interface IEntityType {
 		if( ret != null ) return ret;
 		
 		ret =  EntityType.fromString(unitType);
+		
+		if(ret == null)			
+			System.out.println("Unknown Unit/Entity Type ="+unitType); // TODO log
 		
 		return ret;
 	}

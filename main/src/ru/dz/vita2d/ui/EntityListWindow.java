@@ -2,10 +2,10 @@ package ru.dz.vita2d.ui;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ru.dz.vita2d.data.HttpCaller;
-import ru.dz.vita2d.data.IRestCaller;
-import ru.dz.vita2d.data.ServerCache;
-import ru.dz.vita2d.data.ServerUnitType;
+import ru.dz.vita2d.data.net.HttpCaller;
+import ru.dz.vita2d.data.net.IRestCaller;
+import ru.dz.vita2d.data.net.ServerCache;
+import ru.dz.vita2d.data.type.ServerUnitType;
 
 public class EntityListWindow extends AbstractFormWindow {
 

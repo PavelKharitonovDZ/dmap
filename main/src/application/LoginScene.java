@@ -18,7 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import ru.dz.vita2d.data.IRestCaller;
+import ru.dz.vita2d.data.net.IRestCaller;
 
 @Deprecated
 public class LoginScene {

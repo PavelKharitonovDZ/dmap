@@ -1,4 +1,4 @@
-package ru.dz.vita2d.data;
+package ru.dz.vita2d.data.func;
 
 /**
  * USed to supply lambda with field name/data info.

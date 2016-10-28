@@ -1,11 +1,15 @@
-package ru.dz.vita2d.data;
+package ru.dz.vita2d.data.net;
 
 import java.io.IOException;
 
 import org.json.JSONObject;
 
+import ru.dz.vita2d.data.ref.IRef;
+import ru.dz.vita2d.data.ref.UnitRef;
 import ru.dz.vita2d.data.store.LocalFileStorage;
 import ru.dz.vita2d.data.store.RestSupplier;
+import ru.dz.vita2d.data.type.IEntityType;
+import ru.dz.vita2d.data.type.ServerUnitType;
 
 public class CacheRestCaller implements IRestCaller {
 
@@ -90,7 +94,7 @@ public class CacheRestCaller implements IRestCaller {
 	
 	
 	@Override
-	public JSONObject getDataModel(ServerUnitType unitType) throws IOException {
+	public JSONObject getDataModel(IEntityType unitType) throws IOException {
 		RestSupplier<JSONObject> s = () -> { return src.getDataModel(unitType); };
 		JSONObject out = LocalFileStorage.JSONCachedLoader(s, "unit_data_model_"+unitType.getPluralTypeName()+".rest");
 		return out;

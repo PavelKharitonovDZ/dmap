@@ -1,8 +1,11 @@
-package ru.dz.vita2d.data;
+package ru.dz.vita2d.data.type;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
+
+import ru.dz.vita2d.data.ref.IRef;
+import ru.dz.vita2d.data.ref.UnitRef;
 
 /**
  * This is actually a string with a server unitType name
@@ -62,8 +65,7 @@ public class ServerUnitType extends AbstractEntityType
 		if(p.t == null)
 			all.forEach( t -> { if( t.single.equalsIgnoreCase(unitType) ) p.t = t; });
 		
-		if(p.t == null)
-			System.out.println("Unknown Unit Type +"+unitType); // TODO log
+		//if(p.t == null)			System.out.println("Unknown Unit Type ="+unitType); // TODO log
 		
 		return p.t;
 	}

@@ -1,9 +1,11 @@
-package ru.dz.vita2d.data;
+package ru.dz.vita2d.data.model;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.json.JSONObject;
+
+import ru.dz.vita2d.data.DataConvertor;
 
 /**
  * <p>Definition (name, readable name, type, etc) of field as read by 

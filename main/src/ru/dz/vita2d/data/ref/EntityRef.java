@@ -1,6 +1,12 @@
-package ru.dz.vita2d.data;
+package ru.dz.vita2d.data.ref;
 
 import java.io.IOException;
+
+import ru.dz.vita2d.data.ITypeCache;
+import ru.dz.vita2d.data.net.ServerCache;
+import ru.dz.vita2d.data.type.AbstractEntityType;
+import ru.dz.vita2d.data.type.EntityType;
+import ru.dz.vita2d.data.type.IEntityType;
 
 public class EntityRef extends AbstractRef {
 	private String entityName;
@@ -30,5 +36,14 @@ public class EntityRef extends AbstractRef {
 		return entityName;
 	}
 
+	@Override
+	public ITypeCache getPerTypeCache(ServerCache sc) {		
+		return sc.getTypeCache( IEntityType.fromString(entityName) );
+	}
 
+	@Override
+	public AbstractEntityType getType() {
+		return EntityType.fromString(entityName);
+	}
+	
 }

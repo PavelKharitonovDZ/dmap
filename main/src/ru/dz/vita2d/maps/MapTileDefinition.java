@@ -3,7 +3,7 @@ package ru.dz.vita2d.maps;
 import org.json.JSONObject;
 
 import javafx.util.Duration;
-import ru.dz.vita2d.data.UnitRef;
+import ru.dz.vita2d.data.ref.UnitRef;
 import ru.dz.vita2d.ui.anim.SpriteAnimation;
 
 /**

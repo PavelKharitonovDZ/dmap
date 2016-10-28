@@ -1,4 +1,4 @@
-package ru.dz.vita2d.data;
+package ru.dz.vita2d.data.net;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -6,6 +6,12 @@ import java.net.MalformedURLException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import ru.dz.vita2d.data.ref.IRef;
+import ru.dz.vita2d.data.ref.UnitRef;
+import ru.dz.vita2d.data.type.EntityType;
+import ru.dz.vita2d.data.type.IEntityType;
+import ru.dz.vita2d.data.type.ServerUnitType;
 
 // "http://sv-web-15.vtsft.ru/orvd-test/rest/login"
 
@@ -157,10 +163,13 @@ public class RestCaller extends HttpCaller implements IRestCaller
 	 * @see ru.dz.vita2d.data.IRestCaller#getDataModel(ru.dz.vita2d.data.ServerUnitType)
 	 */
 	@Override
-	public JSONObject getDataModel(ServerUnitType unitType) throws IOException
+	public JSONObject getDataModel(IEntityType unitType) throws IOException
 	{
-		return getDataModel(unitType.toString());
+		return getDataModel(unitType.getPluralTypeName());
+		//return getDataModel(unitType.toString());
 	}
+	
+	// TODO -list version
 	
 	/* (non-Javadoc)
 	 * @see ru.dz.vita2d.data.IRestCaller#getDataModel(java.lang.String)
@@ -328,6 +337,10 @@ public class RestCaller extends HttpCaller implements IRestCaller
 			rc.login("show","show");
 			//rc.getIcon("248");
 
+			JSONObject emp_dm = rc.getDataModel(EntityType.EMPLOYEES);
+			saveToFile( "employees_model", emp_dm.toString() );
+			
+			
 			//rc.getServerVersion();
 			
 			extractOther(rc,"employees");

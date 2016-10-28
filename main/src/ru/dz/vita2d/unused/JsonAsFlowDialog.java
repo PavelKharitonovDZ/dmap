@@ -16,10 +16,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import ru.dz.vita2d.data.AbstractEntityType;
 import ru.dz.vita2d.data.DataConvertor;
-import ru.dz.vita2d.data.PerTypeCache;
-import ru.dz.vita2d.data.ServerCache;
+import ru.dz.vita2d.data.ITypeCache;
+import ru.dz.vita2d.data.net.ServerCache;
+import ru.dz.vita2d.data.type.AbstractEntityType;
 import ru.dz.vita2d.unused.JsonAsFlowDialog.ViewItem;
 
 @Deprecated
@@ -30,7 +30,7 @@ public class JsonAsFlowDialog
 	private Dialog<ButtonType> dialog;
 	//private ServerCache sc;
 	private AbstractEntityType type;
-	private PerTypeCache tc;
+	private ITypeCache tc;
 
 	public JsonAsFlowDialog(AbstractEntityType type, JSONObject jo) 
 	{
@@ -43,7 +43,7 @@ public class JsonAsFlowDialog
 		this.dm = fieldNamesMap;		
 	}
 */
-	public void setCache(PerTypeCache tc) {
+	public void setCache(ITypeCache tc) {
 		this.tc = tc;
 	}
 /*

@@ -1,4 +1,4 @@
-package ru.dz.vita2d.data;
+package ru.dz.vita2d.data.filter;
 
 import java.util.HashSet;
 import java.util.Set;

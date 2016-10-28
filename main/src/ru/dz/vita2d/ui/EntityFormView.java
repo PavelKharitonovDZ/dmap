@@ -20,17 +20,17 @@ import javafx.scene.control.cell.MapValueFactory;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import ru.dz.vita2d.data.AbstractEntityType;
 import ru.dz.vita2d.data.DataConvertor;
-import ru.dz.vita2d.data.EntityRef;
 import ru.dz.vita2d.data.IEntityDataSource;
-import ru.dz.vita2d.data.IEntityType;
-import ru.dz.vita2d.data.IRef;
-import ru.dz.vita2d.data.IRestCaller;
-import ru.dz.vita2d.data.ModelFieldDefinition;
-import ru.dz.vita2d.data.PerTypeCache;
-import ru.dz.vita2d.data.ServerCache;
-import ru.dz.vita2d.data.ServerUnitType;
+import ru.dz.vita2d.data.ITypeCache;
+import ru.dz.vita2d.data.model.ModelFieldDefinition;
+import ru.dz.vita2d.data.net.IRestCaller;
+import ru.dz.vita2d.data.net.ServerCache;
+import ru.dz.vita2d.data.ref.EntityRef;
+import ru.dz.vita2d.data.ref.IRef;
+import ru.dz.vita2d.data.type.AbstractEntityType;
+import ru.dz.vita2d.data.type.IEntityType;
+import ru.dz.vita2d.data.type.ServerUnitType;
 
 /**
  * </p>Display list entity fields.</p>
@@ -43,7 +43,7 @@ public class EntityFormView {
 
 	private IEntityType type;
 	//private RestCaller rc;
-	private PerTypeCache tc;
+	private ITypeCache tc;
 
 	private JSONObject jo;			// Data
 
@@ -62,7 +62,7 @@ public class EntityFormView {
 	 * @throws IOException 
 	 */
 
-	public EntityFormView(IEntityType type, PerTypeCache tc, int entityId) throws IOException 
+	public EntityFormView(IEntityType type, ITypeCache tc, int entityId) throws IOException 
 	{
 		super();
 
@@ -71,6 +71,21 @@ public class EntityFormView {
 		this.tc = tc;
 		this.entityId = entityId;
 
+		loadData(type, tc, entityId);
+	}
+
+	public EntityFormView(IRef ref, ServerCache sc) throws IOException {
+		super();
+
+		this.type = ref.getType();
+		this.tc = ref.getPerTypeCache(sc);
+		this.entityId = ref.getId();
+
+		loadData(type, tc, entityId);
+		}
+
+
+	private void loadData(IEntityType type, ITypeCache tc, int entityId) throws IOException {
 		JSONObject record;
 
 		record = tc.getServerCache().getDataRecord(type, entityId);
@@ -81,7 +96,10 @@ public class EntityFormView {
 		jo = entity;
 	}
 
-
+	
+	
+	
+	
 	public Pane create()	
 	{
 		shortNameLabel.setFont(new Font("Arial", 20));
@@ -145,8 +163,11 @@ public class EntityFormView {
 		System.out.println(rowData);
 		IRef iref = IRef.deserialize(ref);
 		try {
-			IEntityDataSource instance = iref.instantiate(tc.getServerCache());
-			System.out.println(instance.getJson());
+			//IEntityDataSource instance = iref.instantiate(tc.getServerCache());
+			//System.out.println(instance.getJson());
+			
+			new EntityFormWindow(iref, tc.getServerCache());
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

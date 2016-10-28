@@ -21,7 +21,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import ru.dz.vita2d.data.IRestCaller;
+import ru.dz.vita2d.data.net.IRestCaller;
 
 public class LoginFormView 
 {

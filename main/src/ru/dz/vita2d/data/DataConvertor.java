@@ -35,10 +35,9 @@ public class DataConvertor {
 
 		case "datetime":
 		{
-			long unixSeconds = Long.parseLong(value);
+			long unixMilliSeconds = Long.parseLong(value);
 
-			//Date date = new Date(unixSeconds*1000L);
-			Date date = new Date(unixSeconds);
+			Date date = new Date(unixMilliSeconds);
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 			//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			//sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -47,6 +46,16 @@ public class DataConvertor {
 			break;
 		}
 
+		case "icon": // TODO process me?
+		case "email":
+		case "event":
+		case "birthDate":
+		case "obj":
+		case "phone":
+		case "sysname":
+		case "name":
+		case "lastName":
+		case "firstName":
 		case "job":
 		case "file":
 		case "reflist":

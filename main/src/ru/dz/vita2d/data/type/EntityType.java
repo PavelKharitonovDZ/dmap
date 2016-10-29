@@ -26,6 +26,14 @@ public class EntityType extends AbstractEntityType
 	static final public EntityType CONTRAGENTS = new EntityType("contragent","контрагент","контрагенты");
 	static final public EntityType DIVISION_TYPES = new EntityType("divisionType","тип подразделения","типы подразделений");
 	static final public EntityType LOCATIONS = new EntityType("location","место","места");
+
+	static final public EntityType EVENT_TYPES = new EntityType("eventType","тип события","типы событий");
+	static final public EntityType EVENT_CAUSES = new EntityType("eventCause","причина события","причины событий");
+	static final public EntityType EVENT_SOURCES = new EntityType("eventSource","источник события","источники событий");
+	// TODO single/plural suffix -es! make special constructor?
+	static final public EntityType EVENT_STATUSES = new EntityType("eventStatuse","статус события","статусы событий");
+	static final public EntityType EVENT_EFFECT_TYPES = new EntityType("eventEffectType","последствие события","последствия событий");
+	static final public EntityType EVENT_END_CODES = new EntityType("eventEndCode","код завершения события","коды завершения событий");
 	
 	private EntityType(String name, String displayName, String pluralDisplayName) {
 		super(name, displayName, pluralDisplayName);

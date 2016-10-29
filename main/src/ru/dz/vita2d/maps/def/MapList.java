@@ -1,4 +1,4 @@
-package ru.dz.vita2d.maps;
+package ru.dz.vita2d.maps.def;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +22,7 @@ import application.MapScene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import ru.dz.vita2d.data.net.RestCaller;
+import ru.dz.vita2d.maps.IMapData;
 
 /**
  * List of all maps - loaded from JSON file

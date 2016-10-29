@@ -1,8 +1,12 @@
-package ru.dz.vita2d.maps;
+package ru.dz.vita2d.maps.over;
 
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import ru.dz.vita2d.data.ref.IRef;
 import ru.dz.vita2d.data.ref.UnitRef;
+import ru.dz.vita2d.maps.IMapData;
+import ru.dz.vita2d.maps.def.MapTileDefinition;
 import ru.dz.vita2d.ui.anim.SpriteAnimation;
 
 /**
@@ -10,16 +14,11 @@ import ru.dz.vita2d.ui.anim.SpriteAnimation;
  * @author dz
  *
  */
-public class MapOverlay 
+public class MapOverlay extends AbstractMapAddendum  
 {
 
 	private String iconUrl;
-	private int xPos;
-	private int yPos;
-	private IMapData hyperlink;
-
 	private Image image;
-	private ImageView iv;
 	private double xSize;
 	private double ySize;
 	private MapTileDefinition mtd;
@@ -57,6 +56,11 @@ public class MapOverlay
 		ySize = image.getHeight();
 	}
 
+	@Override
+	public Node getContentNode() {
+		return iv;
+	}
+	
 	public void setAnimation(SpriteAnimation sa)
 	{
 		sa.connect(iv);
@@ -64,21 +68,10 @@ public class MapOverlay
 	}
 	
 	public String getIconUrl() { 		return iconUrl;	}
-	public int getX() {		return xPos;	}
-	public int getY() {		return yPos;	}
-	public IMapData getHyperlink() {		return hyperlink;	}
-
-	/**
-	 * <p>Returns cached instance of imageview for us - must be used once, just in 
-	 * main map draw.</p>
-	 * <p>If you need more instances, use getImage()</p>
-	 * 
-	 * @return Cached imageview.
-	 * 
-	 * @see MapOverlay.getImage()
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.maps.IMapAddendum#isInside(double, double)
 	 */
-	public ImageView getImageView() {		return iv;	}
-
+	@Override
 	public boolean isInside(double x, double y) 
 	{
 		
@@ -96,6 +89,10 @@ public class MapOverlay
 		this.mtd = mtd;		
 	}
 	
+	/* (non-Javadoc)
+	 * @see ru.dz.vita2d.maps.IMapAddendum#getTitle()
+	 */
+	@Override
 	public String getTitle() {		
 		return mtd == null ? "?" : mtd.getName();
 	}
@@ -108,7 +105,8 @@ public class MapOverlay
 	 * If tile refers to some data entity, return reference.
 	 * @return
 	 */
-	public UnitRef getReference()
+	@Override
+	public IRef getReference()
 	{
 		return mtd == null ? null : mtd.getReference();
 	}

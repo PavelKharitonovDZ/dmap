@@ -16,7 +16,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ru.dz.vita2d.maps.IMapData;
-import ru.dz.vita2d.maps.MapOverlay;
+import ru.dz.vita2d.maps.over.IMapAddendum;
+import ru.dz.vita2d.maps.over.MapOverlay;
 
 public class MapScene extends AbstractMapScene {
 
@@ -27,6 +28,8 @@ public class MapScene extends AbstractMapScene {
 
 	private IMapData mData; // = bigMapData;
 
+	/** Main map image. */
+	private Image image; 
 	private ImageView imageView;
 	private double width, height;
 
@@ -51,22 +54,7 @@ public class MapScene extends AbstractMapScene {
 		reset(imageView, width, height);
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	// reset to the top left:
+	/** reset to the top left. */
 	private void reset(ImageView imageView, double width, double height) {
 		imageView.setViewport(new Rectangle2D(0, 0, width, height));
 	}
@@ -83,12 +71,15 @@ public class MapScene extends AbstractMapScene {
 	{
 		mData = mapData;
 
-		Image image = mData.getImage(); //new Image(IMAGE_URL);
+		image = mData.getImage(); //new Image(IMAGE_URL);
 
 		double width = mData.getImage().getWidth();
 		double height = mData.getImage().getHeight();
 
-		imageView = new ImageView( mData.putOverlays( image ) );
+		//imageView = new ImageView( mData.putOverlays( image ) );
+		imageView = new ImageView();
+		reOverlay();
+		
 		imageView.setPreserveRatio(true);
 		//reset(imageView, width / 2, height / 2);
 		reset(imageView, width, height);
@@ -98,7 +89,7 @@ public class MapScene extends AbstractMapScene {
 			AnimationTimer at = new AnimationTimer() {			
 				@Override
 				public void handle(long now) {
-					imageView.setImage( mData.putOverlays( image ) );				
+					reOverlay();				
 				}
 			};
 			at.start();
@@ -106,14 +97,57 @@ public class MapScene extends AbstractMapScene {
 
 		currentOverlay = null;
 
-		restart();
-	}
-
-	private void restart() {
 
 		width = mData.getImage().getWidth();
 		height = mData.getImage().getHeight();
 
+		connectActions();
+
+
+		Pane container = new Pane(imageView);
+		if(!Defs.FULL_SCREEN)
+		{
+			container.setPrefSize(800, 600);
+			//container.setPrefSize(1400, 800);
+			//container.setMinSize(900, 800);
+		}
+
+		info = new Pane();
+		if(!Defs.FULL_SCREEN)
+			info.setPrefSize(400, 600);
+		info.setPadding(new Insets(20)); // TODO wrong
+		fillInfo();
+
+		HBox mapAndInfo = new HBox(10, container, info);
+
+		imageView.fitWidthProperty().bind(container.widthProperty());
+		imageView.fitHeightProperty().bind(container.heightProperty());
+
+		MenuBar menuBar = new MenuBar();
+		menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
+
+		fillMenu(menuBar);
+
+
+		VBox root = new VBox(menuBar, mapAndInfo);
+		root.setFillWidth(true);
+		VBox.setVgrow(container, Priority.ALWAYS);
+
+		scene = new Scene(root);
+		primaryStage.setScene(scene);
+		primaryStage.setTitle( "ОРВД: " + mData.getTitle() ); //"ОРВД - Планшет Инженера");
+		//primaryStage.show();
+	}
+
+
+
+
+
+
+
+
+
+	private void connectActions() {
 		ObjectProperty<Point2D> mouseDown = new SimpleObjectProperty<>();
 
 		imageView.setOnMousePressed(e -> {            
@@ -175,59 +209,23 @@ public class MapScene extends AbstractMapScene {
 			Point2D mouseClick = imageViewToImage(imageView, new Point2D(e.getX(), e.getY()));
 			System.out.println("click @ x=" + mouseClick.getX()+" y=" + mouseClick.getY());
 
-			MapOverlay overlay = mData.getOverlayByRectangle( mouseClick.getX(), mouseClick.getY() );
-			if( overlay != null )
-			{
-				setMapData(overlay.getHyperlink());
-			}
+			IMapAddendum overlay = mData.getOverlayByRectangle( mouseClick.getX(), mouseClick.getY() );
+			IMapData link =  (overlay != null) ? overlay.getHyperlink() : null;
+			if( (overlay != null) && (link != null) )
+				setMapData(link);
 		});
 
 		imageView.setOnMouseMoved(e -> 
 		{
 			Point2D mouseClick = imageViewToImage(imageView, new Point2D(e.getX(), e.getY()));
 
-			MapOverlay overlay = mData.getOverlayByRectangle( mouseClick.getX(), mouseClick.getY() );
+			IMapAddendum overlay = mData.getOverlayByRectangle( mouseClick.getX(), mouseClick.getY() );
 			if( overlay != null )
 			{
 				currentOverlay = overlay;
 				fillInfo();
 			}
 		});
-
-
-		Pane container = new Pane(imageView);
-		if(!Defs.FULL_SCREEN)
-		{
-			container.setPrefSize(800, 600);
-			//container.setPrefSize(1400, 800);
-			//container.setMinSize(900, 800);
-		}
-
-		info = new Pane();
-		if(!Defs.FULL_SCREEN)
-			info.setPrefSize(400, 600);
-		info.setPadding(new Insets(20)); // TODO wrong
-		fillInfo();
-
-		HBox mapAndInfo = new HBox(10, container, info);
-
-		imageView.fitWidthProperty().bind(container.widthProperty());
-		imageView.fitHeightProperty().bind(container.heightProperty());
-
-		MenuBar menuBar = new MenuBar();
-		menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
-
-		fillMenu(menuBar);
-
-
-		VBox root = new VBox(menuBar, mapAndInfo);
-		root.setFillWidth(true);
-		VBox.setVgrow(container, Priority.ALWAYS);
-
-		scene = new Scene(root);
-		primaryStage.setScene(scene);
-		primaryStage.setTitle( "ОРВД: " + mData.getTitle() ); //"ОРВД - Планшет Инженера");
-		//primaryStage.show();
 	}
 
 
@@ -247,6 +245,19 @@ public class MapScene extends AbstractMapScene {
 
 
 
+
+
+
+
+
+
+
+
+	/** Recombine image by puting overlays on it. */
+	@Override
+	protected void reOverlay() {
+		imageView.setImage( mData.putOverlays( image ) );
+	}
 
 
 

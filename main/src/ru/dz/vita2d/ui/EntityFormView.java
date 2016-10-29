@@ -160,7 +160,7 @@ public class EntityFormView {
 		if(ref == null)
 			return;
 
-		System.out.println(rowData);
+		//System.out.println(rowData);
 		IRef iref = IRef.deserialize(ref);
 		try {
 			//IEntityDataSource instance = iref.instantiate(tc.getServerCache());
@@ -172,16 +172,16 @@ public class EntityFormView {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		/*
 		IRestCaller rc = tc.getServerCache().getRestCaller();
 		try {
 			JSONObject dm = rc.getDataModel(iref.getEntityName());
-			System.out.println(dm);
+			//System.out.println(dm);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		*/
 	}
 
 
@@ -239,7 +239,7 @@ public class EntityFormView {
 					id = j.getInt("id");
 			}
 			
-			System.out.println("ref ent="+entity+" id="+id);
+			//System.out.println("ref ent="+entity+" id="+id);
 			IRef ref = new EntityRef( entity, id );
 			
 			dataRow.put("ref", ref.serialize() );

@@ -1,7 +1,12 @@
-package ru.dz.vita2d.maps;
+package ru.dz.vita2d.maps.def;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import javafx.geometry.Point2D;
+import ru.dz.vita2d.maps.IMapData;
+import ru.dz.vita2d.maps.OutoorMapData;
+import ru.dz.vita2d.maps.over.MapPath;
 
 /**
  * Map definition as loaded from json file
@@ -23,6 +28,25 @@ public class MapDefinition {
 		this.file = file;
 		mapData = new OutoorMapData(file, name);
 		
+		// TODO test kill me
+		MapPath mp = new MapPath(
+				new Point2D(1042,1272),
+				new Point2D(1200,1272),
+				new Point2D(1200,1162)
+				);
+		mp.setLayerId("cable-optics");
+		mapData.addPath(mp);
+
+		/*
+		MapPath mp = new MapPath(
+				new Point2D(400,400),
+				new Point2D(200,100),
+				new Point2D(200,200),
+				new Point2D(100,200)
+				);
+
+		mapData.addPath(mp);
+		*/
 	}
 
 	

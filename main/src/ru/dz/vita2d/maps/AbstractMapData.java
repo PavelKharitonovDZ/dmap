@@ -3,11 +3,16 @@ package ru.dz.vita2d.maps;
 import java.util.LinkedList;
 import java.util.List;
 
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import ru.dz.vita2d.maps.def.MapTileDefinition;
+import ru.dz.vita2d.maps.over.IMapAddendum;
+import ru.dz.vita2d.maps.over.MapOverlay;
+import ru.dz.vita2d.maps.over.MapPath;
 import ru.dz.vita2d.ui.anim.SpriteAnimation;
 
 /**
@@ -38,7 +43,7 @@ public abstract class AbstractMapData implements IMapData
 		return title;
 	}
 
-	List<MapOverlay> overlays = new LinkedList<MapOverlay>();
+	protected List<IMapAddendum> overlays = new LinkedList<IMapAddendum>();
 	
 	public void addOverlay(MapTileDefinition mtd, IMapData hyperlink ) {
 		//MapOverlay mo = new MapOverlay(mtd.getFile(), mtd.getX(), mtd.getY(), hyperlink);
@@ -50,6 +55,11 @@ public abstract class AbstractMapData implements IMapData
 		
 		overlays.add(mo);		
 	}
+
+	public void addPath( MapPath mp )
+	{
+		overlays.add(mp);
+	}
 	
 	@Override
 	public Image putOverlays( Image in )
@@ -57,9 +67,13 @@ public abstract class AbstractMapData implements IMapData
 		ImageView bottom = new ImageView( in );
 		Group blend = new Group( bottom );
 		
-		for( MapOverlay o : overlays)
+		for( IMapAddendum o : overlays)
 		{			
-			blend.getChildren().add(o.getImageView());
+			if(o.isLayerEnabled())
+			{
+				//blend.getChildren().add(o.getImageView());
+				blend.getChildren().add(o.getContentNode());
+			}
 		}
 		
 		//SnapshotParameters parameters = new SnapshotParameters();
@@ -70,9 +84,9 @@ public abstract class AbstractMapData implements IMapData
 	}
 	
 	@Override
-	public MapOverlay getOverlayByRectangle(double x, double y) 
+	public IMapAddendum getOverlayByRectangle(double x, double y) 
 	{
-		for( MapOverlay o : overlays)
+		for( IMapAddendum o : overlays)
 		{			
 			boolean in = o.isInside( x, y );
 			if( in )

@@ -23,7 +23,7 @@ import ru.dz.vita2d.data.net.IRestCaller;
 import ru.dz.vita2d.data.net.RestCaller;
 import ru.dz.vita2d.data.net.ServerCache;
 import ru.dz.vita2d.data.store.LocalFileStorage;
-import ru.dz.vita2d.maps.MapList;
+import ru.dz.vita2d.maps.def.MapList;
 import ru.dz.vita2d.media.Player;
 import ru.dz.vita2d.ui.LoginFormWindow;
 

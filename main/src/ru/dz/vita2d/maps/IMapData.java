@@ -4,6 +4,9 @@
 package ru.dz.vita2d.maps;
 
 import javafx.scene.image.Image;
+import ru.dz.vita2d.maps.def.MapTileDefinition;
+import ru.dz.vita2d.maps.over.IMapAddendum;
+import ru.dz.vita2d.maps.over.MapPath;
 
 
 /**
@@ -27,8 +30,10 @@ public interface IMapData
 	String getTitle();
 	
 	void addOverlay(MapTileDefinition mtd, IMapData hyperlink );
+	void addPath( MapPath mp );
+	
 	public Image putOverlays( Image in );
 
-	MapOverlay getOverlayByRectangle(double x, double y);
+	IMapAddendum getOverlayByRectangle(double x, double y);
 	
 }

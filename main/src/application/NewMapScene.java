@@ -20,7 +20,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import ru.dz.vita2d.maps.IMapData;
-import ru.dz.vita2d.maps.MapOverlay;
+import ru.dz.vita2d.maps.over.IMapAddendum;
+import ru.dz.vita2d.maps.over.MapOverlay;
 
 public class NewMapScene extends AbstractMapScene {
 		
@@ -86,23 +87,32 @@ public class NewMapScene extends AbstractMapScene {
 	
 	
 	
+	private Image image;
+	private ImageView imageView;
 	
 	
-	
+	/** Recombine image by putting overlays on it. */
+	@Override
+	protected void reOverlay() {
+		imageView.setImage( mData.putOverlays( image ) );
+	}
 	
 	
 	public void setMapData(IMapData mapData) 
 	{
 		mData = mapData;
 
-		Image image = mData.getImage(); //new Image(IMAGE_URL);
+		image = mData.getImage(); //new Image(IMAGE_URL);
 
 		double width = mData.getImage().getWidth();
 		double height = mData.getImage().getHeight();
 
-		ImageView imageView;
 		
-		imageView = new ImageView( mData.putOverlays( image ) );
+		//imageView = new ImageView( mData.putOverlays( image ) );
+		
+		imageView = new ImageView();
+		reOverlay();
+
 		imageView.setPreserveRatio(true);
 		
 		group = new Group(imageView); 
@@ -229,7 +239,7 @@ public class NewMapScene extends AbstractMapScene {
 			Point2D mouseClick = imageViewToImage(imageView, new Point2D(e.getX(), e.getY()));
 			System.out.println("click @ x=" + mouseClick.getX()+" y=" + mouseClick.getY());
 
-			MapOverlay overlay = mData.getOverlayByRectangle( mouseClick.getX(), mouseClick.getY() );
+			IMapAddendum overlay = mData.getOverlayByRectangle( mouseClick.getX(), mouseClick.getY() );
 			if( overlay != null )
 			{
 				setMapData(overlay.getHyperlink());
@@ -245,7 +255,7 @@ public class NewMapScene extends AbstractMapScene {
 
 			//System.out.println("move @ x=" + mouseClick.getX()+" y=" + mouseClick.getY());
 
-			MapOverlay overlay = mData.getOverlayByRectangle( mouseClick.getX(), mouseClick.getY() );
+			IMapAddendum overlay = mData.getOverlayByRectangle( mouseClick.getX(), mouseClick.getY() );
 			if( overlay != null )
 			{
 				//System.out.println("over = "+overlay);

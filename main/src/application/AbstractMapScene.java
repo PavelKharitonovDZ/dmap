@@ -5,19 +5,24 @@ import java.io.IOException;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import ru.dz.vita2d.data.ref.IRef;
 import ru.dz.vita2d.data.ref.UnitRef;
 import ru.dz.vita2d.data.type.ServerUnitType;
-import ru.dz.vita2d.maps.MapOverlay;
+import ru.dz.vita2d.maps.LayerSet;
+import ru.dz.vita2d.maps.over.IMapAddendum;
+import ru.dz.vita2d.maps.over.MapOverlay;
 import ru.dz.vita2d.ui.EntityFormView;
 import ru.dz.vita2d.ui.EntityListWindow;
 
@@ -35,7 +40,7 @@ public abstract class AbstractMapScene implements IMapScene
 	protected Main main;
 
 	protected Pane info; // Right pane - must be filled with info on current object
-	protected MapOverlay currentOverlay; 
+	protected IMapAddendum currentOverlay; 
 
 	public AbstractMapScene( Stage primaryStage, Main main ) {
 		this.primaryStage = primaryStage;
@@ -88,11 +93,15 @@ public abstract class AbstractMapScene implements IMapScene
 		Menu navMaps = new Menu("Карты");
 		//navMaps.setOnAction(actionEvent -> setMapData(bigMapData));
 		main.ml.fillMapsMenu( navMaps, this );
-	
+
+		Menu navLayers = new Menu("Слои");
+		//navMaps.setOnAction(actionEvent -> setMapData(bigMapData));
+		fillLayersMenu( navLayers );
+		
 		MenuItem navOverview = new MenuItem("Обзор");
 		navOverview.setOnAction(actionEvent -> setOverviewScale());
 	
-		navMenu.getItems().addAll( navHomeMap, navMaps, new SeparatorMenuItem(), navOverview );
+		navMenu.getItems().addAll( navHomeMap, navMaps, navLayers, new SeparatorMenuItem(), navOverview );
 	
 		
 		
@@ -167,6 +176,21 @@ public abstract class AbstractMapScene implements IMapScene
 		menuBar.getMenus().addAll(fileMenu, navMenu, dataMenu, aboutMenu );
 	}
 
+	private void fillLayersMenu(Menu navLayers) 
+	{
+		LayerSet.forEach(layer -> {
+			CheckMenuItem layerItem = new CheckMenuItem(layer.getReadableName());
+			layerItem.setSelected( layer.isEnabled() );
+			layerItem.setOnAction(actionEvent -> { layer.setEnabled(layerItem.isSelected()); reOverlay(); } );
+			//System.out.println(layer.getReadableName());
+			navLayers.getItems().add(layerItem);
+			//scene.
+			
+		});		
+	}
+
+	protected abstract void reOverlay();
+
 	protected void fillInfo() {
 		info.getChildren().clear();
 		
@@ -182,14 +206,18 @@ public abstract class AbstractMapScene implements IMapScene
 		{
 			vb.getChildren().add( new Label("Объект: "+currentOverlay.getTitle() ) );
 			
-			vb.getChildren().add( new ImageView( currentOverlay.getImage() ) );
+			Image image = currentOverlay.getImage();
+			if( image != null )
+				vb.getChildren().add( new ImageView( image ) );
 			
-			UnitRef ref = currentOverlay.getReference();
+			IRef ref = currentOverlay.getReference();
+			//if( (ref != null) && (ref instanceof ServerUnitType) )
 			if( ref != null )
 			{
-				ServerUnitType type = ref.getType();
+				//ServerUnitType type = (ServerUnitType) ref.getType();
 				try {
-					EntityFormView view = new EntityFormView(type, main.sc.getTypeCache(type), ref.getId() );
+					//EntityFormView view = new EntityFormView(type, main.sc.getTypeCache(type), ref.getId() );
+					EntityFormView view = new EntityFormView(ref, main.sc );
 					Pane node = view.create();
 					//node.setMaxWidth(300);
 					vb.getChildren().add( node );

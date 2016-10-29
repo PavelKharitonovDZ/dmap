@@ -1,6 +1,8 @@
 package ru.dz.vita2d.data.net;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,6 +16,8 @@ import java.net.URL;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import ru.dz.vita2d.data.DataConvertor;
 
 public class HttpCaller {
 
@@ -121,4 +125,51 @@ public class HttpCaller {
 	protected static final String OTHER_LIST_REST_PATH = "rest/%s/list";
 	protected static final String OTHER_DICT_REST_PATH = "rest/%s/dict";
 
+
+	public void downloadFile(String filePath, String fileUrl, long modified) throws IOException 
+	{
+		HttpURLConnection conn = null;
+		FileOutputStream os = null;
+		
+		try {
+		
+		URL url = new URL(baseUrl + "/" + fileUrl );
+		conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestProperty("Accept", "application/json");
+		
+		conn.setRequestMethod("GET");
+		
+		checkResponceCode(conn);
+	
+		InputStream is = conn.getInputStream();
+	
+		
+		File fn = new File(filePath); 
+		File dir = fn.getParentFile();
+		dir.mkdirs();
+
+		os = new FileOutputStream(fn);
+
+		byte[] buf = new byte[1024];
+		int len;
+		while((len = is.read(buf)) > 0) {
+			os.write(buf, 0, len);
+		}
+
+		os.close();
+		os = null;
+		// TODO something is wrong with time, it comes in negaive
+		//System.out.println("modif time="+DataConvertor.msecToString(modified));
+		//fn.setLastModified(modified);
+		
+		} catch (IOException e) {
+			// TODO log me
+			//e.printStackTrace();
+			throw e;
+		} finally {
+			if( os != null ) os.close();
+			if( conn != null ) conn.disconnect();
+		}
+	}
+	
 }

@@ -1,12 +1,15 @@
 package ru.dz.vita2d.data.net;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import ru.dz.vita2d.data.ServerFileEntity;
 import ru.dz.vita2d.data.ref.IRef;
 import ru.dz.vita2d.data.ref.UnitRef;
 import ru.dz.vita2d.data.type.EntityType;
@@ -77,12 +80,13 @@ public class RestCaller extends HttpCaller implements IRestCaller
 	public JSONObject loadUnitList(ServerUnitType type) throws IOException
 	{
 		String path = String.format(UNIT_LIST_REST_PATH, type);
-		
+
 		if(type == ServerUnitType.DOCUMENTS)
 			path = String.format(UNIT_LIST_REST_PATH, "linkedFiles"); // My god...
-		
+
 		//path += "/?size=20&page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
-		path += "/?page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
+		//path += "/?page=1&sort=obj.division.filial.name&order=asc&parentId=&scrollToId=-1";
+		path += "/?sort=obj.division.filial.name&order=asc&parentId=";
 
 		JSONObject jo = new JSONObject();
 		JSONObject out = post(path, jo.toString());
@@ -134,7 +138,7 @@ public class RestCaller extends HttpCaller implements IRestCaller
 		JSONObject data = getJSON( String.format( "rest/%s/view/%d/", ref.getEntityName(), ref.getId() ) );
 		return data;
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see ru.dz.vita2d.data.IRestCaller#getDataRecord(ru.dz.vita2d.data.ServerUnitType, int)
@@ -151,14 +155,14 @@ public class RestCaller extends HttpCaller implements IRestCaller
 	/* (non-Javadoc)
 	 * @see ru.dz.vita2d.data.IRestCaller#getDataRecord(ru.dz.vita2d.data.UnitRef)
 	 */
-	
+
 	@Override
 	public JSONObject getDataRecord( UnitRef ref ) throws IOException
 	{
 		return getDataRecord( ref.getType(), ref.getId() );
 	}
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see ru.dz.vita2d.data.IRestCaller#getDataModel(ru.dz.vita2d.data.ServerUnitType)
 	 */
@@ -168,9 +172,9 @@ public class RestCaller extends HttpCaller implements IRestCaller
 		return getDataModel(unitType.getPluralTypeName());
 		//return getDataModel(unitType.toString());
 	}
-	
+
 	// TODO -list version
-	
+
 	/* (non-Javadoc)
 	 * @see ru.dz.vita2d.data.IRestCaller#getDataModel(java.lang.String)
 	 */
@@ -194,7 +198,7 @@ public class RestCaller extends HttpCaller implements IRestCaller
 		data = data.substring(eqpos+1); // skip all up to and incl '=' sign
 		JSONObject out = null;
 		try {
-		out = new JSONObject(data);
+			out = new JSONObject(data);
 		} catch(JSONException e)
 		{
 			System.out.println("wrong data model "+data); // TODO logging
@@ -264,17 +268,17 @@ public class RestCaller extends HttpCaller implements IRestCaller
 
 			int pos = indexPage.indexOf("Версия:");
 			if(pos < 0) return;
-			
+
 			pos += 7; // skip word
-			
+
 			String rest = indexPage.substring(pos);
-			
+
 			int endPos = rest.indexOf("<");
 			if(endPos <= 0) return;
 			if(endPos > 10) endPos = 10;
-			
+
 			serverVersion = rest.substring(0, endPos).trim();
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -310,8 +314,8 @@ public class RestCaller extends HttpCaller implements IRestCaller
 		return baseUrl;
 	}
 
-	
-	
+
+
 	public static void saveToFile( String name, String data )
 	{
 		try {
@@ -323,8 +327,22 @@ public class RestCaller extends HttpCaller implements IRestCaller
 			e.printStackTrace();
 		}
 	}
-	
-	
+
+
+	/*
+	public static String makeFileUrl(JSONObject fileInfo)
+	{
+		// /rest/<files[0].linkEntity>/files/<files[0].id>/<files[0].uri>
+
+		String entity = fileInfo.getString("linkEntity");
+		int id = fileInfo.getInt("id");
+		String uri = fileInfo.getString("uri");
+
+		return String.format("/rest/%s/files/%d/%s", entity, id, URLEncoder.encode(uri) );		
+	}*/
+
+
+
 	public static void main(String[] args) 
 	{	
 		//RestCaller rc = new RestCaller("http://sv-web-15.vtsft.ru/orvd-test");
@@ -337,12 +355,12 @@ public class RestCaller extends HttpCaller implements IRestCaller
 			rc.login("show","show");
 			//rc.getIcon("248");
 
-			JSONObject emp_dm = rc.getDataModel(EntityType.EMPLOYEES);
-			saveToFile( "employees_model", emp_dm.toString() );
-			
-			
+			//JSONObject emp_dm = rc.getDataModel(EntityType.EMPLOYEES);
+			//saveToFile( "employees_model", emp_dm.toString() );
+
+
 			//rc.getServerVersion();
-			
+
 			extractOther(rc,"employees");
 			extractOther(rc,"meanKinds");
 			extractOther(rc,"objKinds");
@@ -351,7 +369,7 @@ public class RestCaller extends HttpCaller implements IRestCaller
 			extractOther(rc,"divisions");
 			extractOther(rc,"users");
 
-
+			// http://sv-web-15.vtsft.ru/orvd-release/rest/means/files/2462621/5021341%20%D0%9F%D0%BE%D0%BB%D0%B5%D1%82-2.PDF
 			extractDict(rc,"airRoutes");
 
 			JSONObject filesList = rc.loadUnitList(ServerUnitType.DOCUMENTS);
@@ -359,14 +377,33 @@ public class RestCaller extends HttpCaller implements IRestCaller
 			//System.out.println("List = "+objList.toString());
 			saveToFile( "files_list", filesList.toString() );
 
+
 			ServerUnitType.DOCUMENTS.forEachRecord(filesList, jRec -> {
 				//System.out.println("File = "+jRec.toString());
 				ServerUnitType.DOCUMENTS.forEachField(jRec, (fName,rawVal,fVal) -> {
 					System.out.print(fName+"='"+fVal+"' ");
 				});
+
+				//String url = makeFileUrl(jRec);		
 				System.out.println();
+				if(false)
+				{
+					//System.out.println("url='"+url+"'");
+					ServerFileEntity sfe = new ServerFileEntity(jRec);
+					String basePath = "c:/tmp/vs-files";
+					try {
+						System.out.println("Download ="+sfe);
+						sfe.download(rc, basePath);
+
+						runFile(sfe,basePath);
+
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			});
-			
+
 			JSONObject mdm = rc.getDataModel(ServerUnitType.MEANS);//rc.getMeansDataModel();
 			//System.out.println("Mean Data Model = "+mdm.toString());
 			saveToFile( "means_model", mdm.toString() );
@@ -374,7 +411,7 @@ public class RestCaller extends HttpCaller implements IRestCaller
 			JSONObject odm = rc.getDataModel(ServerUnitType.OBJECTS);//rc.getMeansDataModel();
 			saveToFile( "objs_model", odm.toString() );
 
-			
+
 			JSONObject meanList = rc.loadUnitList(ServerUnitType.MEANS);
 			//dumpJson(objList);
 			//System.out.println("List = "+objList.toString());
@@ -385,17 +422,17 @@ public class RestCaller extends HttpCaller implements IRestCaller
 			//System.out.println("List = "+objList.toString());
 			saveToFile( "objs_list", objList.toString() );
 
-			
-			
+
+
 			JSONObject obj = rc.getDataRecord(ServerUnitType.OBJECTS, 740316);
 			//dumpJson(obj);
 			//System.out.println("Obj = "+obj.toString());
 			saveToFile( "obj_one", obj.toString() );
-			
+
 			JSONObject mean = rc.getDataRecord(ServerUnitType.MEANS, 740316);
 			saveToFile( "mean_one", mean.toString() );
-			
-			
+
+
 
 		} catch (MalformedURLException e) {
 
@@ -411,6 +448,24 @@ public class RestCaller extends HttpCaller implements IRestCaller
 
 	}
 
+	static int nDoc = 0;
+
+	static boolean firstFile = true;
+	private static void runFile(ServerFileEntity sfe, String fileBasePath) 
+	{
+		nDoc++; System.out.println("doc nr "+nDoc);
+		if(firstFile)
+		{
+			try {
+				sfe.systemRunFileProgram(fileBasePath);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		firstFile = false;
+	}
+
 
 	private static void extractDict(IRestCaller rc, String name) throws IOException {
 		JSONObject mkl =  rc.loadDictList(name);
@@ -421,6 +476,13 @@ public class RestCaller extends HttpCaller implements IRestCaller
 	private static void extractOther(IRestCaller rc, String name) throws IOException {
 		JSONObject mkl =  rc.loadOtherList(name);
 		saveToFile( name+"_list", mkl.toString() );
+	}
+
+
+	@Override
+	public void downloadFile(String filePath, String fileUrl, long modified) throws IOException {
+		super.downloadFile(filePath, fileUrl, modified);
+
 	}
 
 

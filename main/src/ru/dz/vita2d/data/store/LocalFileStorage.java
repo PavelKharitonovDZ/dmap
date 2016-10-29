@@ -15,6 +15,10 @@ import java.util.function.Supplier;
 
 import org.json.JSONObject;
 
+/**
+ * Store server JSON data in local files for offline operation.
+ * @author dz
+ */
 public class LocalFileStorage {
 
 	static final private String baseDir = System.getProperty("user.home")+"/.orvd2d";

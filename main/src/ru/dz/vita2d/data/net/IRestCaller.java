@@ -88,4 +88,15 @@ public interface IRestCaller {
 
 	String getServerURL();
 
+	/**
+	 * Download server file to local FS and return its full path name.
+	 * 
+	 * @param filePath Local file path - last part of
+	 * @param fileUrl Server file URL suffix
+	 * @param server file's modification time
+	 * @return Full local file name
+	 * @throws IOException 
+	 */
+	void downloadFile(String filePath, String fileUrl, long modified) throws IOException;
+
 }

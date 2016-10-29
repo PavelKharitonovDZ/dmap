@@ -1,5 +1,6 @@
 package ru.dz.vita2d.data.net;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.json.JSONObject;
@@ -20,7 +21,7 @@ public class CacheRestCaller implements IRestCaller {
 		this.src = src;
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	public void login(String login, String password) throws IOException {
 		try {
@@ -36,7 +37,7 @@ public class CacheRestCaller implements IRestCaller {
 
 	private void offline_login(String login, String password) throws IOException {
 		JSONObject users = loadOtherList("users");
-		
+
 		// TODO Notify additionally about offline login
 		throw new java.net.ProtocolException("offline loin failed");
 	}
@@ -46,9 +47,9 @@ public class CacheRestCaller implements IRestCaller {
 		return user;
 	}
 
-	
-	
-	
+
+
+
 	@Override
 	public JSONObject loadUnitList(ServerUnitType type) throws IOException {
 		RestSupplier<JSONObject> s = () -> { return src.loadUnitList(type); };
@@ -91,8 +92,8 @@ public class CacheRestCaller implements IRestCaller {
 		return out;
 	}
 
-	
-	
+
+
 	@Override
 	public JSONObject getDataModel(IEntityType unitType) throws IOException {
 		RestSupplier<JSONObject> s = () -> { return src.getDataModel(unitType); };
@@ -100,7 +101,7 @@ public class CacheRestCaller implements IRestCaller {
 		return out;
 	}
 
-	
+
 	/*@Override
 	public JSONObject getDataModel(String entityName) throws IOException {
 		RestSupplier<String> s = () -> { return src.getDataModel(entityName).toString(); };
@@ -125,6 +126,22 @@ public class CacheRestCaller implements IRestCaller {
 	@Override
 	public String getServerURL() {
 		return LocalFileStorage.cachedLoader( () -> src.getServerURL(), "server_url.txt");
+	}
+
+	public void downloadFile(String filePath, String fileUrl, long modified) throws IOException 
+	{
+		File fn = new File(filePath); 
+		long fmod = fn.lastModified();
+
+		if( (!fn.exists()) || (fmod < modified) )
+		{
+			src.downloadFile(filePath, fileUrl, modified);
+			return;
+		}
+		
+		throw new IOException("no local copy");
+		
+		
 	}
 
 }

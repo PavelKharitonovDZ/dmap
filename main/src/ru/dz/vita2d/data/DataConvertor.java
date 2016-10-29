@@ -37,17 +37,14 @@ public class DataConvertor {
 		{
 			long unixMilliSeconds = Long.parseLong(value);
 
-			Date date = new Date(unixMilliSeconds);
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-			//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			//sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-			value = sdf.format(date);
+			value = msecToString(unixMilliSeconds);
 			//System.out.println("date time "+value);
 			break;
 		}
 
 		case "icon": // TODO process me?
 		case "email":
+		case "mean":
 		case "event":
 		case "birthDate":
 		case "obj":
@@ -82,6 +79,16 @@ public class DataConvertor {
 			break;
 		}
 
+		return value;
+	}
+
+	public static String msecToString(long unixMilliSeconds) 
+	{
+		Date date = new Date(unixMilliSeconds);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		//sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+		String value = sdf.format(date);
 		return value;
 	}
 
@@ -242,4 +249,5 @@ public class DataConvertor {
 		}
 	}
 
+	
 }

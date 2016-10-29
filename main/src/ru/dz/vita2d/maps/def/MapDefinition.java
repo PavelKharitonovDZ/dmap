@@ -28,8 +28,9 @@ public class MapDefinition {
 		this.file = file;
 		mapData = new OutoorMapData(file, name);
 		
+		/*
 		// TODO test kill me
-		MapPath mp = new MapPath(
+		MapPath mp = new MapPath( "оптическая линия",
 				new Point2D(1042,1272),
 				new Point2D(1200,1272),
 				new Point2D(1200,1162)
@@ -57,6 +58,12 @@ public class MapDefinition {
 		tileDefs.add(mtd);		
 	}
 
+	private List<MapPathDefinition> pathDefs = new LinkedList<MapPathDefinition>();
+	public void addPathDefinition(MapPathDefinition mpd) {
+		pathDefs.add(mpd);
+	}
+
+	
 	public void resolveLinks(MapList mapList) 
 	{
 		for( MapTileDefinition mtd : tileDefs )
@@ -95,7 +102,11 @@ public class MapDefinition {
 			MapDefinition linkedMap = mtd.getLinkedMap();
 			mapData.addOverlay( mtd, linkedMap.getMapData() );		
 		}
-		
+
+		for( MapPathDefinition mpd : pathDefs )
+		{
+			mapData.addPath(mpd.getMapPath()); 			
+		}
 	}
 
 	public IMapData getMapData() {
@@ -105,4 +116,5 @@ public class MapDefinition {
 	public String getName() {
 		return name;		
 	}
+
 }

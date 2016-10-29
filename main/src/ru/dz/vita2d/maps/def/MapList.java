@@ -1,14 +1,8 @@
 package ru.dz.vita2d.maps.def;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import org.json.JSONArray;
@@ -18,10 +12,8 @@ import org.json.JSONTokener;
 
 import application.Defs;
 import application.IMapScene;
-import application.MapScene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import ru.dz.vita2d.data.net.RestCaller;
 import ru.dz.vita2d.maps.IMapData;
 
 /**
@@ -119,6 +111,19 @@ public class MapList
 					System.out.println("(ignored) JSON exception loading map tiles: "+je);
 				}
 
+				try {
+					if( map.has("paths") )
+					{
+						JSONArray paths = map.getJSONArray("paths");
+						paths.forEach( path -> loadPath((JSONObject)path, md) );
+					}
+				}
+				catch(JSONException je)
+				{
+					// TODO log
+					System.out.println("(ignored) JSON exception loading map tiles: "+je);
+				}
+
 				mapDefs.put(id,md);
 			}
 			catch(Throwable e)
@@ -135,13 +140,18 @@ public class MapList
 
 
 
-	private Object loadTile(JSONObject tile, MapDefinition md) 
+	private void loadTile(JSONObject tile, MapDefinition md) 
 	{
 
 		MapTileDefinition mtd = new MapTileDefinition(tile);
 		md.addTileDefinition( mtd );
+	}
 
-		return null;
+	private void loadPath(JSONObject path, MapDefinition md) 
+	{
+
+		MapPathDefinition mpd = new MapPathDefinition(path);
+		md.addPathDefinition( mpd );
 	}
 
 	private void dump() {

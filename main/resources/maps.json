@@ -9,6 +9,18 @@
 				"type":"outdoor",
 				"entity":"notifications"
 			},
+			"paths":[
+				{
+				"layer-id":"cable-optics",
+				"title":"20 пар",
+				"ref-unit-type":"obj", "ref-unit-id":2041195,
+				"points":[
+					{"x":1042, "y":1272},
+					{"x":1200, "y":1272},	
+					{"x":1200, "y":1162}
+				]
+				},
+			],
 			"tiles":[
 				{
 				"name":"Локатор ОРЛ-А",

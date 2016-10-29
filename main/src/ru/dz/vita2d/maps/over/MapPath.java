@@ -35,19 +35,30 @@ public class MapPath extends AbstractMapAddendum {
 	private int xSize;
 	private int ySize;
 	private String title = ""; 
+	private IRef reference;
 
 	double[] xPoints;
 	double[] yPoints;
+
+
+	public MapPath( String title, List<Point2D> points ) {
+		xPoints = new double[points.size()];
+		yPoints = new double[points.size()];
+		
+
+		for( int i = 0; i < points.size(); i++ )
+		{
+			xPoints[i] = points.get(i).getX();
+			yPoints[i] = points.get(i).getY();
+		}
+			
+		this.title = title;
+	}
 	
-	public MapPath(Point2D... points) {
+	public MapPath( String title, Point2D... points) {
 		xPoints = new double[points.length];
 		yPoints = new double[points.length];
 		
-		/*
-		for(Point2D p : points )
-		{
-			//this.points.add(p);
-		}*/
 		
 		for( int i = 0; i < points.length; i++ )
 		{
@@ -55,8 +66,7 @@ public class MapPath extends AbstractMapAddendum {
 			yPoints[i] = points[i].getY();
 		}
 		
-		title = "оптическая линия связи";
-		
+		this.title = title;
 	}
 
 	/*
@@ -149,9 +159,6 @@ public class MapPath extends AbstractMapAddendum {
 		return title;
 	}
 
-	public IRef getReference() {
-		return null;
-	}
 
 	/*
 	private Image paintMe()
@@ -244,6 +251,14 @@ public class MapPath extends AbstractMapAddendum {
 	public Image getImage() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	public void setReference(IRef reference) {
+		this.reference = reference;
+	}
+
+	public IRef getReference() {
+		return reference;
 	}
 
 

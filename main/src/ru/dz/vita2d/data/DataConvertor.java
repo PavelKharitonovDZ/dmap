@@ -48,6 +48,7 @@ public class DataConvertor {
 		case "event":
 		case "birthDate":
 		case "obj":
+		case "singleObj":
 		case "phone":
 		case "sysname":
 		case "name":

@@ -21,6 +21,7 @@ public class LayerSet
 		// TODO get colors from config?
 		layers.add( new MapLayer("cable-optics", "Оптические лини связи", Color.BURLYWOOD.toString(), 10) );
 		layers.add( new MapLayer("cable-copper", "Проводные лини связи", Color.GREEN.toString(), 11) );
+		layers.add( new MapLayer("maintenance-path", "Маршруты обхода", Color.MEDIUMORCHID.toString(), 12) );
 	}
 
 	static public void forEach(Consumer<MapLayer> action)
